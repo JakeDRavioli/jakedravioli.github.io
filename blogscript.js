@@ -1,5 +1,6 @@
 // --- Your Firebase Configuration ---
 const __firebaseConfig = {
+    apiKey: "AIzaSyDYoHigA9mww7bCDms_biNkCqrXaG3n9nc",
     authDomain: "jakedravioli-blog.firebaseapp.com",
     projectId: "jakedravioli-blog",
     storageBucket: "jakedravioli-blog.appspot.com",
