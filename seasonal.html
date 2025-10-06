@@ -1,0 +1,196 @@
+    <meta charset="UTF-8">
+<!-- ===================================================================== -->
+<!-- START: Portable Seasonal Effects Package                            -->
+<!-- ===================================================================== -->
+<div id="seasonal-effects-package">
+    <div id="effects-container"></div>
+    <style>
+        /* This style block contains all the CSS needed for the effects */
+        #seasonal-effects-package {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .seasonal-item {
+            position: absolute;
+            user-select: none;
+        }
+        .halloween-item {
+            bottom: -100px;
+            animation: rise-up linear infinite;
+        }
+        @keyframes rise-up {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+        .snowflake, .snow-circle {
+            top: -50px;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+        .snowflake { color: #fff; }
+        .snow-circle { background-color: white; border-radius: 50%; }
+        @keyframes fall {
+            0% { transform: translate(0px, 0); opacity: 1; }
+            100% { transform: translate(100px, 105vh); opacity: 0; }
+        }
+        @keyframes fall-sway {
+            0% { transform: translate(0px, 0); opacity: 1; }
+            100% { transform: translate(-100px, 105vh); opacity: 0; }
+        }
+        .flutter-item {
+            top: -50px;
+            animation: flutter linear infinite;
+        }
+        @keyframes flutter {
+            0% { transform: translate(0, 0) rotateZ(0deg) rotateY(0deg); opacity: 1; }
+            100% { transform: translate(100px, 105vh) rotateZ(360deg) rotateY(720deg); opacity: 0; }
+        }
+        .firework-shell {
+            position: absolute;
+            bottom: 0;
+            width: 5px;
+            height: 15px;
+            border-radius: 50%;
+            animation: launch ease-out infinite;
+        }
+        @keyframes launch {
+            0% { transform: translateY(0); opacity: 1; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-80vh); opacity: 0; }
+        }
+        .firework-particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            animation: explode 0.8s ease-out forwards;
+        }
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: var(--explode-transform) scale(0); opacity: 0; }
+        }
+        #new-year-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 0 0 15px black;
+            text-align: center;
+            z-index: 10000;
+            animation: pop-in-message 0.5s 0.5s ease-out forwards;
+        }
+        @keyframes pop-in-message {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .confetti {
+            position: absolute;
+            opacity: 0;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-20vh) rotateZ(0deg); opacity: 1; }
+            100% { transform: translateY(120vh) rotateZ(720deg); opacity: 0; }
+        }
+        .screen-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            animation: flash-effect 0.7s ease-out;
+            z-index: 9998;
+        }
+        @keyframes flash-effect {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.2; }
+        }
+    </style>
+    <script>
+        // This script will run once the seasonal.html file is loaded into the page.
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if the script has already run to prevent multiple executions
+            if (window.seasonalEffectsInitialized) return;
+            window.seasonalEffectsInitialized = true;
+
+            const effectsContainer = document.querySelector('#seasonal-effects-package #effects-container');
+            if (!effectsContainer) return; // Stop if the container isn't found
+
+            let currentEffectInterval = null;
+            let newYearCheckInterval = null;
+
+            // --- Effect Creation Functions ---
+            const createHalloweenItems = () => { const items = ['🎃', '🍬', '🍭', '👻']; const item = document.createElement('div'); item.className = 'seasonal-item halloween-item'; item.innerHTML = items[Math.floor(Math.random() * items.length)]; item.style.left = `${Math.random() * 100}vw`; item.style.fontSize = `${Math.random() * 1.7 + 0.8}rem`; item.style.animationDuration = `${Math.random() * 7 + 5}s`; effectsContainer.appendChild(item); setTimeout(() => item.remove(), 12000); };
+            const createWinterItems = () => { const item = document.createElement('div'); item.className = 'seasonal-item'; if (Math.random() > 0.75) { item.classList.add('snowflake'); item.innerHTML = '❄️'; item.style.fontSize = `${Math.random() * 1.3 + 0.5}rem`; } else { item.classList.add('snow-circle'); const size = Math.random() * 12 + 3; item.style.width = `${size}px`; item.style.height = `${size}px`; } item.style.left = `${Math.random() * 100}vw`; item.style.animationDuration = `${Math.random() * 13 + 7}s`; item.style.animationName = Math.random() > 0.5 ? 'fall' : 'fall-sway'; item.style.opacity = Math.random() * 0.7 + 0.3; effectsContainer.appendChild(item); setTimeout(() => item.remove(), 20000); };
+            const createFlutterItem = (type) => { const items = type === 'spring' ? ['🌸', '💮'] : ['🍂', '🍁']; const item = document.createElement('div'); item.className = 'seasonal-item flutter-item'; item.innerHTML = items[Math.floor(Math.random() * items.length)]; item.style.left = `${Math.random() * 100}vw`; item.style.fontSize = `${Math.random() * 1 + 0.7}rem`; item.style.animationDuration = `${Math.random() * 10 + 8}s`; effectsContainer.appendChild(item); setTimeout(() => item.remove(), 18000); };
+            const createFirework = () => { const colors = ['#ffbe0b', '#fb5607', '#ff006e', '#8338ec', '#3a86ff']; const shell = document.createElement('div'); shell.className = 'firework-shell'; const color = colors[Math.floor(Math.random() * colors.length)]; shell.style.background = `linear-gradient(to top, ${color}, transparent)`; shell.style.left = `${Math.random() * 80 + 10}vw`; const duration = Math.random() * 1.5 + 1; shell.style.animationDuration = `${duration}s`; shell.style.animationDelay = `${Math.random() * 2}s`; effectsContainer.appendChild(shell); setTimeout(() => { const explosionY = '20vh'; const explosionX = shell.style.left; shell.remove(); const particleCount = Math.floor(Math.random() * 30) + 20; for (let i = 0; i < particleCount; i++) { const particle = document.createElement('div'); particle.className = 'firework-particle'; particle.style.left = explosionX; particle.style.top = explosionY; particle.style.backgroundColor = color; const angle = Math.random() * 360; const distance = Math.random() * 80 + 40; const x = Math.cos(angle * (Math.PI / 180)) * distance; const y = Math.sin(angle * (Math.PI / 180)) * distance; particle.style.setProperty('--explode-transform', `translate(${x}px, ${y}px)`); effectsContainer.appendChild(particle); setTimeout(() => particle.remove(), 800); } }, duration * 1000 + parseFloat(shell.style.animationDelay) * 1000); };
+            const triggerNewYearCelebration = (force = false) => { stopCurrentEffect(); const year = new Date().getFullYear(); const storageKey = `newYearShown-${year}`; if (localStorage.getItem(storageKey) && !force) return; const flashColors = ['#ffbe0b', '#ff006e', '#3a86ff']; flashColors.forEach((color, index) => { setTimeout(() => { const flash = document.createElement('div'); flash.className = 'screen-flash'; flash.style.backgroundColor = color; effectsContainer.appendChild(flash); setTimeout(() => flash.remove(), 700); }, index * 300); }); const message = document.createElement('div'); message.id = 'new-year-message'; message.innerHTML = `Happy New Year!<br>${year}`; effectsContainer.appendChild(message); const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800']; for (let i = 0; i < 250; i++) { const confetti = document.createElement('div'); const size = Math.random() * 8 + 8; confetti.className = 'confetti'; confetti.style.width = `${size}px`; confetti.style.height = `${size}px`; confetti.style.left = `${Math.random() * 100}vw`; confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; confetti.style.animationDelay = `${Math.random() * 0.5}s`; confetti.style.transform = `rotate(${Math.random() * 360}deg)`; effectsContainer.appendChild(confetti); } if (!force) { localStorage.setItem(storageKey, 'true'); } setTimeout(() => { if (message.parentElement) { effectsContainer.innerHTML = ''; } }, 6000); };
+
+            // --- Effect Control ---
+            const effectFunctions = {
+                halloween: { create: createHalloweenItems, interval: 500 },
+                winter: { create: createWinterItems, interval: 200 },
+                spring: { create: () => createFlutterItem('spring'), interval: 400 },
+                autumn: { create: () => createFlutterItem('autumn'), interval: 500 },
+                newyear: { create: createFirework, interval: 300 },
+            };
+
+            function stopCurrentEffect() {
+                if (currentEffectInterval) clearInterval(currentEffectInterval);
+                if (newYearCheckInterval) clearInterval(newYearCheckInterval);
+                currentEffectInterval = null;
+                newYearCheckInterval = null;
+                effectsContainer.innerHTML = '';
+            }
+
+            function startEffect(effectName) {
+                stopCurrentEffect();
+                const effect = effectFunctions[effectName];
+                if (effect.interval) {
+                    currentEffectInterval = setInterval(effect.create, effect.interval);
+                }
+                if (effectName === 'newyear') {
+                    newYearCheckInterval = setInterval(checkDateForNewYear, 1000);
+                }
+            }
+            
+            function checkDateForNewYear() { const now = new Date(); if (now.getMonth() === 0 && now.getDate() === 1) { triggerNewYearCelebration(); if (newYearCheckInterval) clearInterval(newYearCheckInterval); } }
+            function cleanupLocalStorage() { const now = new Date(); if (now.getMonth() !== 0 || now.getDate() !== 1) { Object.keys(localStorage).forEach(key => { if (key.startsWith('newYearShown-')) { localStorage.removeItem(key); } }); } }
+
+            function autoEnableEffect() {
+                const now = new Date();
+                const month = now.getMonth();
+                const day = now.getDate();
+                let activeEffect = null;
+
+                if (month === 9) activeEffect = 'halloween'; // Oct
+                else if ([10, 11, 0, 1].includes(month)) activeEffect = 'winter'; // Nov-Feb
+                else if (month === 4) activeEffect = 'spring'; // May
+                else if (month === 8) activeEffect = 'autumn'; // Sep
+                else if (month === 11 && day === 31) activeEffect = 'newyear'; // NYE
+                else if (month === 0 && day === 1) {
+                    triggerNewYearCelebration();
+                }
+                if (activeEffect) {
+                    startEffect(activeEffect);
+                }
+            }
+
+            // Initial setup
+            cleanupLocalStorage();
+            autoEnableEffect();
+        });
+    </script>
+</div>
+<!-- ===================================================================== -->
+<!-- END: Portable Seasonal Effects Package                              -->
+<!-- ===================================================================== -->

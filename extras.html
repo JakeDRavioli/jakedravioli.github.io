@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebellious Takeover - Data Scraps</title>
+    
+    <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
+    <link rel="shortcut icon" href="/icon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="JakeDRavioli" />
+    <link rel="manifest" href="/icon/site.webmanifest" />
+    <meta name="theme-color" content="#ff384f">
+
+    <link rel="stylesheet" href="styles.css?v=2.5">
+    <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+
+    <style>
+        .background {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            background-image: url('Images/rebTakeover/rebBackground-min.png');
+            background-size: cover;
+            background-position: center;
+            filter: invert(1) opacity(30%) blur(12px);
+            z-index: -3;
+            animation: fadein 1s;
+            transition: filter 0.5s ease-in-out;
+        }
+        /* Custom styles for the Extras page, themed like Rebellious Takeover */
+        .content.rebTakeover {
+             padding: 0 50px;
+        }
+
+        /* --- START: Targeted Box Model Fix --- */
+        .extras-section, .playlist-grid, .flip-card {
+            box-sizing: border-box;
+        }
+        /* --- END: Targeted Box Model Fix --- */
+
+        /* Tab Navigation System */
+        .extras-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--color-accent-primary);
+            padding-bottom: 15px;
+        }
+        .extras-nav-btn {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            background-color: transparent;
+            border: 2px solid var(--color-grey-disabled);
+            color: var(--color-text-darkest);
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .extras-nav-btn:hover {
+            border-color: var(--color-accent-primary);
+            color: var(--color-accent-primary);
+        }
+        .extras-nav-btn.active {
+            background-color: var(--color-accent-primary);
+            color: var(--color-black);
+            border-color: var(--color-accent-primary);
+            font-weight: bold;
+        }
+
+        /* Tab Content Styling */
+        .extras-tab-content {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease;
+        }
+        .extras-tab-content.active {
+            display: block; /* Shown when active */
+        }
+
+        .extras-section {
+            background-color: var(--color-background-tertiary);
+            border: 2px solid var(--color-accent-primary);
+            padding: 30px;
+            margin: 0 auto 60px auto;
+            max-width: 1500px;
+            box-shadow: 0 0 25px var(--color-accent-primary-glow);
+        }
+
+        .extras-header {
+            font-family: 'Sedgwick Ave Display', cursive;
+            color: var(--color-text-main);
+            text-align: center;
+            font-size: 50px;
+            text-shadow: 3px 3px 0px var(--color-accent-primary);
+            margin-bottom: 10px;
+        }
+        
+        .extras-subheader {
+            font-family: 'Permanent Marker', cursive;
+            color: #aaa;
+            text-align: center;
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 40px;
+        }
+
+        /* Rick's Website Iframe */
+        #ricks-website-container {
+            border: 5px ridge #FF00FF;
+            box-shadow: 0 0 20px #FFFF00, 0 0 30px #00FFFF inset;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #ricks-website {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        /* --- START: FLIPPABLE PLAYLIST CARD STYLES --- */
+
+        .playlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 40px;
+            padding:30px;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 352px;
+            perspective: 1000px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            border: 2px solid var(--color-accent-primary);
+            box-shadow: 0 0 15px var(--color-accent-primary-glow);
+        }
+
+        .flip-card.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .flip-card-front {
+            background-color: var(--color-background-tertiary);
+            color: var(--color-text-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        .flip-card-front h4 {
+            font-family: 'Sedgwick Ave Display', cursive;
+            font-size: 32px;
+            color: var(--color-text-main);
+            text-shadow: 2px 2px 0px var(--color-accent-primary);
+            margin: 0 0 10px 0;
+        }
+
+        .flip-card-front .playlist-desc {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--color-text-light);
+        }
+
+        .playlist-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .playlist-genres span {
+            background-color: var(--color-accent-primary);
+            color: var(--color-black);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .flip-instruction {
+            position: absolute;
+            bottom: 10px;
+            font-style: italic;
+            color: var(--color-text-darkest);
+            font-size: 14px;
+        }
+
+        .flip-card-back {
+            background-color: var(--color-background-main);
+            color: var(--color-text-main);
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-back iframe {
+            border-radius: 0 !important;
+        }
+
+        /* --- START: NEW Flip Back Button Style --- */
+        .flip-back-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10; /* Lifts the button above the iframe */
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--color-text-darkest);
+            color: var(--color-text-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .flip-back-btn:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+        /* --- END: NEW Flip Back Button Style --- */
+
+        /* --- END: FLIPPABLE PLAYLIST CARD STYLES --- */
+
+        @media (max-width: 900px) {
+            .playlist-grid {
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        /* Voicemail / Q&A Section */
+        .qa-item { margin-bottom: 30px; }
+        .qa-question {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 24px;
+            color: var(--color-accent-primary-light);
+            margin-bottom: 10px;
+            font-style: italic;
+            padding-left: 15px;
+            border-left: 3px solid var(--color-accent-primary);
+        }
+        .qa-answer {
+            background-color: var(--color-component-bg);
+            border-left: 4px solid var(--color-accent-tertiary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            color: var(--color-text-light);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+        .qa-answer strong { color: var(--color-accent-tertiary-link); }
+
+        /* Deren's Tech Bench Section */
+        .tech-note {
+            background-color: var(--color-component-bg);
+            border: 1px solid var(--color-accent-tertiary-border);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        .tech-note h4 {
+            font-family: 'Courier New', monospace;
+            color: var(--color-accent-secondary);
+            font-size: 22px;
+            margin: 0 0 15px 0;
+        }
+        .tech-note h4 .status {
+            color: var(--color-accent-primary);
+        }
+        .tech-note p {
+            font-family: 'Courier New', monospace;
+            color: var(--color-text-code);
+            font-size: 16px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        /* Shopping List Section */
+        .shopping-list-container {
+            background-color: var(--color-component-bg);
+            border: 1px solid var(--color-accent-tertiary-border);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: 'Permanent Marker', cursive;
+        }
+        .shopping-list-container h4 {
+            text-align: center;
+            font-size: 28px;
+            text-decoration: underline;
+            margin: 0 0 20px 0;
+        }
+        .shopping-list { list-style: none; padding: 0; }
+        .shopping-list li { font-size: 22px; padding: 10px; color: var(--color-text-light); }
+        .shopping-list li::before { content: '- '; }
+        .shopping-list .crossed-out { text-decoration: line-through; color: var(--color-text-darkest); }
+        .shopping-list .note { font-size: 16px; color: var(--color-accent-primary); font-style: italic; }
+        
+        /* Live AMA Section */
+        #live-ama-form { display: flex; flex-direction: column; gap: 20px; }
+        .ama-controls { display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        #ama-character-select, #ama-question-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--color-input-border);
+            background-color: var(--color-input-bg);
+            color: var(--color-text-main);
+            font-family: 'Courier New', monospace;
+        }
+        #ama-question-input { min-height: 100px; resize: vertical; }
+        #ama-submit-btn {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 20px;
+            background-color: var(--color-accent-primary-darker);
+            color: var(--color-accent-primary-lighter);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #ama-submit-btn:hover { background-color: var(--color-accent-primary-dark); }
+        #ama-submit-btn:disabled { background-color: var(--color-grey-disabled); cursor: not-allowed; }
+        #ama-response-container {
+            margin-top: 30px;
+            background-color: var(--color-component-bg);
+            border: 1px solid var(--color-accent-tertiary-border);
+            border-radius: 15px;
+            padding: 25px;
+            min-height: 100px;
+            color: var(--color-text-light);
+            font-size: 18px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div include-html="header.html"></div>
+    <div id="gradient-overlay"></div>
+    <div class="background" style="background-image: url('Images/rebTakeover/rebBackground-min.png');filter: opacity(20%) blur(20px);"></div>
+
+    <div class="content rebTakeover">
+        <header style="text-align: center; margin-bottom: 50px;">
+            <h1 class="section-header" style="text-shadow: 2px 2px 3px #433c5e;">EXTRAS</h1>
+            <p class="section-subheader" style="color: #ccc;">// The data scraps and debris. The good stuff, if you dig through it.</p>
+        </header>
+
+        <nav class="extras-nav">
+            <button class="extras-nav-btn active" data-tab="rick">// ricksjunk.biz</button>
+            <button class="extras-nav-btn" data-tab="playlists">// mixtapes.zip</button>
+            <button class="extras-nav-btn" data-tab="ama">// ama_archive.docx</button>
+            <button class="extras-nav-btn" data-tab="tech">// deren_notes.log</button>
+            <button class="extras-nav-btn" data-tab="shopping">// wishlist.dat</button>
+            <button class="extras-nav-btn" data-tab="live-ama">// totally-real-live-ama.ps1</button>
+        </nav>
+
+        <div id="tab-rick" class="extras-tab-content active">
+            <section class="extras-section">
+                <h3 class="extras-header" style="text-shadow: 2px 2px 3px #ff00ff;">A Word From Our... uh, Sponsor?</h3>
+                <p class="extras-subheader">We intercepted this transmission from a Veritas subordinate's personal business page. Viewer discretion is advised.</p>
+                <div id="ricks-website-container">
+                    <iframe id="ricks-website" title="Rick's Quality Goods"></iframe>
+                </div>
+            </section>
+        </div>
+
+        <div id="tab-playlists" class="extras-tab-content">
+            <section class="extras-section">
+                <h3 class="extras-header" style="text-shadow: 2px 2px 3px #1DB954;">Subroutine's Mixtapes</h3>
+                <p class="extras-subheader">Lyra ended up making a highlights mix for everyone by hacking into their respective Spotify accounts. For fun. Accuracy may or may not vary.</p>
+                <div class="playlist-grid">
+
+                    <div class="flip-card" ontouchstart="this.classList.toggle('is-flipped');">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Deren's Highlights</h4>
+                                <p class="playlist-desc">A high-octane mix of cyberpunk beats, video game boss themes, and pure J-Core chaos. Perfect for coding, combat, or figuring out why the toaster achieved sentience again.</p>
+                                <div class="playlist-genres">
+                                    <span>Video Game OST</span>
+                                    <span>Cyberpunk</span>
+                                    <span>Metalcore</span>
+                                    <span>J-Core</span>
+                                </div>
+                                <p class="flip-instruction">// Click to Flip //</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <button class="flip-back-btn" aria-label="Flip card back"><i class="fas fa-undo"></i></button>
+                                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/0CBrr5LTDgzLW24XykT2iu?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Deren's Highlights"></iframe>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="flip-card" ontouchstart="this.classList.toggle('is-flipped');">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Phenn's Highlights</h4>
+                                <p class="playlist-desc">A gentle collection of chillwave, synth-pop, and lofi beats. This is the auditory equivalent of a sunbeam, a warm cup of tea, and a cat purring on your lap.</p>
+                                <div class="playlist-genres">
+                                    <span>Synthwave</span>
+                                    <span>Chillwave</span>
+                                    <span>Lofi</span>
+                                    <span>Cute-Core</span>
+                                </div>
+                                <p class="flip-instruction">// Click to Flip //</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <button class="flip-back-btn" aria-label="Flip card back"><i class="fas fa-undo"></i></button>
+                                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4RgZDZ3tJzmeO4WoITEPYd?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Phenn's Highlights"></iframe>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="flip-card" ontouchstart="this.classList.toggle('is-flipped');">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Jayce's Highlights</h4>
+                                <p class="playlist-desc">An intense, chaotic barrage of hardcore, speedcore, and metalcore anthems. This is the soundtrack to barely holding it together, but in a really cool, rhythmic way.</p>
+                                <div class="playlist-genres">
+                                    <span>Hardcore</span>
+                                    <span>Speedcore</span>
+                                    <span>Metalcore</span>
+                                    <span>Video Game OST</span>
+                                </div>
+                                <p class="flip-instruction">// Click to Flip //</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <button class="flip-back-btn" aria-label="Flip card back"><i class="fas fa-undo"></i></button>
+                                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4LXKzkRpUXGIZCzT13DjTW?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Jayce's Highlights"></iframe>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="flip-card" ontouchstart="this.classList.toggle('is-flipped');">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Lyra's Highlights</h4>
+                                <p class="playlist-desc">Terminally online. A brain-melting compilation of J-Core, Power Metal, and meme anthems that runs at 200 BPM and 150% CPU usage. Do not operate heavy machinery while listening.</p>
+                                <div class="playlist-genres">
+                                    <span>J-Core</span>
+                                    <span>Speedcore</span>
+                                    <span>Power Metal</span>
+                                    <span>Otacore</span>
+                                </div>
+                                <p class="flip-instruction">// Click to Flip //</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <button class="flip-back-btn" aria-label="Flip card back"><i class="fas fa-undo"></i></button>
+                                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2jYH8msdOiyWGMejUpWSfx?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Lyra's Highlights"></iframe>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="flip-card" ontouchstart="this.classList.toggle('is-flipped');">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Ral's Highlights</h4>
+                                <p class="playlist-desc">Pure, unadulterated gremlin energy. A chaotic mosh pit of alt-metal, nu-metal, and big beat classics designed for starting fires (metaphorical... probably) and causing problems.</p>
+                                <div class="playlist-genres">
+                                    <span>Alt-Metal</span>
+                                    <span>Nu-Metal</span>
+                                    <span>Big Beat</span>
+                                    <span>Pop Punk</span>
+                                </div>
+                                <p class="flip-instruction">// Click to Flip //</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <button class="flip-back-btn" aria-label="Flip card back"><i class="fas fa-undo"></i></button>
+                                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/5Tv6PBvAGfv237UW5odtSf?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Ral's Highlights"></iframe>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="flip-card" ontouchstart="this.classList.toggle('is-flipped');">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Cel's Highlights</h4>
+                                <p class="playlist-desc">A surprisingly smooth and tactical mix of 80s synth-pop, new wave, and chillwave. The perfect grounded counterpoint to Ral's chaos, ideal for late-night drives or a quiet stakeout.</p>
+                                <div class="playlist-genres">
+                                    <span>80s Synth-Pop</span>
+                                    <span>New Wave</span>
+                                    <span>Chillwave</span>
+                                    <span>Video Game OST</span>
+                                </div>
+                                <p class="flip-instruction">// Click to Flip //</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <button class="flip-back-btn" aria-label="Flip card back"><i class="fas fa-undo"></i></button>
+                                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/1sl1R54BX9p7GUPMft6S0b?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Cel's Highlights"></iframe>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="flip-card" ontouchstart="this.classList.toggle('is-flipped');">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Mae's Highlights</h4>
+                                <p class="playlist-desc">Deeply melancholic and introspective. A collection of classic alternative, trip-hop, and sadcore that explores the beautiful ache of existence. For rainy days and deep thoughts.</p>
+                                <div class="playlist-genres">
+                                    <span>Alternative Rock</span>
+                                    <span>Trip-Hop</span>
+                                    <span>Sadcore</span>
+                                    <span>Classic Rock</span>
+                                </div>
+                                <p class="flip-instruction">// Click to Flip //</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <button class="flip-back-btn" aria-label="Flip card back"><i class="fas fa-undo"></i></button>
+                                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/05ypSlZ6OXPlWMxJrHjAhI?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Mae's Highlights"></iframe>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="flip-card" ontouchstart="this.classList.toggle('is-flipped');">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <h4>Luca's Highlights</h4>
+                                <p class="playlist-desc">The cold, driving pulse of the corporate underworld. A dark and moody selection of darksynth, industrial, and techno built for navigating the neon-drenched, rain-slicked streets of Nexon.</p>
+                                <div class="playlist-genres">
+                                    <span>Darksynth</span>
+                                    <span>Synthwave</span>
+                                    <span>Industrial</span>
+                                    <span>Techno</span>
+                                </div>
+                                <p class="flip-instruction">// Click to Flip //</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <button class="flip-back-btn" aria-label="Flip card back"><i class="fas fa-undo"></i></button>
+                                <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/6oKeaqh7hdidDZ5Nm1Esvd?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Luca's Highlights"></iframe>
+                            </div>
+                        </div>
+                    </div>
+        
+                </div>
+            </section>
+        </div>
+
+        <div id="tab-ama" class="extras-tab-content">
+            <section class="extras-section">
+                <h3 class="extras-header" style="text-shadow: 2px 2px 3px #a49eff;">Subroutine AMA [Archived]</h3>
+                <p class="extras-subheader">We "found" a transcript of an internal Q&A session. The answers are... illuminating.<br><br>Fair warning here, These can get quite spicy.</p>
+                <div class="qa-item">
+                    <p class="qa-question">"Question for Ral & Cel: What's a 'Nest,' and can I get an invite?"</p>
+                    <div class="qa-answer"><strong>Ral:</strong> "Aww, you wanna join our cuddle pile? Cute! The Nest is our sacred space... No invites, sorry."<br><br><strong>Cel:</strong> "It's a prison. A very comfy prison. Send hel-"<br><br><strong>Ral:</strong> "-SNACKS! He means snacks. Right, babe?"<br><br><strong>Cel:</strong> "...Yup. Snacks."<br><br><br>We left them be because they soon after that answer started shooing us out.</div>
+                </div>
+                <div class="qa-item">
+                    <p class="qa-question">"Jayce, what's the most embarrassing thing Lyra has done to you recently?"</p>
+                    <div class="qa-answer"><strong>Jayce:</strong> "She replaced the filling in a doughnut with mayonnaise. The week is young... I'm sure she has something worse planned... Like, I saw her opening up Spotify a bunch of times on her computer earlier... It spells no good."</div>
+                </div>
+                <div class="qa-item">
+                    <p class="qa-question">"Deren, be honest. How many times has your C.O.R.E. short-circuited because you spilled coffee on it?"</p>
+                    <div class="qa-answer"><strong>Deren:</strong> "It happened <i>once</i>. And it was tea, not coffee. Phenn still won't let me forget it."<br><br><strong>Phenn:</strong> (From the other room) "The lights flickered for an hour!"<br><br><strong>Deren:</strong> (At this point, <i>actively walking over to her</i>) "Oh come on! It wasn't that bad! I think..."</div>
+                </div>
+                <div class="qa-item">
+                    <p class="qa-question">"Lyra, what's on your search history right now?"</p>
+                    <div class="qa-answer"><strong>Lyra:</strong> "'how to overclock a toaster', 'is it illegal to own a capybara in Nexon', 'how to fluster your significant other'... The usual."</div>
+                </div>
+                <div class="qa-item">
+                    <p class="qa-question">"Lyra, Be serious. What's ACTUALLY on your search history right now?"</p>
+                    <div class="qa-answer"><strong>Lyra:</strong> "Oh, You want it? You really want me to? Fine! Have it your way. The last thing I searched, BEFORE those ones, were <span class="redacted">a whole load of sites that you dorks are never going to find out about. God forbid a woman has some fucking privacy,</span> oh, and a bunch of social media sites. You know. The ones you binge for hours on end."<br><br><strong>Jayce:</strong> (From a distance) "I know you censored all of that, Lyra! Also... What the hell is this folder on your desktop... 'photosForLateNights'?"<br><br><strong>Lyra:</strong> "He knows too much. <b>You</b> know too much."</div>
+        
+                </div>
+                <div class="qa-item">
+                    <p class="qa-question">"For the whole group: Rank yourselves from 'can't handle their liquor' to 'bottomless pit'."</p>
+                    <div class="qa-answer">
+                        <strong>Lyra:</strong> "Easy. Jayce is at the bottom 'cause he doesn't drink. Total square."<br><br>
+                        <strong>Jayce:</strong> "I just don't like it..."<br><br>
+                        <strong>Ral:</strong> "Mae, Lyra, and I are tied for the top spot. We're professionals."<br><br>
+                        <strong>Cel:</strong> "She means they're a collective menace after two drinks."<br><br>
+                        <strong>Deren:</strong> "Phenn and I are respectable, social drinkers. Luca and Cel are the designated 'make sure Ral doesn't try to fight a street sign' crew."
+                    </div>
+                </div>
+        
+                <div class="qa-item">
+                    <p class="qa-question">"Phenn, what's the most endearing and most annoying habit Deren has?"</p>
+                    <div class="qa-answer">
+                        <strong>Phenn:</strong> (Mumbling) "Um... when he gets really focused on a project, he... he explains the whole thing to me, even if I don't get it. It's cute..."<br><br>
+                        <strong>Deren:</strong> (Smiling proudly) "See? She appreciates my genius. Yeah."<br><br>
+                        <strong>Phenn:</strong> "The annoying part is finding tools and equipment in the bed for the next week..."
+                    </div>
+                </div>
+        
+                <div class="qa-item">
+                    <p class="qa-question">"Question for Luca. Is it hard to keep a straight face in Veritas meetings? Got any stories?"</p>
+                    <div class="qa-answer">
+                        <strong>Luca:</strong> "You develop a certain... emotional numbness. Last week, however, Exyler spent twenty minutes trying to airplay a presentation to a coffee machine."<br><br>
+                        <strong>Mae:</strong> "Oh my god, he didn't."<br><br>
+                        <strong>Luca:</strong> "He did. And then he blamed the coffee machine's 'lack of synergistic initiative'. I almost lost it. Keyword's almost. Some poor sap in the meeting did."
+                    </div>
+                </div>
+        
+                <div class="qa-item">
+                    <p class="qa-question">"Who is the bigger agent of chaos: Lyra or Ral?"</p>
+                    <div class="qa-answer">
+                        <strong>Ral:</strong> "I'm spontaneous chaos! The fun kind! Like a glitter bomb!"<br><br>
+                        <strong>Lyra:</strong> "I'm premeditated chaos. The <i>effective</i> kind. Like a glitter bomb, but it's full of mayonnaise and it's aimed at Jayce."<br><br>
+                        <strong>Jayce:</strong> (From across the room) "I HEARD THAT! DON'T YOU DARE!"
+                    </div>
+                </div>
+        
+                <div class="qa-item">
+                    <p class="qa-question">"Mae, what's the biggest difference between working at Veritas and living at Subroutine?"</p>
+                    <div class="qa-answer">
+                        <strong>Mae:</strong> "At Veritas, my best ideas got stolen and weaponized. Here, my best ideas get turned into a toaster that swears at you in binary."<br><br>
+                        <strong>Deren:</strong> "It's a high-security toast authentication system!"<br><br>
+                        <strong>Mae:</strong> "It called me a 'waste of carbon' this morning. So... yeah. I'm much happier here."
+                    </div>
+                </div>
+                <div class="qa-item">
+                    <p class="qa-question">"Jayce, what's the one thing you do that gets <i>Lyra</i> flustered?"</p>
+                    <div class="qa-answer">
+                        <strong>Jayce:</strong> "Oh. Um. It's not hard, really. You just have to be... genuinely and straightforwardly affectionate with no irony. It short-circuits her brain."<br><br>
+                        <strong>Lyra:</strong> (From the couch, pulling her hoodie over her face) "He's lying! He's a dirty fucking liar! Don't listen to him!"<br><br>
+                        <strong>Jayce:</strong> "See? All I did was hold her hand this morning and tell her she looked nice, and she rebooted like a faulty router."<br><br>
+                        <strong>Lyra:</strong> <span style="font-size:25px;">"LIAR!"</span><br><br>
+                        <strong>Jayce:</strong> "Uhuh. Suuure. You're proving yourself pretty damn well here, Lyra..."<br><br>
+                        
+                        <br>We left before Lyra imploded.
+                    </div>
+                </div>
+                <div class="qa-item">
+                    <p class="qa-question">"Who in the group is the absolute worst person to share a wall with in the hideout?"</p>
+                    <div class="qa-answer">
+                        <strong>EVERYONE (in unison, except for Lyra):</strong> "Lyra."<br><br>
+                        <strong>Lyra:</strong> "What? I'm a perfect neighbor! There's a reason Veritas didn't want to buy my apartment for... 2 years. No, wait-"<br><br>
+                        <strong>Jayce:</strong> "You tried to teach yourself the bagpipes at 3 AM last Tuesday. And just to remind you, I am in the same <b>room</b> as you. Nevermind what the others hear."<br><br>
+                        <strong>Cel:</strong> "And then when you're not doing... that, we can hear your keyboard. All night. It sounds like you're trying to punch through your desk."<br><br>
+                        <strong>Mae:</strong> "The bass from her music rattles everything..."<br><br>
+                        <strong>Lyra:</strong> "Okay, you're all just haters. You don't appreciate my culture. I mean, Jayce does, come on. Back me up here."<br><br>
+                        <strong>Jayce:</strong> "Uh... <span style="font-size:8px">Not wrong</span>..."<br><br>
+                        <strong>EVERYONE (in unison, except for Lyra & Jayce):</strong> "Jayce."<br><br>
+                        <strong>Jayce:</strong> "She's not wrong though! Stop pointing fingers at me!"<br><br>
+                    </div>
+                </div>
+                <div class="qa-item">
+                    <p class="qa-question">"So... Jayce wears a Vithium bracelet. <i>Does it have a vibrate function?</i>"</p>
+                    <div class="qa-answer">
+                        <strong>Lyra:</strong> "FINALLY, someone's asking the real questions! I've been trying to find out for months. He says it's 'not designed for that'."<br><br>
+                        <strong>Jayce:</strong> (Face the colour of a tomato) "It's a combat-grade energy regulator! It's not a... <i>a...</i> you know!"<br><br>
+                        <strong>Lyra:</strong> "But does it? Theoretically? Could you <i>make</i> it? For science? I can try-"<br><br>
+                        <strong>Deren:</strong> (Suddenly interested) "Theoretically, manipulating the Vithium energy flow to create a sustained, localized oscillation is quite simple..."<br><br>
+                        <strong>Jayce:</strong> "DEREN, DO NOT HELP HER."<br><br>
+                        <strong>Lyra:</strong> (suddenly having glasses and a notepad) "Mmmm, yes, tell me more, Deren."<br><br>
+                        <strong>Jayce:</strong> "...I'm jumping off the nearest bridge in or to Nexon."<br><br>
+                    </div>
+                </div>
+                
+            </section>
+        </div>
+
+        <div id="tab-tech" class="extras-tab-content">
+            <section class="extras-section">
+                <h3 class="extras-header" style="text-shadow: 2px 2px 3px #00aaff;">Deren's Tech Logs</h3>
+                <p class="extras-subheader">Found fragments from Deren's personal project logs.</p>
+                <div class="tech-note">
+                    <h4>PROJECT: Toaster_MK3 <span class="status">// STATUS: FAILURE</span></h4>
+                    <p>Attempted to integrate a micro-Vithium cell into a standard kitchen toaster. Hypothesis: Could achieve perfect toast crispiness in 0.8 seconds. Result: Toaster achieved sentience for 4 seconds, screamed in binary, then vaporized itself and three feet of countertop. Conclusion: Consumer-grade appliances are not ready for Vithium. Also, Phenn is mad about the counter.</p>
+                </div>
+                <div class="tech-note">
+                    <h4>ANALYSIS: VeritasOS_v8.1 <span class="status">// STATUS: INSECURE</span></h4>
+                    <p>Lyra bypassed their latest security patch in under 15 minutes using a script disguised as a cat GIF. The entire corporate network is held together by the digital equivalent of duct tape and a single underpaid intern's password from three years ago ("password123"). It's not even a challenge anymore. It's just sad.</p>
+                </div>
+            <div class="tech-note">
+              <h4>PROJECT: C.O.R.E._FIRMWARE_v3.5 <span class="status">// STATUS: NOMINAL</span></h4>
+              <p>Patched the sensitivity module to differentiate between combat-induced tachycardia and... 'other' cardiac spikes. The system no longer flags a 'Code Red' every time Phenn wears that one specific sweater. Unintended side effect: The C.O.R.E. now uses 0.01% of its processing power to generate a low-frequency purr when idle. I'm calling it a feature.</p>
+            </div>
+            <div class="tech-note">
+              <h4>ANALYSIS: Veritas "Data Scrubber" <span class="status">// STATUS: HILARIOUS</span></h4>
+              <p>Mae and I reverse-engineered one of Veritas's portable data-wiping devices. We were expecting military-grade encryption erasure. Instead, it just reformats the target drive and replaces every file with a 10-hour loop of Rick Didn't Askley presenting a PowerPoint on synergy. It's not a weapon; it's psychological warfare.</p>
+            </div>
+            </section>
+        </div>
+
+        <div id="tab-shopping" class="extras-tab-content">
+            <section class="extras-section">
+                <h3 class="extras-header" style="text-shadow: 2px 2px 3px #ff99a5;">Hideout Shopping List</h3>
+                <p class="extras-subheader">A page on the Subroutine's kitchen pinboard. Updates every so often.</p>
+                <div class="shopping-list-container">
+                    <h4>THINGS WE NEED</h4>
+                    <ul class="shopping-list">
+                        <li>Coffee Beans <span class="note">(Deren: The GOOD stuff, not Rick's gravel.)</span></li>
+                        <li class="crossed-out">Instant Noodles</li>
+                        <li><i>More</i> Instant Noodles <span class="note">(Lyra: We are out again.)</span></li>
+                        <li>Plasters/Band-Aids <span class="note">(Ral: The ones with cartoon dinosaurs. NON-NEGOTIALE.)</span></li>
+                        <li>Cel's favorite tea <span class="note">(Cel: Please.)</span></li>
+                        <li>Donuts (or Doughnuts, if you're a masochist) <span class="note">(Jayce: Check for mayonnaise first.)</span></li>
+                        <li>Cat food for the stray that lives out back <span class="note">(Phenn: Neccessary! T-That cat is adorable.)</span></li>
+                        <li>Spicy Instant Noodles <span class="note">(Lyra: The ones that are a legitimate chemical burn risk. Don't be a coward.)</span></li>
+                        <li>High-grade solder and a new circuit board <span class="note">(Mae: For a personal project!)</span></li>
+                        <li>Bleach. A lot of it. <span class="note">(Cel: Don't ask. Just... don't.)</span></li>
+                        <li>Something green? <span class="note">(Vegatables preferably)</span></li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div id="tab-live-ama" class="extras-tab-content">
+            <section class="extras-section">
+                <h3 class="extras-header" style="text-shadow: 2px 2px 3px #a49eff;">'Live' AMA</h3>
+                <p class="extras-subheader">Ping a Subroutine member. See if they answer. No guarentee you get the answer you want, though.</p>
+                <form id="live-ama-form">
+                    <div class="ama-controls">
+                        <select id="ama-character-select" name="character">
+                            <option value="deren">Deren Kael</option>
+                            <option value="phenn">Phenn Ashcroft</option>
+                            <option value="jayce">Jayce Davren</option>
+                            <option value="lyra">Lyra Vayne</option>
+                            <option value="ral">Raleigh "Ral" Avers</option>
+                            <option value="cel">Celynn "Cel" Avers</option>
+                            <option value="mae">Maya "Mae" Everhart</option>
+                            <option value="luca">Luca Voss</option>
+                        </select>
+                        <textarea id="ama-question-input" placeholder="Type your question here..." required></textarea>
+                        <button type="submit" id="ama-submit-btn">Send Transmission</button>
+                    </div>
+                    <div id="ama-response-container">Awaiting transmission...</div>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="pageScript.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+
+    <script>
+        // --- Rick's Terrible Website Content ---
+        const ricksWebsiteHTML = `
+            <!DOCTYPE html><html><head><title>RICK'S QUALITY GOODS</title><style>@keyframes blink{50%{color:yellow}}@keyframes scroll-bg{0%{background-position:0 0}100%{background-position:-1000px 500px}}body{font-family:'Comic Sans MS',cursive;background-color:#0000ff;background-image:url('https://www.transparenttextures.com/patterns/az-subtle.png');color:#fff;animation:scroll-bg 20s linear infinite;text-align:center}h1{font-size:50px;color:#ff00ff;text-shadow:3px 3px 0 #00ffff;animation:blink 1s linear infinite}.container{width:95%;margin:auto;border:10px groove red;background-color:green;padding:15px}.testimonial{border:2px dashed yellow;padding:10px;margin:20px 0;background-color:purple}.testimonial p{font-style:italic}.testimonial h4{color:#00ff00;margin:0}img.spinning{animation:spin 3s linear infinite}@keyframes spin{100%{transform:rotate(360deg)}}</style></head><body><div class="container"><marquee><h1>!!! WELCOME 2 RICK'S QUALITY GOODS !!!</h1></marquee><img src="https://placehold.co/150x150/FF0000/FFFFFF?text=BUY+NOW" alt="Buy Now" class="spinning"><h2>The BEST products in ALL of Nexon City! GUARANTEED!</h2><p>Why buy from VERITAS when you can buy from a TRUSTED local businessman? My products are HAND-CRAFTED and DEFINITELY NOT just rebranded corporate surplus.</p><div class="testimonial"><h4>- A Very Real Customer</h4><p>"Wow! Rick's 'Vithium-Infused' Soda didn't make my teeth glow for more than a week! Five Stars!"</p></div><div class="testimonial"><h4>- Definitely Not Rick</h4><p>"I invested my life savings in 'RickCoin'. The value is... stabilizing! Any day now! A financial genius!"</p></div><h3>**UNDER CONSTRUCTION**</h3></div></body></html>`;
+
+         document.addEventListener('DOMContentLoaded', () => {
+            // Load Rick's website into iframe
+            const iframe = document.getElementById('ricks-website');
+            if (iframe) {
+                iframe.srcdoc = ricksWebsiteHTML;
+            }
+
+            // Tab navigation logic
+            const navButtons = document.querySelectorAll('.extras-nav-btn');
+            const tabContents = document.querySelectorAll('.extras-tab-content');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    button.classList.add('active');
+                    const tabId = button.dataset.tab;
+                    document.getElementById(`tab-${tabId}`).classList.add('active');
+                });
+            });
+
+            // --- START: MODIFIED Flippable Card Logic ---
+            const flipCards = document.querySelectorAll('.flip-card');
+            flipCards.forEach(card => {
+                // This listener is for the front of the card
+                card.querySelector('.flip-card-front').addEventListener('click', function() {
+                    card.classList.toggle('is-flipped');
+                });
+
+                // This listener is specifically for the new back button
+                card.querySelector('.flip-back-btn').addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevents the click from bubbling up to other elements
+                    card.classList.toggle('is-flipped');
+                });
+            });
+            // --- END: MODIFIED Flippable Card Logic ---
+
+
+            // --- "Magic 8-Ball" Live AMA Logic ---
+            const amaForm = document.getElementById('live-ama-form');
+            const characterSelect = document.getElementById('ama-character-select');
+            const questionInput = document.getElementById('ama-question-input');
+            const submitButton = document.getElementById('ama-submit-btn');
+            const responseContainer = document.getElementById('ama-response-container');
+
+            // The bank of pre-determined answers for each character
+            const characterResponses = {
+                deren: [
+                    "That question is logically unsound. Rephrase.",
+                    "I'm busy. The answer is probably 42 or something. Now go away.",
+                    "Did you try turning it off and on again? Applies to most things, probably including your question.",
+                    "The probability of me caring about that is statistically insignificant.",
+                    "Error 404: Answer not found. Please consult a less busy genius.",
+                ],
+                phenn: [
+                    "...",
+                    "Um... I-I'm not sure how to answer that...",
+                    "M-maybe ask Deren? He knows more stuff.",
+                    "(quietly sips tea and avoids eye contact)",
+                    "Oh! Um... sorry, I was thinking about something else.",
+                ],
+                jayce: [
+                    "That's an interesting question. Let me think...",
+                    "I'd have to look at it from a few different angles before I could give you a real answer.",
+                    "I'm not sure, but now I'm going to be thinking about it all day.",
+                    "Huh. Good question. No idea.",
+                    "The answer is probably more complicated than a simple response would suggest.",
+                ],
+                lyra: [
+                    "lol. lmao even.",
+                    "That's a skill issue, my dude.",
+                    "Let me check the wiki... nah, I'm too lazy. Ask me something funnier.",
+                    "The answer is locked behind a DLC paywall. Venmo me $10.",
+                    "I'd tell you, but I'd have to kill you. Or just like, dox you. Whichever's easier.",
+                ],
+                ral: [
+                    "Ooh, spicy! But a girl's gotta have her secrets, y'know?",
+                    "Chaos! That's the answer to everything. Next question!",
+                    "I could tell you, but Cel would probably call it 'a bad idea,' so my lips are sealed.",
+                    "Let's cause some problems instead of answering boring questions!",
+                    "The answer is... *you're* cute! (☞ﾟヮﾟ)☞",
+                ],
+                cel: [
+                    "I'm gonna plead the fifth on that one.",
+                    "The tactically sound answer is to not answer at all.",
+                    "Let's just say the situation is... fluid.",
+                    "I'm too tired for this. Ask Ral, her answer will be more fun anyway.",
+                    "Pass. Next.",
+                ],
+                mae: [
+                    "That's... a really insightful question. The data is complex, though.",
+                    "From a conceptual standpoint, the answer would depend on several key variables I don't have access to right now.",
+                    "I'd need to run a full diagnostic to be sure. My gut feeling is... inconclusive.",
+                    "Sorry, that's a little outside my area of expertise.",
+                ],
+                luca: [
+                    "That information is classified.",
+                    "The risk of answering that question outweighs the potential benefits. Denied.",
+                    "Let's just say that certain protocols must be maintained.",
+                    "I am unable to confirm or deny that at this time.",
+                    "That's on a need-to-know basis. And you don't.",
+                ],
+            };
+
+            const handleAmaSubmit = (event) => {
+                event.preventDefault();
+                const selectedCharacter = characterSelect.value;
+                const userQuestion = questionInput.value.trim();
+
+                if (!userQuestion) {
+                    responseContainer.textContent = "Transmission failed. No question detected.";
+                    return;
+                }
+
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Transmitting... <div class="loading-spinner"></div>';
+                responseContainer.textContent = 'Pinging Subroutine network...';
+
+                // Fake a 1.5 second network delay
+                setTimeout(() => {
+                    // Get the list of possible answers for the chosen character
+                    const answers = characterResponses[selectedCharacter];
+                    
+                    // Pick a random answer from the list
+                    const randomIndex = Math.floor(Math.random() * answers.length);
+                    const randomAnswer = answers[randomIndex];
+
+                    // Display the random answer
+                    responseContainer.textContent = randomAnswer;
+
+                    // Re-enable the button
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Send Transmission';
+                }, 1500);
+            };
+
+            if (amaForm) {
+                amaForm.addEventListener('submit', handleAmaSubmit);
+            }
+        });
+    </script>
+</body>
+</html>

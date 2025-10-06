@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JakeDRavioli - Portfolio</title>
+
+    <meta property="og:url" content="https://jakedravioli.neocities.org/portfolio">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="JakeDRavioli - Portfolio">
+    <meta property="og:description" content="The portfolio of Jake D, a UK-based indie game developer specializing in Unreal Engine 5, C++, and narrative design.">
+    <meta property="og:image" content="https://jakedravioli.neocities.org/Images/jdr.png">
+    <meta name="theme-color" content="#3d2996">
+    <link rel="icon" type="image/png" href="/normalicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="stylesheet" href="styles.css?v=2.5">
+    <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@v11/font/simple-icons.min.css">
+
+    <style>
+    /* ================================================================
+       >>> CORE PAGE & HERO STYLES <<<
+       ================================================================ */
+    #gallery-hero { height: 85vh; width: 100%; position: relative; overflow: hidden; background-color: var(--color-background-darkest, #0a0a0a); border-radius: 15px;}
+    .gallery-track { display: flex; align-items: center; height: 100%; position: absolute; left: 0; top: 0; transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
+    .gallery-image { height: 80vh; aspect-ratio: 16 / 9; margin: 0; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); transform: scale(0.8); opacity: 0.4; filter: blur(4px); transition: transform 0.8s ease, opacity 0.8s ease, filter 0.8s ease; }
+    .gallery-image.active { transform: scale(1); opacity: 1; filter: blur(0); }
+    .gallery-image img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-content-overlay { z-index: 2; background-color: rgba(18, 18, 18, 0.7); backdrop-filter: blur(8px); padding: 30px 40px; border-radius: 15px; text-align: center; max-width: 100%; border: 1px solid var(--color-accent-tertiary-border); position: absolute; top: 50%; left: 50%; transform: translate(-50%, 0%); }
+
+    /* ================================================================
+       >>> GENERAL PURPOSE BUTTONS (THE FIX) <<<
+       ================================================================ */
+    .hero-cta-btn {
+        display: inline-block; padding: 12px 28px; font-family: 'Permanent Marker', cursive;
+        font-size: 18px; text-decoration: none; border-radius: 8px;
+        transition: all 0.3s ease; background-color: var(--color-accent-primary);
+        color: var(--color-black, #111); border: 2px solid var(--color-accent-primary);
+    }
+    .hero-cta-btn:hover { background-color: transparent; color: var(--color-accent-primary); transform: translateY(-3px); }
+    
+    .view-all-btn { 
+        display: block; width: fit-content; margin: 40px auto 0 auto; padding: 12px 25px; 
+        background-color: var(--color-accent-tertiary); color: var(--color-text-main); 
+        border-radius: 8px; text-align: center; font-weight: bold; text-decoration: none; 
+        transition: all 0.2s ease; font-family: Arial, Helvetica, sans-serif;
+    }
+    .view-all-btn:hover { background-color: var(--color-accent-tertiary-light); transform: scale(1.05); }
+
+    /* ================================================================
+       >>> PORTFOLIO CARD & MODAL STYLES <<<
+       ================================================================ */
+    .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+    .portfolio-card { cursor: pointer; }
+    .portfolio-card-image-container { width: 100%; position: relative; overflow: hidden; border-radius: 10px; background-color: var(--color-background-darkest); height: 0; padding-top: 56.25%; }
+    .portfolio-card-image-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: var(--bg-image); background-size: cover; background-position: center; filter: blur(15px) brightness(0.6); transform: scale(1.2); }
+    .portfolio-card-image-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; object-fit: contain; }
+    #portfolio-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10, 10, 10, 0.85); backdrop-filter: blur(10px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    #portfolio-modal-overlay.active { opacity: 1; pointer-events: auto; }
+    #portfolio-modal-content { background-color: var(--color-background-secondary, #1a1a1a); padding: 30px 40px; border-radius: 15px; width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; position: relative; border: 1px solid var(--color-accent-tertiary-border); transform: scale(0.95); transition: transform 0.3s ease; }
+    #portfolio-modal-overlay.active #portfolio-modal-content { transform: scale(1); }
+    #portfolio-modal-close { position: absolute; top: 10px; right: 20px; background: none; border: none; color: var(--color-text-dark, #aaa); font-size: 40px; cursor: pointer; line-height: 1; }
+    #modal-screenshots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+    #modal-screenshots-grid img { width: 100%; border-radius: 8px; object-fit: cover; aspect-ratio: 16/9; cursor: pointer; transition: transform 0.2s ease; }
+    #modal-screenshots-grid img:hover { transform: scale(1.05); }
+
+    /* ================================================================
+       >>> IMAGE VIEWER STYLES (THE FIX) <<<
+       ================================================================ */
+    #image-viewer { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background-color: rgba(0, 0, 0, 0.9); z-index: 2000; 
+        display: flex; 
+        flex-direction: column; /* Stacks image and caption vertically */
+        align-items: center; 
+        justify-content: center; 
+        opacity: 0; pointer-events: none; transition: opacity 0.3s ease; 
+        padding: 2rem;
+        box-sizing: border-box;
+    }
+    #image-viewer.active { opacity: 1; pointer-events: auto; }
+    #close-viewer { position: absolute; top: 15px; right: 35px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; }
+    #viewer-image { max-width: 100%; max-height: 80%; object-fit: contain; }
+    #viewer-caption { 
+        position: static; /* Let it sit naturally below the image */
+        margin-top: 20px;
+        color: #ccc; 
+        text-align: center; 
+        font-style: italic; 
+    }
+
+    /* ================================================================
+       >>> PROFESSIONAL JOURNEY & OTHER SECTION STYLES <<<
+       ================================================================ */
+    .timeline-container { max-width: 900px; margin: 40px auto; position: relative; }
+    .timeline-container::before { content: ''; position: absolute; top: 0; left: 50%; width: 3px; height: 100%; background-color: var(--color-accent-tertiary-border); margin-left: -1.5px; }
+    .timeline-item { padding: 10px 40px; position: relative; background-color: inherit; width: 50%; }
+    .timeline-item::after { content: ''; position: absolute; width: 25px; height: 25px; right: -12.5px; background-color: var(--color-background-main); border: 4px solid var(--color-accent-tertiary-link); top: 15px; border-radius: 50%; z-index: 1; }
+    .timeline-left { left: -8.5%; }
+    .timeline-right { left: 49.5%; }
+    .timeline-right::after { left: -12.5px; }
+    .timeline-content { padding: 20px 30px; background-color: var(--color-component-bg); border-radius: 8px; border: 1px solid var(--color-accent-tertiary-border); }
+    @media (max-width: 768px) {
+        .timeline-container::before { left: 15px; }
+        .timeline-item { width: 100%; padding-left: 50px; padding-right: 10px; }
+        .timeline-left, .timeline-right { left: 0%; }
+        .timeline-item::after { left: 2.5px; }
+    }
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 1000px; margin: 0 auto; }
+    .skill-tag { background-color: rgba(67, 60, 94, 0.6); color: #e0e0e0; padding: 10px 20px; border-radius: 20px; font-size: 16px; font-weight: bold; border: 1px solid #433c5e; }
+    .philosophy-block { background-color: rgba(20, 20, 20, 0.5); border-left: 4px solid #a49eff; padding: 30px; margin: 0 auto; max-width: 900px; border-radius: 0 8px 8px 0; }
+    .cta-block { text-align: center; padding: 40px 20px; background-color: rgba(20, 20, 20, 0.5); border-radius: 15px; border: 1px solid #433c5e; }
+    
+    /* ================================================================
+   >>> NEW SKILLS & EXPERTISE SECTION STYLES <<<
+   ================================================================ */
+    .skill-categories-container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+    .skill-category {
+        background-color: var(--color-component-bg);
+        padding: 25px;
+        border-radius: 15px;
+        border: 1px solid var(--color-accent-tertiary-border);
+    }
+    .skill-category h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--color-text-main);
+        border-bottom: 2px solid var(--color-accent-tertiary-border);
+        padding-bottom: 15px;
+    }
+    .skill-category h3 i {
+        margin-right: 15px;
+        color: var(--color-accent-tertiary-link);
+    }
+    .skill-grid {
+        display: grid;
+        /* This makes the grid responsive */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 20px;
+    }
+    .skill-card {
+        background-color: var(--color-background-secondary);
+        border-radius: 10px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .skill-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .skill-logo {
+        font-size: 40px;
+        color: var(--color-text-light);
+        height: 50px;
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .skill-logo img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .skill-card span {
+        font-size: 14px;
+        color: var(--color-text-med);
+        font-weight: bold;
+    }
+    .skill-logo i {
+        color: inherit; /* Makes the icon color match the text color of its parent */
+    }
+</style>
+</head>
+<body>
+    <div include-html="header.html"></div>
+    <div id="gradient-overlay"></div>
+    <div class="background"></div>
+
+    <div id="gallery-hero">
+        <div class="gallery-track">
+            <div class="gallery-image"><img src="Images/rebTakeover/rebTakeoverPromo_NoStudio.png" alt="Rebellious Takeover"></div>
+            <div class="gallery-image"><img src="Images/rebTakeover/takeoverPreview2.jpg" alt="Rebellious Takeover Development Screenshot"></div>
+            <div class="gallery-image"><img src="Images/gooberloo_temporary.png" alt="Goober Origins Electric Gooberloo"></div>
+            <div class="gallery-image"><img src="Images/gooberlooPreview.png" alt="Goober Origins Electric Gooberloo Development Screenshot"></div>
+            <div class="gallery-image"><img src="Images/lost-memories.png" alt="Lost Memories"></div>
+            <div class="gallery-image"><img src="Images/rebTakeover/vecshiftFullScreenshot.png" alt="vecShift Studios"></div>
+        </div>
+        <div class="hero-content-overlay">
+            <h1>Jake D. / JakeDRavioli / JDR</h1>
+            <p>Up-And-Coming Game Designer & Developer</p>
+            <p>Creating stories that stick and games that stick even more.</p>
+            <a href="#main-projects" class="hero-cta-btn">View My Work</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <section id="main-projects">
+            <h2 class="section-header" style="font-family: Arial, Helvetica, sans-serif; text-shadow: 2px 2px 3px #a49eff;">Main Projects</h2>
+            <p class="section-subheader" style="font-family: Arial, Helvetica, sans-serif; color: #ccc;">My most significant and recent work. Click a card for details.</p>
+            <div class="portfolio-grid">
+                <div class="portfolio-card" data-project-id="rebellious-takeover">
+                    <div class="portfolio-card-image-container" style="--bg-image: url('Images/rebTakeoverNew.png');"><img src="Images/rebTakeoverNew.png" alt="Rebellious Takeover"></div>
+                    <h3>Rebellious Takeover</h3><p class="subtitle">Flagship Project - Unreal Engine 5</p>
+                </div>
+                <div class="portfolio-card" data-project-id="goober-electric">
+                    <div class="portfolio-card-image-container" style="--bg-image: url('Images/gooberloo_temporary.png');"><img src="Images/gooberloo_temporary.png" alt="Goober Origins: Electric Gooberloo"></div>
+                    <h3>Goober Origins: Electric Gooberloo</h3><p class="subtitle">College Jam Game - Unreal Engine 5.5</p>
+                </div>
+                <div class="portfolio-card" data-project-id="goober-prototype">
+                    <div class="portfolio-card-image-container" style="--bg-image: url('Images/goober.png');"><img src="Images/goober.png" alt="Goober Origins (Prototype)"></div>
+                    <h3>Goober Origins (Prototype)</h3><p class="subtitle">Original College Project</p>
+                </div>
+                 <div class="portfolio-card" data-project-id="lost-memories">
+                    <div class="portfolio-card-image-container" style="--bg-image: url('Images/lost-memories.png');"><img src="Images/lost-memories.png" alt="Lost Memories"></div>
+                    <h3>Lost Memories</h3><p class="subtitle">Conceptual College Project</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="other-ventures" style="margin-top: 80px;">
+            <h2 class="section-header" style="font-family: Arial, Helvetica, sans-serif; font-size: 42px; text-shadow: 2px 2px 3px #a49eff;">Other Ventures</h2>
+            <div class="portfolio-grid">
+                <a href="rebellioustakeover.html" class="portfolio-card">
+                    <div class="portfolio-card-image-container" style="--bg-image: url('Images/rebTakeover/vecshift.png');"><img src="Images/rebTakeover/vecshift.png" alt="vecShift Studios"></div>
+                    <h3>vecShift Studios</h3><p class="subtitle">Founder & Lead Developer</p>
+                </a>
+                <a href="https://www.youtube.com/@jakedravioli" target="_blank" class="portfolio-card">
+                     <div class="portfolio-card-image-container" style="--bg-image: url('Images/yt_banner.png');"><img src="Images/yt_banner.png" alt="YouTube Channel"></div>
+                    <h3>YouTube Channel</h3><p class="subtitle">Devlogs & Creative Content</p>
+                </a>
+            </div>
+        </section>
+
+        <section id="professional-journey" style="margin-top: 80px;" class="center">
+            <h2 class="section-header" style="font-family: Arial, Helvetica, sans-serif; font-size: 42px; text-shadow: 2px 2px 3px #a49eff;">Professional Journey</h2>
+            <p class="section-subheader" style="font-family: Arial, Helvetica, sans-serif; color: #ccc;">A brief overview of my experience and education.</p>
+            <div class="timeline-container">
+        
+                <div class="timeline-item timeline-right">
+                    <div class="timeline-content">
+                        <h3>Founder & Lead at Dev4Fun Studios</h3>
+                        <span class="date">2021 - 2025</span>
+                        <p>Founded and led a remote team on the Roblox platform, focusing on project management and cultivating talent to build ambitious fighting games like <i>Revolture's Trigger</i>. This role provided valuable experience in leading a development team from concept to release.</p>
+                    </div>
+                </div>
+        
+                <div class="timeline-item timeline-left">
+                    <div class="timeline-content">
+                        <h3>Level 2 Creative Media (Games Development)</h3>
+                        <span class="date">Academic Time: September 2022 to July 2023</span>
+                        <p>Achieved a <i>Merit</i> in my Creative Media Skills certificate at <a href="https://www.loucoll.ac.uk/"><b>Loughborough College</b></a>. This course, alongside foundational GCSEs, provided the essential building blocks for my technical and creative career.</p>
+                    </div>
+                </div>
+        
+                <div class="timeline-item timeline-right">
+                    <div class="timeline-content">
+                        <h3>Level 3 Creative Media (Games Development)</h3>
+                        <span class="date">Acedemic Time: September 2024 - July 2026</span>
+                        <p>As of writing, I am currently in the second and final year of my advanced course at <a href="https://www.bsdc.ac.uk/"><b>Burton & South Derbyshire College</b></a>, specializing entirely in games development. The curriculum is focused on practical skills in Unreal Engine, 3D modeling, and core design principles for the modern games industry.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item timeline-left">
+                    <div class="timeline-content">
+                        <h3>Founder & Lead at vecShift Studios</h3>
+                        <span class="date">2025 - Present</span>
+                        <p>While undertaking my Level 3 studies, I founded my own indie studio to develop my flagship title, <i>Rebellious Takeover</i>, and help with publishing smaller college-related Unreal projects like <i>Goober Origins: Electric Gooberloo</i>. I manage all aspects of development, applying my academic knowledge directly to a real-world, large-scale project.</p>
+                    </div>
+                </div>
+        
+            </div>
+        </section>
+
+<section id="skills-expertise" style="margin-top: 80px;">
+    <h2 class="section-header" style="font-family: Arial, Helvetica, sans-serif; font-size: 42px; text-shadow: 2px 2px 3px #a49eff;">Skills & Expertise</h2>
+    <p class="section-subheader" style="font-family: Arial, Helvetica, sans-serif; color: #ccc;">The tools and technologies I use to bring ideas to life.</p>
+    
+    <div class="skill-categories-container">
+        <div class="skill-category">
+            <h3><i class="fas fa-gamepad"></i> Game Engines</h3>
+            <div class="skill-grid">
+                <div class="skill-card"><div class="skill-logo"><i class="si si-unrealengine"></i></div><span>Unreal Engine 5</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-unity"></i></div><span>Unity</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-roblox"></i></div><span>Roblox</span></div>
+            </div>
+        </div>
+
+        <div class="skill-category">
+            <h3><i class="fas fa-code"></i> Programming & Web</h3>
+            <div class="skill-grid">
+                <div class="skill-card"><div class="skill-logo"><i class="si si-cplusplus"></i></div><span>C++</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-python"></i></div><span>Python</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-lua"></i></div><span>Lua / LuaU</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-javascript"></i></div><span>JavaScript</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-html5"></i></div><span>HTML</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-css3"></i></div><span>CSS</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-nodedotjs"></i></div><span>Node.JS</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-threedotjs"></i></div><span>Three.JS</span></div>
+            </div>
+        </div>
+
+       <div class="skill-category">
+            <h3><i class="fas fa-palette"></i> 3D, 2D & A/V Production</h3>
+            <div class="skill-grid">
+                <div class="skill-card"><div class="skill-logo"><i class="si si-blender"></i></div><span>Blender</span></div>
+                
+                <div class="skill-card">
+                    <div class="skill-logo">
+                        <img src="Images/vroid.png" alt="VRoid Studio">
+                    </div>
+                    <span>VRoid Studio</span>
+                </div>
+        
+                <div class="skill-card">
+                    <div class="skill-logo">
+                        <img src="Images/CascLogo.svg" alt="Cascadeur">
+                    </div>
+                    <span>Cascadeur</span>
+                </div>
+                
+                <div class="skill-card"><div class="skill-logo"><i class="si si-adobephotoshop"></i></div><span>Adobe Photoshop</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-gimp"></i></div><span>GIMP</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="fas fa-paint-brush"></i></div><span>Paint.NET</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="fas fa-paint-brush"></i></div><span>Piskel</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-canva"></i></div><span>Canva</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-audacity"></i></div><span>Audacity</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-davinciresolve"></i></div><span>DaVinci Resolve</span></div>
+            </div>
+        </div>
+        
+        <div class="skill-category">
+            <h3><i class="fas fa-tools"></i> Development Tools</h3>
+            <div class="skill-grid">
+                <div class="skill-card"><div class="skill-logo"><i class="si si-github"></i></div><span>GitHub</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-visualstudio"></i></div><span>Visual Studio</span></div>
+            </div>
+        </div>
+        
+        <div class="skill-category">
+            <h3><i class="fas fa-robot"></i> AI Integration & Prompt Engineering</h3>
+            <div class="skill-grid">
+                <div class="skill-card"><div class="skill-logo"><i class="si si-openai"></i></div><span>ChatGPT</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-googlebard"></i></div><span>Gemini</span></div>
+                <div class="skill-card"><div class="skill-logo"><i class="si si-anthropic"></i></div><span>Claude</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section id="philosophy" style="margin-top: 80px;">
+            <h2 class="section-header" style="font-family: Arial, Helvetica, sans-serif; font-size: 42px; text-shadow: 2px 2px 3px #a49eff;">My Design Philosophy</h2>
+            <div class="philosophy-block">
+                <p>"My goal is to create stories that stick and games that stick even more... I focus on building immersive worlds that leave a lasting impression on the player long after they've put the controller down."</p>
+            </div>
+        </section>
+
+        <section id="contact-cta" style="margin-top: 80px;">
+             <div class="cta-block">
+                <h2 style="font-size: 36px; margin-bottom: 15px;">Let's Create Together!</h2>
+                <p style="font-size: 18px; color: #ccc; max-width: 800px; margin: 0 auto;">I'm always open to discussing new projects and collaborations. If you have an idea, feel free to reach out via my <a href="index.html#contacts">home page</a>.</p>
+            </div>
+        </section>
+    </div>
+
+<div id="portfolio-modal-overlay">
+    <div id="portfolio-modal-content">
+        <button id="portfolio-modal-close">&times;</button>
+        <h2 id="modal-game-name">Project Title</h2>
+        <p id="modal-short-catchline" class="subtitle">Short catchline.</p>
+        <h3>Development Screenshots & Artwork</h3>
+        <div id="modal-screenshots-grid"></div>
+        <h3>About The Game</h3>
+        <p id="modal-long-description">Long description.</p>
+        <a id="modal-download-link" href="#" target="_blank" class="view-all-btn">View Project</a>
+    </div>
+</div>
+
+<div id="image-viewer">
+    <span id="close-viewer">&times;</span>
+    <img id="viewer-image" src="" alt="Enlarged screenshot">
+    <div id="viewer-caption"></div>
+</div>
+
+    <script type="text/javascript" src="pageScript.js?v=2"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // ================================================================
+    // --- SCRIPT 1: GALLERY HERO ANIMATION ---
+    // ================================================================
+    const track = document.querySelector('.gallery-track');
+    if (track) {
+        const images = Array.from(track.children);
+        let currentIndex = 0;
+        const intervalTime = 4000;
+        function centerImage(index) {
+            images.forEach((img, i) => img.classList.toggle('active', i === index));
+            const activeImage = images[index];
+            if (!activeImage) return;
+            const screenCenter = window.innerWidth / 2;
+            const imageCenter = activeImage.offsetLeft + (activeImage.offsetWidth / 2);
+            const offsetX = screenCenter - imageCenter;
+            track.style.transform = `translateX(${offsetX}px)`;
+        }
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            centerImage(currentIndex);
+        }
+        centerImage(currentIndex);
+        setInterval(nextImage, intervalTime);
+        window.addEventListener('resize', () => centerImage(currentIndex));
+    }
+
+    // ================================================================
+    // --- SCRIPT 2: PORTFOLIO MODAL LOGIC ---
+    // ================================================================
+    const projectsData = [
+      { "id": "rebellious-takeover", "gameName": "Rebellious Takeover", "gameShortCatchline": "A story-driven, beat-em-up action RPG built in Unreal Engine 5.", "gameScreenshots": [ "Images/rebTakeover/rebTakeoverPromo_NoStudio.png", "Images/rebTakeover/takeoverPreview.png","Images/rebTakeover/takeoverPreview2.jpg","Images/rebTakeover/vecshiftFullScreenshot.png" ], "gameDescription": "My current flagship project. A hybrid of beat-em-up combat, visual novel storytelling, and open-world exploration, focused on a group of rebels fighting a monolithic corporation. Developed by vecShift Studios, an indie team I founded.", "downloadLink": "rebellioustakeover.html", "downloadText": "View Landing Page" },
+      { "id": "goober-electric", "gameName": "Goober Origins: Electric Gooberloo", "gameShortCatchline": "A fast-paced, high-fidelity remake of a classic that started my Unreal development.", "gameScreenshots": [ "Images/gooberloo_temporary.png","Images/gooberlooPreview.png" ], "gameDescription": "Developed for a college game jam with the theme 'Running Out,' this project is a complete remake of the original Goober Origins in Unreal Engine 5.5.4. It features a higher-fidelity pixel art style and frantic, fast-paced sonic-like gameplay.", "downloadLink": "#", "downloadText": "Coming Soon!" },
+      { "id": "goober-prototype", "gameName": "Goober Origins (Prototype)", "gameShortCatchline": "The original high-speed 2D platformer that started it all.", "gameScreenshots": [ "Images/goober.png","Images/prototypeGooberPreview.png" ], "gameDescription": "The original prototype for Goober Origins was an experiment in blending high-speed parkour mechanics with momentum-based platforming, laying the groundwork for the future remake.", "downloadLink": "https://jakedravioli.itch.io/goober-origins?secret=4JqjHDFHvOaR8YqUPnZ8yjsVDGQ", "downloadText": "Play on itch.io" },
+      { "id": "lost-memories", "gameName": "Lost Memories", "gameShortCatchline": "A conceptual liminal horror project.", "gameScreenshots": [ "Images/lost-memories.png" ], "gameDescription": "A conceptual game project developed for college, presented through a video showcase. It was created for a 'Liminal' theme in just 6 weeks, exploring themes of anxiety and fragmented memory through environmental design.", "downloadLink": "https://www.youtube.com/watch?v=_HtUDq4G7Mw", "downloadText": "Watch on YouTube" }
+    ];
+    
+    const modalOverlay = document.getElementById('portfolio-modal-overlay');
+    const closeModalBtn = document.getElementById('portfolio-modal-close');
+    const portfolioGrid = document.querySelector('#main-projects .portfolio-grid');
+
+    function openModal(projectId) {
+        const project = projectsData.find(p => p.id === projectId);
+        if (!project || !modalOverlay) return;
+        
+        document.getElementById('modal-game-name').textContent = project.gameName;
+        document.getElementById('modal-short-catchline').textContent = project.gameShortCatchline;
+        document.getElementById('modal-long-description').textContent = project.gameDescription;
+        
+        const screenshotsGrid = document.getElementById('modal-screenshots-grid');
+        screenshotsGrid.innerHTML = ''; // Clear previous images
+        project.gameScreenshots.forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = `${project.gameName} screenshot`;
+            screenshotsGrid.appendChild(img);
+        });
+        
+        const downloadLink = document.getElementById('modal-download-link');
+        downloadLink.href = project.downloadLink;
+        downloadLink.textContent = project.downloadText;
+        if (project.downloadLink === '#') {
+            downloadLink.style.pointerEvents = 'none';
+            downloadLink.style.backgroundColor = '#555';
+        } else {
+            downloadLink.style.pointerEvents = 'auto';
+            downloadLink.style.backgroundColor = '';
+        }
+        
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        if (!modalOverlay) return;
+        modalOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (portfolioGrid) {
+        portfolioGrid.addEventListener('click', (e) => {
+            const card = e.target.closest('.portfolio-card');
+            if (card && card.dataset.projectId) {
+                openModal(card.dataset.projectId);
+            }
+        });
+    }
+    
+    if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    
+    if(modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalOverlay && modalOverlay.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    // ================================================================
+    // --- SCRIPT 3: IMAGE VIEWER LOGIC ---
+    // ================================================================
+    const imageViewer = document.getElementById('image-viewer');
+    const viewerImage = document.getElementById('viewer-image');
+    const viewerCaption = document.getElementById('viewer-caption');
+    const closeViewerBtn = document.getElementById('close-viewer');
+    const screenshotsContainer = document.getElementById('modal-screenshots-grid');
+
+    if (screenshotsContainer) {
+        screenshotsContainer.addEventListener('click', (e) => {
+            if (e.target.tagName === 'IMG') {
+                viewerImage.src = e.target.src;
+                viewerCaption.textContent = e.target.alt;
+                imageViewer.classList.add('active');
+            }
+        });
+    }
+
+    function closeImageViewer() {
+        imageViewer.classList.remove('active');
+    }
+
+    if(closeViewerBtn) closeViewerBtn.addEventListener('click', closeImageViewer);
+    
+    if(imageViewer) {
+        imageViewer.addEventListener('click', (e) => {
+            if (e.target === imageViewer) {
+                closeImageViewer();
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>

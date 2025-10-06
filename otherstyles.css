@@ -1,0 +1,266 @@
+
+/* --- Animated Backgrounds & Overlays --- */
+@keyframes pan-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes rotate-gradient {
+ from { transform: rotate(0deg); }
+ to { transform: rotate(360deg); }
+}
+
+#gradient-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--color-overlay-gradient);
+  background-size: 400% 400%;
+  animation: pan-gradient 25s ease infinite;
+  z-index: -2;
+}
+
+#mouse-glow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 400px; height: 400px;
+  background: var(--color-mouse-glow);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  transition: transform 0.1s ease-out;
+}
+
+/* --- Section Plating --- */
+.home-section-plate {
+  background-color: var(--color-plate-bg);
+  border: 1px solid var(--color-accent-tertiary-border);
+  padding: 30px;
+  border-radius: 20px;
+}
+
+/* --- Hero Section & Avatar --- */
+.home-hero-container {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 60px;
+  background-color: var(--color-plate-bg);
+  border: 1px solid var(--color-accent-tertiary-border);
+  padding: 40px;
+  border-radius: 20px;
+}
+
+.hero-text-content {
+  flex: 2;
+}
+
+.gradient-text {
+  background: linear-gradient(110deg, var(--color-text-light), var(--color-accent-tertiary-link));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.gradient-text i {
+  color: var(--color-accent-tertiary-link);
+}
+
+.hero-pfp-container {
+  flex: 1;
+  max-width: 350px;
+  padding: 8px;
+  background-color: var(--color-background-tertiary);
+  border-radius: 25px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+}
+.hero-pfp-container:hover {
+  transform: scale(1.05);
+}
+.hero-pfp-container::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: var(--color-pfp-border);
+  animation: rotate-gradient 8s linear infinite;
+}
+.hero-pfp-container::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  background: var(--color-background-tertiary);
+  border-radius: 17px;
+}
+.hero-pfp-container img {
+  width: 100%;
+  border-radius: 15px;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- Skill Tags --- */
+.skill-tags-container {
+  margin-top: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.skill-tag {
+  background-color: rgba(67, 60, 94, 0.6); /* Kept as is for specific transparency */
+  color: var(--color-text-light);
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 14px;
+  border: 1px solid var(--color-accent-tertiary);
+  transition: all 0.2s ease;
+  cursor: default;
+}
+.skill-tag:hover {
+  background-color: var(--color-accent-tertiary-link);
+  color: var(--color-background-tertiary);
+  transform: translateY(-2px);
+  border-color: var(--color-accent-tertiary-link);
+}
+
+/* --- Base card style (for home page grid) --- */
+.portfolio-card {
+  background-color: var(--color-component-bg);
+  border: 1px solid var(--color-accent-tertiary-border);
+  border-radius: 15px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--color-text-med);
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.portfolio-card:hover {
+  transform: translateY(-10px);
+  background-color: var(--color-component-bg-hover);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+  border-color: var(--color-accent-tertiary-link);
+}
+.home-links-grid .portfolio-card h3 {
+  font-size: 28px;
+  color: var(--color-text-main);
+  margin: 0 0 10px 0;
+  letter-spacing: 1px;
+}
+.home-links-grid .portfolio-card .subtitle {
+  color: var(--color-accent-tertiary-link);
+}
+
+/* --- 404 Page: Terminal --- */
+.terminal-window {
+  background-color: rgba(5, 5, 10, 0.85); /* Intentionally distinct style */
+  border: 2px solid var(--color-accent-secondary);
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 50px auto;
+  font-family: 'Courier New', Courier, monospace;
+  box-shadow: 0 0 30px rgba(0, 170, 255, 0.3);
+  overflow: hidden;
+}
+.terminal-header {
+  background-color: #0d2e44; /* Intentionally distinct style */
+  padding: 8px 15px;
+  font-weight: bold;
+  color: var(--color-text-med);
+  border-bottom: 2px solid var(--color-accent-secondary);
+}
+.terminal-body {
+  padding: 25px;
+  font-size: 16px;
+  color: var(--color-text-code);
+  line-height: 1.8;
+}
+.terminal-error {
+  color: var(--color-accent-primary);
+}
+.terminal-link {
+  color: var(--color-accent-secondary);
+}
+.terminal-link:hover {
+  background-color: var(--color-accent-secondary-bg-tint-med);
+  color: var(--color-text-main);
+}
+
+/* --- Portfolio Spotlight Section --- */
+.spotlight-image-placeholder {
+  background-color: var(--color-background-darkest);
+  color: var(--color-accent-tertiary);
+  border: 1px dashed var(--color-accent-tertiary);
+}
+.portfolio-spotlight-grid .portfolio-card:hover .spotlight-image-placeholder {
+  color: var(--color-accent-tertiary-link);
+  border-color: var(--color-accent-tertiary-link);
+}
+
+/* --- Latest Blog Post Section --- */
+.latest-post-card {
+  border-left: 5px solid var(--color-accent-tertiary-link);
+}
+.latest-post-card .post-header h3 {
+  color: var(--color-text-main);
+}
+.latest-post-card .post-meta {
+  color: var(--color-text-med);
+}
+.latest-post-card .post-description {
+  color: #ddd; /* A specific off-white */
+}
+.latest-post-card .read-more-btn {
+  background-color: var(--color-accent-tertiary);
+  color: var(--color-text-main);
+}
+.latest-post-card .read-more-btn:hover {
+  background-color: var(--color-accent-tertiary-light);
+}
+
+/* Blog Post Theming */
+.latest-post-card.rebellious-takeover-theme {
+  border-left-color: var(--color-accent-primary);
+}
+.latest-post-card.rebellious-takeover-theme .post-meta {
+  color: var(--color-accent-primary-light);
+}
+.latest-post-card.rebellious-takeover-theme .read-more-btn {
+  background-color: var(--color-accent-primary-darker);
+}
+.latest-post-card.rebellious-takeover-theme .read-more-btn:hover {
+  background-color: var(--color-accent-primary-dark);
+}
+
+/* --- Code Copy Section --- */
+.code-copy-container pre {
+  background-color: var(--color-background-secondary);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-accent-tertiary);
+}
+#copy-code-btn {
+  background-color: var(--color-accent-tertiary);
+  color: var(--color-text-main);
+}
+#copy-code-btn:hover {
+  background-color: var(--color-accent-tertiary-light);
+}
+
+/* Mobile support rules do not contain colors and remain the same */
+
+/* --- Mobile Support --- */
+@media (max-width: 900px) {
+    .home-hero-container {
+        flex-direction: column-reverse;
+        text-align: center;
+    }
+    .hero-pfp-container {
+        margin-bottom: 30px;
+        max-width: 250px;
+    }
+    .skill-tags-container {
+        justify-content: center;
+    }
+}

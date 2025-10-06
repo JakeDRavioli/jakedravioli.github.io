@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+
+  <head>
+    
+      <meta property="og:url" content="https://jakedravioli.neocities.org/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JakeDRavioli - Image Viewer Test">
+<meta property="og:description" content="Testing site for Image Viewer javascript stuff. lol">
+<meta property="og:image" content="https://jakedravioli.neocities.org/Images/jdr.png">
+<meta name="theme-color" content="#3d2996">
+    
+    
+    <title>JakeDRavioli - Image Viewer Test</title>
+    <link rel="icon" type="image/png" href="/normalicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/normalicon/favicon.svg" />
+<link rel="shortcut icon" href="/normalicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/normalicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="JakeDRavioli" />
+<link rel="manifest" href="/normalicon/site.webmanifest" />
+	<link rel="stylesheet" href="styles.css">
+	<script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+    <div include-html="header.html"></div>
+	
+<div class="background"></div>
+    <div class="content">
+		<div class="slide-right">
+<h1>Image Viewer Test Page</h1>
+    <p>Click the image below to test the viewer.</p>
+
+    <div class="blog-article">
+        <img src="https://placehold.co/600x400" alt="This is a test caption from the alt text." style="max-width: 100%; height: auto;">
+        <img src="Images/jdr.png" alt="JDR Icon" style="max-width: 100%; height: auto;">
+        <img src="Images/blog/newCommentSection.png" alt="Wow! So colourful." style="max-width: 100%; height: auto;">
+        
+    </div>
+
+
+
+</div>
+</div>
+    <div id="image-viewer" class="image-viewer">
+        <span class="close-viewer" id="close-viewer">&times;</span>
+        <img class="viewer-content" id="viewer-image">
+        <div id="viewer-caption" class="viewer-caption"></div>
+    </div>
+    <script src="imageviewer.js"></script>
+        <script type="text/javascript" src="pageScript.js"></script>
+  </body>
+</html>

@@ -1,0 +1,112 @@
+[
+    {
+        "title": "Hello, world!",
+        "date": "2025-07-11",
+        "description": "This is my first post on my own blog. Yipee!!",
+        "file": "hello-world.md",
+        "readingTime": "Short read",
+        "tags": ["first post","cozy abode"]
+    },
+    {
+        "title": "Comments!!!",
+        "date": "2025-07-11",
+        "description": "Blog Update - Comments have been added!!",
+        "file": "comments.md",
+        "readingTime": "Short read",
+        "tags": ["comments","cozy abode"]
+    },
+    {
+        "title": "You ready to get Ravioli Approved?",
+        "date": "2025-07-12",
+        "description": "Blog Update - Yes, it's as stupid as it sounds.",
+        "file": "ravioliapproved.md",
+        "readingTime": "Short read",
+        "tags": ["ravioli approved","blog update","cozy abode"]
+    },
+    {
+        "title": "Why 'Rebellious Takeover'?",
+        "date": "2025-07-13",
+        "description": "<i>How a cocky catboy and his cohorts</i> in a <i>cybercity</i> doomed by <i>corporate menaces</i> came to be.",
+        "file": "why-rebellious-takeover.md",
+        "forRebelliousTakeover": true,
+        "readingTime": "Long read",
+        "tags": ["rebellious takeover","games","art","worldbuilding","design"]
+    },
+    {
+        "title": "A necessary split",
+        "date": "2025-07-26",
+        "description": "A drastic change that may inevitably delay the game further needs to be done.",
+        "file": "a-necessary-split.md",
+        "nsfw": true,
+        "forRebelliousTakeover": true,
+        "nsfwWarningDescription": "While not strictly NSFW, I talk about the game's NSFW/After Dark side that I intend to add. There's no images in this <b>at all</b>, but some may still find this uncomfortable.",
+        "readingTime": "Medium read",
+        "tags": ["rebellious takeover","games","update"]
+    },
+    {
+        "title": "Fixing Skin Clipping with MToon VRM Characters",
+        "date": "2025-07-14",
+        "description": "'<i>What if… instead of hiding the crime, I just rewrote the law?</i>'",
+        "file": "skin-clipping.md",
+        "forRebelliousTakeover": true,
+        "readingTime": "Medium read",
+        "tags": ["rebellious takeover","games","art","worldbuilding","design","shaders","coding"]
+    },
+    {
+        "title": "Rebellious Relocation!",
+        "date": "2025-08-05",
+        "description": "'Wait a minute... Where'd all my content go?'",
+        "file": "rebellious-relocation.md",
+        "readingTime": "Short read",
+        "tags": ["rebellious takeover","games","update","relocation"]
+    },
+    {
+        "title": "The new HQ is LIVE!",
+        "date": "2025-08-06",
+        "description": "'Rebellious Takeover finally looks... <i>Rebellious.</i>'",
+        "forRebelliousTakeover": true,
+        "file": "new-page-live.md",
+        "readingTime": "Short read",
+        "tags": ["update","rebellious takeover","game"]
+    },
+    {
+        "title": "Showcase Showdown - The new Portfolio page is live!",
+        "date": "2025-08-08",
+        "description": "I <i>swear</i> I've been productive. Here's the proof.",
+        "file": "new-portfolio.md",
+        "readingTime": "Short read",
+        "tags": ["update","portfolio","website","coding"]
+    },
+    {
+        "title": "Passing the Torch: Moving On From Roblox",
+        "date": "2025-08-08",
+        "description": "It's been fun.",
+        "file": "stepping-down.md",
+        "readingTime": "Long read",
+        "tags": ["moving on","roblox"]
+    },
+    {
+        "title": "New Updates All Around!",
+        "date": "2025-08-10",
+        "description": "I just kept adding features until the scrollbar needed its own scrollbar. Whoops.",
+        "file": "new-updates-all-around.md",
+        "readingTime": "Long read",
+        "tags": ["update","website","coding","blog","rebellious takeover"]
+    },
+    {
+        "title": "Overhaul 2: Electric Boogaloo",
+        "date": "2025-08-21",
+        "description": "I have a problem with updating this damn site. Send help.",
+        "file": "overhaul2.md",
+        "readingTime": "Medium read",
+        "tags": ["update","website","coding","blog","rebellious takeover"]
+    },
+    {
+        "title": "Life Update: PC Upgrade!!",
+        "date": "2025-07-17",
+        "description": "It was time for a change before my PC achieved nuclear fission.",
+        "file": "pc-upgrade.md",
+        "readingTime": "Medium read",
+        "tags": ["irl","pc","life update","update"]
+    }
+]

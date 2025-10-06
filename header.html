@@ -1,0 +1,120 @@
+<!-- The new, modernized header structure -->
+<div class="header">
+    <div class="navbar-container">
+        <!-- Logo/Home Link -->
+        <a class="nav-logo" href="../index.html" title="Back to Home">
+           <img src="../Images/mask.png" alt="Home">
+        </a>
+
+        <!-- The main highlighted links -->
+        <nav class="nav-links-desktop">
+            <a href="../portfolio.html">Portfolio</a>
+            <a href="../rebellioustakeover.html" style="color:rgb(250, 55, 78);">Rebellious Takeover</a>
+            <a href="../jdrblog.html">Blog</a>
+        </nav>
+
+      <div class="navbar-right-side">
+      
+          <div class="nav-actions-desktop">
+              <a id="open-theme-switcher" class="nav-action-btn" href="#" title="Change Theme"><i class="fa-solid fa-palette"></i></a>
+              <a id="open-donate-button" class="nav-action-btn donate-button" title="Support My Work"><i class="fa-solid fa-heart"></i></a>
+          </div>
+      
+          <button id="hamburger-btn" class="hamburger-button" aria-label="Open Menu">
+              <span class="hamburger-line"></span>
+              <span class="hamburger-line"></span>
+              <span class="hamburger-line"></span>
+          </button>
+      
+      </div>
+    </div>
+</div>
+
+<!-- Hamburger Menu -->
+<div id="mobile-nav-overlay" class="mobile-nav">
+    <nav class="mobile-nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../portfolio.html">Portfolio</a>
+        <a href="../rebellioustakeover.html" style="color:rgb(250, 55, 78);" class="hide-on-mobile">Rebellious Takeover</a>
+        <a href="../jdrblog.html">Blog</a>
+        <a href="../extras">Extras</a>
+          <a href="../goobersimulator">Goober Simulator</a>
+            <div class="mobile-nav-separator"></div>
+    <div class="mobile-nav-actions">
+        <a id="open-theme-switcher-mobile" class="nav-action-btn" href="#" title="Change Theme"><i class="fa-solid fa-palette"></i> <span>Change Theme</span></a>
+        <a id="open-donate-button-mobile" class="nav-action-btn donate-button" title="Support My Work"><i class="fa-solid fa-heart"></i> <span>Donate</span></a>
+    </div>
+    </nav>
+</div>
+
+<!-- Donate Modal -->
+<div id="donate-modal" class="donate-modal-overlay">
+    <div class="donate-modal-content">
+        <span class="close-donate-modal">&times;</span>
+        <h2><b>Support what I do</b></h2>
+        <p>You clicked the button! Wow. That's surprising! Anyways, Hi. Jake here - This whole thing is a one-man passion project. If you enjoy what I do, and want to see me continue without any hitches, consider throwing something my way. It helps me keep doing what I love doing and dedicate more time to creating cool stuff for you all. Any and all support would mean the world to me. Every little bit helps, seriously!</p>
+        <div class="donate-links-container">
+            <a href="https://ko-fi.com/jakedravioli" target="_blank" class="donate-link-box kofi">
+                <i class="fa-solid fa-mug-saucer"></i>
+                <span>Buy me a Ko-fi</span>
+            </a>
+            <a href="https://www.paypal.com/donate/?hosted_button_id=6VR4KPCTA9K3S" target="_blank" class="donate-link-box paypal">
+                <i class="fa-brands fa-paypal"></i>
+                <span>Send a Tip via PayPal</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Theme Switcher Modal -->
+<div id="theme-switcher-modal" class="donate-modal-overlay">
+    <div class="donate-modal-content">
+        <span class="close-theme-switcher">&times;</span>
+        <h2><b>Choose a Theme</b></h2>
+        <p>Select a theme to change the look and feel of the site. Your preference will be saved for your session.</p>
+        <div class="theme-options-container">
+            <!-- NEW "AUTO" BUTTON -->
+            <a href="#" id="auto-theme-btn" class="theme-option-box" style="grid-column: 1 / -1;">Let the site pick</a>
+            
+            <!-- Standard Themes -->
+            <a href="#" class="theme-option-box" data-theme="default">Default Dark</a>
+            <a href="#" class="theme-option-box" data-theme="light-theme">Pristine Light</a>
+            <a href="#" class="theme-option-box" data-theme="synthwave-theme">Synthwave</a>
+            <a href="#" class="theme-option-box" data-theme="terminal-theme">Terminal</a>
+            <a href="#" class="theme-option-box" data-theme="midnight-theme">Midnight</a>
+            <a href="#" class="theme-option-box" data-theme="navy-gold-theme">Navy & Gold</a>
+            <a href="#" class="theme-option-box" data-theme="legacy-theme">Legacy (Original)</a>
+            <a href="#" class="theme-option-box" data-theme="cursed-theme" style="font-family: 'Comic Sans MS', 'Comic Sans';">CURSED</a>
+            
+            <!-- Separator for Holiday/Seasonal Themes -->
+            <hr class="theme-grid-separator">
+            
+            <!-- Holiday/Seasonal Themes -->
+            <a href="#" class="theme-option-box" data-theme="halloween-theme">Halloween</a>
+            <a href="#" class="theme-option-box" data-theme="christmas-theme">Christmas</a>
+            <a href="#" class="theme-option-box" data-theme="new-years-theme">New Year's</a>
+            <a href="#" class="theme-option-box" data-theme="easter-theme">Easter</a>
+            <a href="#" class="theme-option-box" data-theme="autumn-theme">Autumn</a>
+
+            <!-- Separator for Effects Toggle -->
+            <hr class="theme-grid-separator">
+
+            <!-- NEW: Seasonal Effects Toggle Switch -->
+            <div class="theme-option-box-fullwidth">
+                <span>Seasonal Effects</span>
+                <label class="switch">
+                    <input type="checkbox" id="seasonal-effects-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<p class="footer">
+  <span style="font-size: 1.2em;">This website is under construction.<br></span>
+    Copyright &copy; <span id="copyright-year"></span> Jake D. / JakeDRavioli / "JDR". All Rights Reserved.
+    <br>
+    <span style="font-size: 0.8em;">"JakeDRavioli"™, "Dev4Fun Studios"™, and "vecShift Studios"™ are trademarks of Jake D.</span>
+</p>

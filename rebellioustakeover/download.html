@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Meta tags for social sharing, consistent with your main page -->
+    <meta property="og:url" content="https://jakedravioli.neocities.org/rebellioustakeover/download">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Download Rebellious Takeover">
+    <meta property="og:description" content="Download the latest build of Rebellious Takeover and join the fight against Veritas Industries!">
+    <meta property="og:image" content="https://jakedravioli.neocities.org/Images/rebIcon.png">
+    <meta name="theme-color" content="#ff384f">
+    
+    <title>Download Rebellious Takeover</title>
+    
+    <!-- Linking your existing stylesheet -->
+    <link rel="stylesheet" href="../styles.css?v=2.0">
+    
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+    
+    <!-- Favicon links from your main page -->
+    <link rel="icon" type="image/png" href="../icon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="../icon/favicon.svg" />
+    <link rel="shortcut icon" href="../icon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../icon/apple-touch-icon.png" />
+    <link rel="manifest" href="../icon/site.webmanifest" />
+    <style>
+      /* ================================================================
+   DOWNLOAD PAGE STYLES
+   ================================================================ */
+
+/* General container for sections on the download page */
+.download-section {
+    max-width: 1400px;
+    margin: 0 auto 80px auto;
+    text-align: center;
+}
+.links-section {
+    /* We removed the flexbox rules to use text-align: center instead */
+    margin-bottom: 20px;
+    align-content: center;
+    text-align:center;
+}
+.store-btn {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 24px;
+    color: var(--color-text-main);
+    text-decoration: none;
+    padding: 15px 35px;
+    border: 3px solid;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    margin: 5px 15px; /* This replaces the 'gap' functionality */
+}
+
+/* Specific styles for the Itch.io button */
+.store-btn.itch {
+    border-color: var(--color-itch);
+    background-color: var(--color-itch-bg);
+}
+.store-btn.itch:hover {
+    background-color: var(--color-itch);
+    color: var(--color-black);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--color-itch);
+}
+
+/* Specific styles for the GameJolt button */
+.store-btn.gamejolt {
+    border-color: var(--color-gamejolt);
+    background-color: var(--color-gamejolt-bg);
+}
+.store-btn.gamejolt:hover {
+    background-color: var(--color-gamejolt);
+    color: var(--color-black);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--color-gamejolt);
+}
+
+/* Style for unavailable/disabled buttons */
+.btn-unavailable {
+    border-color: var(--color-grey-disabled);
+    background-color: var(--color-grey-disabled-bg);
+    color: var(--color-text-darkest);
+    cursor: not-allowed;
+}
+.btn-unavailable:hover {
+    /* Override hover effects for disabled buttons */
+    background-color: var(--color-grey-disabled-bg);
+    color: var(--color-text-darkest);
+    transform: none;
+    box-shadow: none;
+}
+
+
+/* Add position relative to the card to contain the NSFW ribbon */
+.download-card {
+    position: relative;
+    overflow: hidden; /* This is key to making the ribbon look sharp */
+}
+
+/* Grey out inactive download cards */
+.download-card.inactive {
+    opacity: 0.6;
+    filter: grayscale(80%);
+}
+
+/* The NSFW Ribbon you wanted! */
+.nsfw-tag {
+    position: absolute;
+    width: 200px; /* Increased width to span the corner properly */
+    top: 25px;    /* Adjusted vertical position */
+    right: -50px;   /* Adjusted horizontal position */
+    background-color: var(--color-accent-primary-dark);
+    color: var(--color-accent-primary-lighter);
+    font-family: 'Permanent Marker', cursive;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 0;
+    transform: rotate(45deg);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    text-align: center;
+    z-index: 10;
+}
+#secret-flash-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Start fully transparent; the JS will make it black, then white */
+    background-color: rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* High z-index to ensure it's on top of everything */
+    z-index: 9999;
+    /* The element is ignored by the mouse until the JS activates it */
+    pointer-events: none;
+    /* Add a transition for a smoother fade-in of the black background */
+    transition: background-color 0.2s ease-in;
+}
+
+#secret-flash-text {
+    font-family: 'Sedgwick Ave Display', cursive;
+    /* Use viewport width for a responsive font size that fills the screen */
+    font-size: 8vw;
+    color: white;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    /* Start invisible; the JS will fade it in */
+    opacity: 0;
+    /* Smooth transitions for the text fading in and changing color */
+    transition: opacity 0.3s ease-in-out, color 0.1s ease-in-out;
+    text-align: center;
+}
+/* System Requirements Grid Layout */
+.requirements-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: left;
+    background-color: var(--color-background-tertiary);
+    padding: 30px;
+    border: 2px solid var(--color-accent-primary);
+    box-shadow: 0 0 10px var(--color-accent-primary);
+    border-radius: 2px;
+}
+.requirements-column h3 {
+    font-family: 'Sedgwick Ave Display', cursive;
+    color: var(--color-text-main);
+    font-size: 32px;
+    border-bottom: 2px solid var(--color-accent-primary);
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+.requirements-column ul {
+    list-style: none;
+    padding: 0;
+    color: var(--color-text-med);
+    line-height: 1.8;
+}
+.requirements-column ul li strong {
+    color: var(--color-text-light);
+    font-weight: bold;
+}
+.store-btn.steam {
+    /* Steam's brand colors */
+    --color-steam-border: #66c0f4;
+    --color-steam-bg: rgba(102, 192, 244, 0.1);
+    --color-steam-text-hover: #1b2838;
+
+    border-color: var(--color-steam-border);
+    background-color: var(--color-steam-bg);
+}
+
+.store-btn.steam:hover {
+    background-color: var(--color-steam-border);
+    color: var(--color-steam-text-hover);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--color-steam-border);
+}
+/* Mobile responsive adjustments for the requirements grid */
+@media (max-width: 900px) {
+    .requirements-grid {
+        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+        gap: 30px;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-button-container">
+        <!-- The href here should point to your main landing page file -->
+        <a href="../rebellioustakeover" class="back-to-main-site-btn">&larr; Back to Landing Page</a>
+        <a href="../donate" class="donate-btn" title="This is an indie project with a very, very small team - Consider supporting!">Donate <i class="fas fa-heart"></i></a>
+    </div>
+
+    <!-- Simplified Hero Section for the Download Page -->
+    <div class="parallax-hero" style="height: 50vh; min-height: 300px;">
+        <div id="parallax-bg" class="parallax-layer">
+            <div class="scaling-bg"></div>
+        </div>
+        <div id="parallax-logo-content" class="parallax-layer">
+            <!-- Using a slightly smaller logo for this header -->
+                      <div id="parallax-logo-content" class="parallax-layer" style="justify-content: center; z-index: 3;">
+                          <img src="../Images/rebTakeoverNew.png" alt="Rebellious Takeover Logo" class="hero-logo-new" style="width: 800px; max-width: 70%;"/>
+                          <h1 class="section-header" style="animation: subtle-float 6.1s ease-in-out infinite;">DOWNLOAD</h1>
+                      </div>
+                      <div id="parallax-blog-chars" class="parallax-layer" style="z-index: 2;">
+                          <img src="../Images/rebTakeover/main-blog-characters.png" alt="Deren and Phenn">
+                      </div>
+
+        </div>
+    </div>
+    
+    <!-- Main Content Wrapper -->
+    <div class="main-content-wrapper">
+        <div class="content rebTakeover">
+
+            <!-- Page Title -->
+            <h1 class="section-header">Ready to start the takeover?</h1>
+            <p class="section-subheader">// NOTE: Downloads aren't ready yet!!! All the buttons do something silly instead.</p>
+            <!-- Storefronts Section -->
+            <div class="download-section" style="margin-bottom: 80px;">
+                <h2 style="font-family: 'Sedgwick Ave Display', cursive; color: #fff; text-align: center; font-size: 50px; text-shadow: 2px 2px 0px #00aaff; margin-bottom: 20px;">Purchase from storefronts</h2>
+                <p class="section-subheader" style="margin-top: -10px; margin-bottom: 30px;">Get the game from your favorite indie platform. This helps support us directly<br>and gives you access to automatic updates via their desktop apps!</p>
+                <div class="links-section">
+                    <a href="#" class="store-btn itch secret-trigger btn-unavailable">
+                        <i class="fab fa-itch-io"></i> Unavailable on Itch.io
+                    </a>
+                    <br><br>
+                    <a href="#" class="store-btn gamejolt secret-trigger btn-unavailable">
+                        <i class="fas fa-gamepad"></i> Unavailable on GameJolt
+                    </a>
+                </div>
+                <div style="margin-top: 15px;">
+                    <a href="#" class="store-btn steam secret-trigger btn-unavailable">
+                        <i class="fab fa-steam"></i> Unavailable On Steam
+                    </a>
+                </div>
+            </div>
+            
+            <!-- DLC & Expansions Section -->
+            <div class="download-section" style="margin-bottom: 80px;">
+                <h1 class="section-header">DLC</h1>
+                <p class="section-subheader">// Expand your rebellion. More story, more chaos.</p>
+                <div class="gameplay-container"> <!-- Re-using this for the grid seems appropriate -->
+                    <!-- NSFW DLC Card -->
+                    <div class="gameplay-card download-card dlc-card">
+                        <div class="nsfw-tag">NSFW</div>
+                        <div class="icon"><i class="fas fa-fire"></i></div>
+                        <h3>Rebellious Takeover: Definitive Story DLC</h3>
+                        <p>The <strong>'Definitive Story' DLC</strong> is available for players who want the original, uncompromising version of the narrative. It's a free DLC, and turns the original game from mature to adult, so be wary.<br><br>
+                              This Definitive Story restores two key things:<br><br>
+                              <strong>1. The deeper look into the team's relationships:</strong><br> All the unfiltered passion and intimate scenes. These are explicit in nature.<br><br>
+                              <strong>2. The darker truths of Veritas' power:</strong><br> An unflinching look at the story's heaviest themes, including the full, sensitive mentions of trauma, depression, and the psychological cost of the rebellion. <br><br>
+                              This version is for players who want the complete story. No fade-to-black on the passion or the pain.
+                        </p>
+                        <!-- Added 'secret-trigger' class to this button -->
+                        <a href="#" class="link-btn download secret-trigger" style="margin-top: 20px; display: inline-block;" title="No, seriously. It's not ready. Don't click me.">Coming Soon!</a>
+                        <p style="font-size: 14px; color: #888; margin-top: 10px; font-family: 'Courier New', monospace;">Release Date: To Be Announced</p>
+                    </div>
+                </div>
+            </div>
+
+          <!-- Direct Downloads Section, unused for now, will use later for the demo. And for the Neocities Team, we're going to be hosting these files on Google Drive.
+            <div class="download-section" style="margin-bottom: 80px;">
+                <h1 class="section-header">Direct Downloads</h1>
+                <p class="section-subheader">// For those who like to live on the edge. You'll have to check back here for updates manually.<br><br>NOTE: All of the files given are stored on Google Drive.</p>
+                <div class="gameplay-container">
+                    <div class="gameplay-card download-card">
+                        <div class="icon"><i class="fab fa-windows"></i></div>
+                        <h3>Windows</h3>
+                        <p>For Windows 10 & 11. <br> (64-bit required)</p>
+                        <a href="#" class="link-btn devblog" style="margin-top: 20px; display: inline-block;">Download v0.1.0</a>
+                        <p style="font-size: 14px; color: #888; margin-top: 10px; font-family: 'Courier New', monospace;">Version: 0.1.0 (Alpha) | Size: 1.2 GB</p>
+                    </div>
+                    <div class="gameplay-card download-card inactive">
+                        <div class="icon"><i class="fab fa-apple"></i></div>
+                        <h3>macOS</h3>
+                        <p>Coming soon. <br> (We need to bribe a guy with an Apple dev license)</p>
+                        <a class="link-btn download" style="margin-top: 20px; display: inline-block;">Unavailable</a>
+                        <p style="font-size: 14px; color: #888; margin-top: 10px; font-family: 'Courier New', monospace;">Stay tuned!</p>
+                    </div>
+                    <div class="gameplay-card download-card inactive">
+                        <div class="icon"><i class="fab fa-linux"></i></div>
+                        <h3>Linux</h3>
+                        <p>Coming soon. <br> (For all you terminal-loving rebels)</p>
+                        <a class="link-btn download" style="margin-top: 20px; display: inline-block;">Unavailable</a>
+                        <p style="font-size: 14px; color: #888; margin-top: 10px; font-family: 'Courier New', monospace;">Patience, comrade.</p>
+                    </div>
+                </div>
+            </div>
+            -->
+            <!-- System Requirements -->
+            <div class="download-section" style="margin-bottom: 80px;">
+                <h1 class="section-header">System Requirements</h1>
+                <p class="section-subheader">// Make sure your rig can handle the game. Built with Unreal Engine 5.4.4, with Optimization in mind.</p>
+                <p class="section-subheader" style="font-size:15px;">(So basically, none of that "Nanite" or "Lumen" bullshit.)</p>
+                <div class="requirements-grid">
+                    <div class="requirements-column">
+                        <h3>Minimum Specs</h3>
+                        <ul>
+                            <li><strong>OS:</strong> Windows 10 (64-bit)</li>
+                            <li><strong>Processor:</strong> Intel Core i5-4590 / AMD FX 8350</li>
+                            <li><strong>Memory:</strong> 8 GB RAM</li>
+                            <li><strong>Graphics:</strong> NVIDIA GeForce GTX 970 / AMD Radeon R9 290</li>
+                            <li><strong>Storage:</strong> 20 GB available space</li>
+                            <li><strong>DirectX:</strong> Version 11</li>
+                        </ul>
+                    </div>
+                    <div class="requirements-column">
+                        <h3>Recommended Specs</h3>
+                        <ul>
+                            <li><strong>OS:</strong> Windows 11 (64-bit)</li>
+                            <li><strong>Processor:</strong> Intel Core i7-8700K / AMD Ryzen 7 2700X</li>
+                            <li><strong>Memory:</strong> 32 GB RAM</li>
+                            <li><strong>Graphics:</strong> NVIDIA GeForce RTX 2070 / AMD Radeon RX 5700 XT</li>
+                            <li><strong>Storage:</strong> 20 GB available space (SSD Recommended)</li>
+                            <li><strong>DirectX:</strong> Version 12</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <br><br><br>
+            <!-- Installation Instructions -->
+            <div class="download-section" style="margin-bottom: 80px;">
+                <h1 class="section-header">Installation Guide<span style="font-size:45px;"><br>(for Non-Steam players)</span></h1>
+                <br>
+                <p class="section-subheader">// It should be easy enough if you've ever played an indie game before.</p>
+                <div class="intro-block" style="text-align: left; font-size: 22px; max-width: 900px; line-height: 1.6;">
+                    1. Click one of the download buttons above to get the game's <b>.zip</b> file.<br><br>
+                    2. Find the downloaded file on your computer and <b>extract its contents</b> to a new folder. Don't run it from inside the .zip!<br><br>
+                    3. Open the new folder and run <b>RebelliousTakeover.exe</b>.<br><br>
+                    4. If Windows gives you a warning, click "More info" and then "Run anyway". We promise, we're not a virus - It's just that Windows doesn't recognise us. Run the game through VirusTotal or your on-system antivirus if you don't believe us.<br><br>
+                    5. Enjoy the game!
+                </div>
+            </div>
+                        <div class="download-section" style="margin-bottom: 80px;">
+                <h1 class="section-header">DLC Installation</h1>
+                <p class="section-subheader">// Got some extra content? Here's how to plug it in.</p>
+                <div class="intro-block" style="text-align: left; font-size: 22px; max-width: 900px; line-height: 1.6;">
+                    1. Download the DLC, which will be a single <b>.pak</b> file.<br><br>
+                    2. Navigate to where you extracted the main game. You should see the <b>RebelliousTakeover.exe</b> file.<br><br>
+                    3. Follow this path: <b>RebelliousTakeover/Content/Paks/</b>. The exact name of the first folder might vary, but you're looking for the 'Content/Paks' subfolders.<br><br>
+                    4. Drag and drop your downloaded <b>.pak</b> file into the <b>RebelliousTakeover/Content/Paks/</b> folder.<br><br>
+                    5. That's it! Launch the game, and the new content should be active.
+                </div>
+            </div>
+            <div class="faq-container">
+              <h1 class="section-header">F.A.Q.</h1>
+              <div class="faq-accordion">
+              
+                  <div class="faq-item">
+                      <button class="faq-header">Is there an 18+ / Adults Only version?</button>
+                      <div class="faq-panel">
+                          <p>
+                            
+                            
+                               If you're talking about the base game, <b>No.</b> The base game does not have any explicit content, and only hints and suggests things. If you're talking about the DLC, <b>Yes.</b> <i>Rebellious Takeover</i> is designed as a complete, M-rated story that can be played to its fullest without any gaps in the game's lore and campaign; However, an optional <strong>'Definitive Story' DLC</strong> is available for players who want the original, uncompromising version of the narrative. It turns the original game from mature to adult, so be wary.<br><br>
+                              This Definitive Story restores two key things:<br><br>
+                              <strong>1. The deeper look into the team's relationships:</strong><br> All the unfiltered passion and intimate scenes. These are explicit in nature.<br><br>
+                              <strong>2. The darker truths of Veritas' power:</strong><br> An unflinching look at the story's heaviest themes, including the full, sensitive mentions of trauma, depression, and the psychological cost of the rebellion. <br><br>
+                              This game is for young adults <i>and</i> adults alike. The game itself is a mature setting and anyone under the age of 16 should not be playing even the base version of the game.<br><br>
+                              TL;DR: The base game doesn't contain any explicit content. There's a DLC, but it isn't just a <i>porn update</i>, it contains actually adult topics besides explicit content. This version is for players who want the story as the game was destined for from the start. No fade-to-black on the passion or the pain.
+                          </p>
+                      </div>
+                  </div>
+              
+                  <div class="faq-item">
+                      <button class="faq-header">What kind of game is Rebellious Takeover?</button>
+                      <div class="faq-panel">
+                          <p>
+                              It's a hybrid-genre game that blends three core elements:<br>
+                              - <strong>Beat-'Em-Up Combat:</strong> Fast-paced, high-octane action.<br>
+                              - <strong>Visual Novel Storytelling:</strong> A deep, character-driven slice-of-life story where you build relationships.<br>
+                              - <strong>Semi Open-World Exploration:</strong> Discover side-stories and encounters in the city of Nexon.
+                          </p>
+                      </div>
+                  </div>
+                  
+                  <div class="faq-item">
+                      <button class="faq-header">What's the main story about?</button>
+                      <div class="faq-panel">
+                          <p>
+                              The story follows a small group of rebels trying to take down the monolithic corporation, Veritas Industries. The main conflict kicks off when Veritas raids an old hideout belonging to the team's leader, Deren, and steals the blueprints to his revolutionary invention: The C.O.R.E, a Vithium-powered heart replacement. The team must fight to get the blueprints back before Veritas can turn the life-saving technology into a weapon for corporate control.
+                          </p>
+                      </div>
+                  </div>
+                  
+                  <div class="faq-item">
+                      <button class="faq-header">What are the core themes of the game?</button>
+                      <div class="faq-panel">
+                          <p>
+                              At its heart, the game explores themes of anti-corporatism, found family, and neurodiversity. Most of the main characters are on the autistic spectrum and are simply trying to live their lives to the best of their ability. The story focuses on how this group of outcasts finds connection and fights for a better future in a world that wants to exploit them.
+                          </p>
+                      </div>
+                  </div>
+                  
+                  <div class="faq-item">
+                      <button class="faq-header">What engine is the game made in?</button>
+                      <div class="faq-panel">
+                          <p>
+                              <i>Rebellious Takeover</i> is being developed in Unreal Engine 5. You can check the planned system requirements on the <a href="../rebellioustakeover/download">download page</a>!
+                          </p>
+                      </div>
+                  </div>
+              
+                  <div class="faq-item">
+                      <button class="faq-header">When and where can I get the game?</button>
+                      <div class="faq-panel">
+                          <p>
+                              The game is still in active development! The best way to stay updated is by following the <a href="../blog#/rebellioustakeover">official devblog</a>. When it releases, it will be available on storefronts like Itch.io and GameJolt, with links on our <a href="../rebellioustakeover/download">download page</a>.
+                          </p>
+                      </div>
+                  </div>
+                  <div class="faq-item">
+                      <button class="faq-header">What is Baldren?</button>
+                      <div class="faq-panel">
+                          <p>
+                          <img class="center" src="../Images/blog/skinclip/baldren.png">
+                          </p>
+                      </div>
+                  </div>
+              </div>
+        </div>
+    </div>
+</div>
+    <!-- The secret flashbang overlay element -->
+    <div id="secret-flash-overlay">
+        <span id="secret-flash-text"></span>
+    </div>
+    <script type="text/javascript" src="run.js"></script>
+    <div class="footer">
+        <p style="font-size:15px;">Copyright &copy; <span id="copyright-year"></span> vecShift Studios. All Rights Reserved.</p>
+        <p style="font-size:12px; margin-top: -5px;">"Rebellious Takeover"™ and "vecShift Studios"™ are trademarks of Jake D.</p>
+    </div>
+
+    <!-- Script for parallax effect, if desired -->
+    <script>
+        // Simple parallax scroll effect for the background
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const bg = document.getElementById('parallax-bg');
+            if (bg) { 
+                // A more subtle effect for this page
+                bg.style.transform = 'translateY(' + scrolled * 0.15 + 'px)'; 
+            }
+        });
+
+        // --- SECRET GOOFY STUFF ---
+        const secretButtons = document.querySelectorAll('.secret-trigger');
+        const flashOverlay = document.getElementById('secret-flash-overlay');
+        const flashText = document.getElementById('secret-flash-text');
+        let isSecretActive = false; // Flag to prevent spamming
+        const secretLinks = [
+            'https://shattereddisk.github.io/rickroll/rickroll.mp4',
+            'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/LyraChibi.png', // lyra shruggin'
+            'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/CelChibi.png', // cel 👍 reaction
+            'https://jakedravioli.neocities.org/Images/blog/skinclip/baldren.png', // baldren
+            'https://files.catbox.moe/wtwime.mp4', // markiplier_gets_mad.mp4
+            'https://files.catbox.moe/qua36g.mp4', // wah.mp4
+            'https://files.catbox.moe/hlsutr.mp4', // pornography.mp4
+            'https://files.catbox.moe/6607n0.mp4', // burgentruck.mov
+            'https://files.catbox.moe/6dz003.mp4', // "get behind me doctor!"
+            'https://files.catbox.moe/dlzkaw.mp4', // why you shouldn't skip cutscenes
+            'https://files.catbox.moe/vuoe4j.mp4', // virtual insanity
+            'https://files.catbox.moe/t353hm.mp4', // spongebob
+            'https://files.catbox.moe/jqr0ev.mp4', // car
+            'https://files.catbox.moe/jrynmx.mp4', // piniss_jamz.mp4
+            '#', // you don't get redirected. :3
+        ];
+        // A list of fun messages to show the user
+        const secretMessages = [
+            "Think fast, chucklenuts!",
+        ];
+        
+        // Preload the audio to reduce delay on first click
+        const chucklenutsSound = new Audio('https://files.catbox.moe/n4pozc.mp3');
+
+        // Function to handle the secret trigger
+        function triggerSecret(event) {
+            // Prevent the link from trying to go anywhere
+            event.preventDefault();
+
+            // If the secret is already running, do nothing.
+            if (isSecretActive) {
+                return;
+            }
+            
+            // Set the flag to true to block further clicks
+            isSecretActive = true;
+
+            // Play the sound ONCE.
+            chucklenutsSound.currentTime = 0; // Rewind to start
+            chucklenutsSound.play();
+
+            // --- Visual Flashbang Logic ---
+            const randomMessage = secretMessages[Math.floor(Math.random() * secretMessages.length)];
+            flashText.textContent = randomMessage;
+            
+            flashOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+            flashOverlay.style.pointerEvents = "auto";
+            flashText.style.color = "white";
+            flashText.style.opacity = 1;
+
+            setTimeout(() => {
+                flashOverlay.style.transition = "background-color 0.1s ease-in-out";
+                flashOverlay.style.backgroundColor = "rgba(255, 255, 255, 1)";
+                flashText.style.color = "black";
+            }, 1200);
+
+            setTimeout(() => {
+                    const randomLink = secretLinks[Math.floor(Math.random() * secretLinks.length)];
+                    window.location.href = randomLink;
+            }, 1500);
+
+            // Automatically close the overlay
+            setTimeout(() => {
+                flashOverlay.style.transition = 'none';
+                flashOverlay.style.backgroundColor = "rgba(0, 0, 0, 0)";
+                flashOverlay.style.pointerEvents = "none";
+                flashText.style.opacity = 0;
+                isSecretActive = false;
+            }, 6000); // Total duration before auto-close
+        }
+
+        // Attach the event listener to all secret trigger buttons
+        secretButtons.forEach(button => {
+            button.addEventListener('click', triggerSecret);
+        });
+
+        // Add a listener to the overlay so clicking it closes it early
+        flashOverlay.addEventListener('click', () => {
+            flashOverlay.style.transition = 'none';
+            flashOverlay.style.backgroundColor = "rgba(0, 0, 0, 0)";
+            flashOverlay.style.pointerEvents = "none";
+            flashText.style.opacity = 0;
+            isSecretActive = false;
+        });
+const faqHeaders = document.querySelectorAll('.faq-header');
+faqHeaders.forEach(header => {
+    header.addEventListener('click', () => {
+        header.classList.toggle('active');
+        const panel = header.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    });
+});
+    </script>
+
+</body>
+</html>

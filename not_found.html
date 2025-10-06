@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - NOT FOUND</title>
+    <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
+    <link rel="shortcut icon" href="/icon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="JakeDRavioli" />
+    <link rel="manifest" href="/icon/site.webmanifest" />
+    <style>
+        /* Font import for hacker theme */
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
+        /* Basic Reset & Page Setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            background-color: #0a0a0a; /* Darker, more modern black */
+            color: #00ff9c; /* A vibrant, modern green */
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Terminal Container */
+        #terminal {
+            padding: 2vw;
+            height: 100%;
+            width: 100%;
+            overflow-y: auto;
+            background: 
+                linear-gradient(rgba(10,10,10,0.95), rgba(10,10,10,0.95)),
+                url('Images/Pattern.png');
+            background-size: cover;
+        }
+
+        /* General Line Styling */
+        .line {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Blinking Cursor Animation */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: #ff384f; /* RT Red cursor */
+            animation: blink 1s step-end infinite;
+            vertical-align: bottom;
+            margin-left: 4px;
+        }
+
+        /* Specific Text Styles */
+        .command {
+            color: #fff;
+        }
+
+        .error {
+            color: #ff384f;
+            font-weight: bold;
+        }
+        
+        .info {
+            color: #888;
+        }
+        
+        .success {
+            color: #bbf7d0;
+        }
+
+        .comment {
+            color: #bbf7d0;
+            font-style: italic;
+        }
+        
+        /* Secret link style */
+        .secret-link {
+            color: inherit;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .secret-link:hover {
+            color: #ff384f;
+        }
+
+
+        /* Navigation Links */
+        .suggestions-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 20px;
+        }
+        
+        .suggestions-list li {
+            display: flex;
+            align-items: center;
+        }
+
+        .suggestions-list a {
+            color: #00ff9c;
+            text-decoration: none;
+            display: inline-block;
+            padding: 2px 5px;
+        }
+        
+        .suggestions-list li:hover a {
+            background-color: #00ff9c;
+            color: #000;
+        }
+        
+        .suggestions-list .link-description {
+            color: #555;
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal">
+        <!-- JavaScript will populate this area -->
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const typingSpeed = 40;
+        const lineDelay = 200;
+        const commandDelay = 1000; // Longer delay after a command is typed
+        const preTypeDelay = 500; // The new delay before typing starts
+        const commentDelay = 800; // Delay before a comment appears
+        const rareUsernameChance = 0.1; // 10% chance for a rare username
+
+        // --- Character Data ---
+        const characters = [
+            {
+                username: 'retri_ii', // Lyra
+                rareUsername: 'r00tnux',
+                rareImage: 'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/LyraChibi.png',
+                promptColor: '#00ff9c', // Green
+                commentPool: [
+                    "congrats, u broke it. u must be real proud",
+                    "page not found, but u are. watching. judging.",
+                    "404 my will to care not found",
+                    "yawn... some ppl nowadays, don't even know how to navigate the simplest of pages...",
+                    "u strayed from the path of internet wisdom. cringe",
+                    "bet u thought there'd be content here. srry not srry",
+                    "skill issue lol",
+                    "did you trip the ethernet cable or smth",
+                    "have you tried.. like... not being wrong? just a thought smh",
+                    "alternate routes include crying, blaming your isp, or emailing ur ex. pick ur poison",
+                    "404? yh no shit sherlock, mayb use ur eyes next time",
+                    "this page is fucking dead just like my faith in your browsing skills",
+                    "try navigating better b4 i root your os and install bonzibuddy out of spite"
+                ]
+            },
+            {
+                username: 'DerpzDeNugget', // Deren
+                rareUsername: 'baldren',
+                rareImage: 'https://jakedravioli.neocities.org/Images/blog/skinclip/baldren.png',
+                promptColor: '#00aaff', // Blue
+                commentPool: [
+                    "This is what happens when you don't RTFM. The manual is there for a reason.",
+                    "Access denied. Probably for your own safety.",
+                    "Data node unavailable. Possible tampering detected. Or you're just reaaaallyy bad at this.",
+                    "If I had a byte for every invalid request, I'd make another operating system.",
+                    "404. Unlike me, this page doesn't have a backup plan.",
+                    "I told Lyra not to hardcode that route. But noooo...",
+                    "Well, congrats. You found the one page that doesn't fucking exist.",
+                    "This request is so invalid it's starting to mess with my own systems.",
+                    "404. That's not just an error. That's your entire search history.",
+                    "RTFM. No, seriously. Fucking READ THE MANUAL.",
+                    "If I had a pence for every dumbass link click like this, I'd buy Veritas just to burn it down.",
+                ]
+            },
+            {
+                username: 'jaytracee', // Jayce
+                rareUsername: 'masked404',
+                rareImage: 'https://jakedravioli.neocities.org/Images/jakedravioli_new.png',
+                promptColor: '#a49eff', // Purple
+                commentPool: [
+                        "Okay, this... wasn't meant to happen. Whoops?",
+                        "Uhhh... shit. well uh... time to go beg Lyra for some solutions.",
+                        "Let's pretend that didn't happen. Okay? Cool.",
+                        "This page? Gone. Just like my fucking sanity some days...",
+                        "That was a bold click. It did not in fact pay off.",
+                        "If it helps, i'm also lost.",
+                        "*sigh* Technology is amazing. When it works.",
+                        "At least I don't ask for your ID to continue.",
+                        "What's that in your clipboard...? Why do you have that ready to paste?",
+                        "This page probably took emotional damage and is recovering in therapy.",
+                        "Fucking... ugh. stupid site...",
+                        "Do I have to go ask VeriGPT about this? Hey VeriGPT, What's up with my code?",
+                        "If you could see my face right now, you'd be... seeing my face right now.",
+                        "Bruh.",
+                        "Oh for fuck's sake... It's a dead link. Just back out. Please.",
+                        "Brilliant. You managed to click on the one thing that doesn't work.",
+                        "I'm not mad. Just... fucking tired. So tired.",
+                        "This is what happens when people don't test shit before shipping it. Goddamn it.",
+                ]
+            },
+            {
+                username: 'phennixx', // Phenn
+                rareUsername: 'meowm0d',
+                rareImage: 'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/PhennChibi.png',
+                promptColor: '#ff99a5', // Pink
+                commentPool: [
+                    "Deren? Deren, w-why are Subroutine's servers down?",
+                    "O-Oh... um... this page is... not here... anymore... s-sorry...",
+                    "This... this isn't right. T-The connection timed out...",
+                    "Maybe take a different route? I-I think this one's broken.",
+                    "T-This is the part where we turn around and pretend this never happened...",
+                    "I didn't do this. I-I didn't. Promise. Please don't be mad at me...",
+                    "*panic noises*",
+                    "Not found? W-What do you mean not found?!",
+                    "I-I didn't break it! I swear! What the fuck even is this error?!",
+                    "Shit... Okay... Okay... Let's just... f-find another path before I scream..."
+                ]
+            },
+            {
+                username: 'ralcarnate', // Ral
+                rareUsername: 'averiskk',
+                rareImage: 'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/RalChibi.png',
+                promptColor: '#ff384f', // Red
+                commentPool: [
+                    "LOL. was this me? mb.",
+                    "whoops lol",
+                    "i knew this system lyra was making was BOOORRIINNGG",
+                    "asdfghjkldhngjkshjkghsfkghskgjhffgsjhgjksf WHY DON'T YOU WORK",
+                    "this system SUCKS!!!! lyra istg fix this shit NOW!!",
+                    "HAHAHAHAHA WHOOPS",
+                    "404. this is what happens when you let Lyra code after 3 energy drinks of mysterious origin.",
+                    "if it broke it probably means i touched it lol",
+                    "i KNEW i shouldn't of clicked that button but guess what. i did",
+                    "WHO PUT A LANDMINE HERE. OH WAIT. ME.",
+                    "404: i am not responsible. totally.",
+                    "this system is held together with duct tape and prayers",
+                    "breathe in. scream out. rm rf this shit",
+                    "this page is DEAD and so is whoever coded it. I'M COMING FOR U.",
+                    "404? 4-FUCK-YOU is what it is",
+                    "if i press one more broken ass link i will COMMIT ARSON. LYRA FIX THIS OR I'M CODING IN UR NUDES ON STARTUP",
+                ]
+            },
+            {
+                username: 'averiskk', // Cel
+                rareUsername: 'ralcarnate',
+                rareImage: 'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/CelChibi.png',
+                promptColor: '#bbf7d0', // Light Green/White
+                commentPool: [
+                    "alright, that didn't work...",
+                    "ok, new plan. there is no new plan. i lied.",
+                    "i'm sure we can find another way",
+                    "dead end. rip.",
+                    "you ok? the page isn't. let's keep moving.",
+                    "you're off the path, but we can get back on.",
+                    "take five. then try a different direction.",
+                    "i told you that one looked suspicious. but hey, growth.",
+                    "okay, this is broken, and whoever made it is an absolute dumbass. betting on Lyra.",
+                    "you're really not making my job easier, huh? jesus christ"
+                ]
+            },
+            {
+                username: 'karicore', // Mae
+                rareUsername: 'aviheart',
+                rareImage: 'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/MaeChibi.png',
+                promptColor: '#b8e0ff', // Soft blue
+                commentPool: [
+                    "Oh... this wasn't supposed to happen. I-I'm sorry.",
+                    "That link's gone. I think... someone deleted it. Or hid it. Maybe on purpose.",
+                    "It's okay. We can fix this. I just need... a minute. Maybe two.",
+                    "I-I'll look through the logs and try to figure out what went wrong.",
+                    "This is a dead end, but that doesn't mean *you* failed.",
+                    "Error 404. But I promise, it's not your fault. Really.",
+                    "Give me a second. I'll reroute you somewhere safer.",
+                    "Some things vanish. Doesn't mean they were never important.",
+                    "I swear to fucking god, if this link breaks one more time...",
+                    "404. Just like my patience, apparently.",
+                    "This system's a fucking disaster. I hate this. I hate this...",
+                    "Of course it's broken. Why wouldn't it be? This entire fucking structure's held together with sticks and stones.",
+                    "It's not your fault. It's mine. I trusted the code. I was fucking wrong.",
+                ]
+            },
+            {
+              username: 'authexx', // Luca
+              rareUsername: '0psVeil',
+              rareImage: 'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/LucaChibi.png',
+              promptColor: '#b9f2ff', // Icy blue
+              commentPool: [
+                  "404. Either the page is gone... or someone wanted it that way.",
+                  "This route is blocked. I'll scan for an alternate path.",
+                  "You didn't see this. Understood?",
+                  "That page doesn't exist anymore. If it ever did.",
+                  "You weren't followed, right? ...Just checking.",
+                  "Someone scrubbed this link from the system. Possibly internal.",
+                  "No need to panic. I've already encrypted the trail.",
+                  "Access denied. Or revoked. Either way... don't linger.",
+                  "Who the fuck set up this link? I'm gonna trace your IP and personally revoke your access.",
+                  "This isn't just broken. This is a fucking security risk.",
+                  "404. Again. I'm this close to rewriting the entire backend myself. And I don't even know what this is coded in.",
+                  "I've scrubbed better code from corporate spyware. What the fuck is this??",
+                  "If this keeps happening, i'm burning the logs and faking a server crash.",
+              ]
+          }
+        ];
+
+        // --- DOM Elements ---
+        const terminal = document.getElementById('terminal');
+
+        // --- Typewriter Logic ---
+        function typeWriter(element, text, callback) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, typingSpeed);
+                } else if (callback) {
+                    setTimeout(callback, lineDelay);
+                }
+            }
+            type();
+        }
+
+        // --- Main Terminal Sequence ---
+        async function runTerminalSequence() {
+            // 1. Select a random character for this session
+            const character = characters[Math.floor(Math.random() * characters.length)];
+            
+            // 2. Determine if a rare username will be used
+            const useRare = Math.random() < rareUsernameChance;
+            const displayUsername = useRare ? character.rareUsername : character.username;
+            const isSecret = useRare || character.username === 'retri_ii';
+            const secretUrl = useRare ? character.rareImage : 'https://jakedravioli.neocities.org/Images/rebTakeover/temporary/LyraChibi.png';
+
+            // 3. Construct the prompt element
+            const promptEl = document.createElement('span');
+            promptEl.className = 'prompt-user-color';
+            if (isSecret) {
+                promptEl.innerHTML = `<a class="secret-link" href="${secretUrl}" target="_blank">${displayUsername}</a>@Subroutine:~$ `;
+            } else {
+                promptEl.textContent = `${displayUsername}@Subroutine:~$ `;
+            }
+
+            // Dynamically set the prompt color for this session
+            const style = document.createElement('style');
+            style.innerHTML = `.prompt-user-color { color: ${character.promptColor}; }`;
+            document.head.appendChild(style);
+
+            const failedPath = window.location.pathname;
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+
+            const addLine = (text, className = 'info', delay = lineDelay) => {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        const lineEl = document.createElement('div');
+                        lineEl.className = 'line';
+                        const textEl = document.createElement('span');
+                        textEl.className = className;
+                        textEl.textContent = text;
+                        lineEl.appendChild(textEl);
+                        terminal.appendChild(lineEl);
+                        resolve();
+                    }, delay);
+                });
+            };
+            
+            const addTypedLine = (promptElement, command) => {
+                 return new Promise(resolve => {
+                    const lineEl = document.createElement('div');
+                    lineEl.className = 'line';
+                    
+                    lineEl.appendChild(promptElement.cloneNode(true)); // Use a clone of the prompt element
+
+                    const textEl = document.createElement('span');
+                    textEl.className = 'command';
+                    lineEl.appendChild(textEl);
+                    lineEl.appendChild(cursor);
+                    terminal.appendChild(lineEl);
+
+                    // Add the delay before starting the typewriter
+                    setTimeout(() => {
+                        typeWriter(textEl, command, () => {
+                            lineEl.removeChild(cursor);
+                            setTimeout(resolve, commandDelay);
+                        });
+                    }, preTypeDelay);
+                });
+            };
+
+            // --- Start Terminal Sequence ---
+            await addLine('Establishing connection to Subroutine network...', 'info', 500);
+            await addLine('Established.', 'success', 1200);
+            await addLine('');
+            await addLine('Verifying identity...', 'info', 500);
+            await addLine('');
+            await addLine(`Verified. Welcome back, ${displayUsername}.`, 'success', 1200);
+            await addTypedLine(promptEl, `cd ${failedPath}`);
+            await addLine('');
+            await addLine(`[FATAL] Directory not found: ${failedPath}`, 'error');
+            
+            // --- Display Randomized Comments ---
+            const comments = [...character.commentPool].sort(() => 0.5 - Math.random()).slice(0, 2); // Get 2 unique random comments
+            for (const comment of comments) {
+                await addLine(`// ${displayUsername}: ${comment}`, 'comment', commentDelay);
+            }
+            await addLine('');
+
+            // --- Show the final navigation links instantly ---
+            await addLine('');
+            await addLine('');
+            await addLine('SUGGESTION: Try one of these links generated by retri_ii:', 'comment');
+            const suggestionsList = document.createElement('ul');
+            suggestionsList.className = 'suggestions-list';
+            terminal.appendChild(suggestionsList);
+
+            const links = [
+                { text: 'go-back', href: 'javascript:history.back()', desc: '// Rewind time. Less cool than it sounds. Trust.' },
+                { text: 'cd ~', href: 'index.html', desc: '// Go home.' },
+                { text: 'ls -a /projects', href: 'portfolio.html', desc: '// See the cool stuff I totally helped with.' },
+                { text: 'cat /dev/null > /blog', href: 'blog.html', desc: '// Read the team\'s ramblings.' },
+                { text: 'support --devs', href: 'donate.html', desc: '// The website for if Veritas ever decide to enter the Subroutine network.' },
+                { text: './rebellious-takeover', href: 'rebellioustakeover.html', desc: '// The main event. Don\'t mess it up.' }
+            ];
+            
+            suggestionsList.innerHTML = links.map(link => 
+                `<li><a href="${link.href}">${link.text}</a><span class="link-description">${link.desc}</span></li>`
+            ).join('');
+
+            // Add the final blinking prompt
+            const finalPrompt = document.createElement('div');
+            finalPrompt.className = 'line';
+            finalPrompt.appendChild(promptEl.cloneNode(true)); // Use a clone of the prompt element
+            finalPrompt.appendChild(cursor);
+            terminal.appendChild(finalPrompt);
+        }
+
+        // --- Start the sequence when the page loads ---
+        document.addEventListener('DOMContentLoaded', runTerminalSequence);
+
+    </script>
+</body>
+</html>

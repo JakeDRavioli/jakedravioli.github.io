@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+        <meta charset="UTF-8">
+      <meta property="og:url" content="https://jakedravioli.neocities.org/blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JakeDRavioli's Cozy Interweb Blog">
+<meta property="og:description" content="The so-called Lousy indie-devs suspicious diary of secrets. Find posts made by me, and all sorts of cool stuff like dev logs and life updates.">
+<meta property="og:image" content="https://jakedravioli.neocities.org/Images/jdr.png">
+<meta name="theme-color" content="#3d2996">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <title>JakeDRavioli's Blog</title>
+    <link rel="icon" type="image/png" href="/normalicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/normalicon/favicon.svg" />
+<link rel="shortcut icon" href="/normalicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/normalicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="JakeDRavioli's Cozy Interweb Blog" />
+<link rel="manifest" href="/normalicon/site.webmanifest" />
+	<link rel="stylesheet" href="styles.css?v=2.5">
+	<script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+	    <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <style>
+            .contact-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+              .contact-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 10px;
+            background-color: var(--color-component-bg);
+            border: 1px solid var(--color-accent-tertiary-border);
+            color: var(--color-text-main);
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        .contact-btn:hover {
+            transform: translateY(-5px);
+            background-color: var(--color-component-bg-hover);
+            border-color: var(--color-accent-tertiary-link);
+        }
+        .contact-btn i {
+            font-size: 24px;
+            color: var(--color-accent-tertiary-link);
+        }
+    </style>
+</head>
+<body>
+  
+  <div class="site-wrapper">
+      <div include-html="header.html"></div>
+      
+              <div class="background"></div>
+                  <div id="gradient-overlay"></div>
+    <div class="content">
+        <div id="blog-app"></div>
+    </div>
+    </div>
+    <div id="image-viewer" class="image-viewer">
+        <span class="close-viewer" id="close-viewer">&times;</span>
+        <img class="viewer-content" id="viewer-image">
+        <div id="viewer-caption" class="viewer-caption"></div>
+    </div>
+    <script src="imageviewer.js"></script>
+          <script type="text/javascript" src="pageScript.js"></script>
+          <script>
+  (function() {
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = `blogscript.js?v=${Date.now()}`;
+    document.body.appendChild(script);
+  })();
+</script>
+
+<button id="backToTopBtn" title="Go to top">&uarr;</button>
+
+</body>
+</html>

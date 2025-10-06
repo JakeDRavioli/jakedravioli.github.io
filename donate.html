@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support JakeDRavioli</title>
+    
+    <!-- Meta tags from your version -->
+    <meta property="og:url" content="https://jakedravioli.neocities.org/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Support JakeDRavioli">
+    <meta property="og:description" content="Hi. I'm Jake - Also known online as JakeDRavioli or JDR on most platforms. This is my support page. You can send me a tip via PayPal or Ko-Fi.">
+    <meta property="og:image" content="https://jakedravioli.neocities.org/Images/jdr.png">
+    <meta name="theme-color" content="#3d2996">
+    <link rel="icon" type="image/png" href="/normalicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/normalicon/favicon.svg" />
+    <link rel="shortcut icon" href="/normalicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/normalicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="JakeDRavioli" />
+    <link rel="manifest" href="/normalicon/site.webmanifest" />
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+    <style>
+
+        html {
+            font-family: 'Arial', Helvetica, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            height: 100vh;
+            margin: 0;
+            background-color: #252525;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto; /* Allow scrolling for new content */
+        }
+
+        /* --- Layout & Structure --- */
+        .background {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            background-image: url("/Images/Pattern.png");
+            background-size: cover;
+            background-position: center;
+            filter: blur(12px) brightness(55%);
+            z-index: -1;
+        }
+
+        .main-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px; /* Add more padding for scroll space */
+        }
+
+        .donate-content-box {
+            background-color: rgba(37, 37, 37, 0.9);
+            padding: 30px 40px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            border: 1px solid #433c5e;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .donate-content-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Typography & Content --- */
+        .donate-content-box h2 {
+            color: #a49eff;
+            margin-top: 0;
+            letter-spacing: 1px;
+            font-size: 2.5rem;
+        }
+
+        .donate-content-box p {
+            color: #cccccc;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* --- Donation Links --- */
+        .donate-links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .donate-link-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .donate-link-box:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .donate-link-box i {
+            margin-right: 15px;
+            font-size: 24px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .donate-link-box.kofi { background-color: #13C3FF; color: #fff; }
+        .donate-link-box.paypal { background-color: #0079C1; color: #fff; }
+        
+        .donate-link-box.back-link { background-color: #555; color: #fff; }
+        .donate-link-box.back-link:hover { background-color: #666; }
+
+        /* --- Gemini Feature Styles --- */
+        .gemini-feature {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #433c5e;
+        }
+
+        .gemini-feature h3 {
+            font-family: 'Permanent Marker', cursive;
+            color: #facc15; /* Gold color to match the sparkle */
+            font-size: 1.8rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        #donor-name {
+            flex-grow: 1;
+            background-color: rgba(10, 10, 10, 0.7);
+            border: 1px solid #433c5e;
+            color: #e0e0e0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        #generate-btn {
+            background-color: #eab308;
+            color: #252525;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #generate-btn:hover {
+            background-color: #facc15;
+            transform: scale(1.05);
+        }
+        
+        #generate-btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #a49eff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none; /* Hidden by default */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #note-result-container {
+            margin-top: 20px;
+            background-color: rgba(10, 10, 10, 0.7);
+            border: 1px solid #433c5e;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            white-space: pre-wrap; /* Preserves line breaks from the AI */
+            line-height: 1.7;
+            color: #e0e0e0;
+            display: none; /* Hidden by default */
+            position: relative;
+        }
+        
+        #copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #433c5e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        #copy-btn:hover {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Blurry background image -->
+    <div class="background"></div>
+
+    <!-- Main content container -->
+    <div class="main-container">
+        <div class="donate-content-box">
+            <h2><b>Support what I do</b></h2>
+            <p>
+                You clicked the link! Wow. That's surprising! Anyways, Hi. Jake here - This whole thing is a one-man passion project. If you enjoy what I do, and want to see me continue without any hitches, consider throwing something my way. It helps me keep doing what I love doing and dedicate more time to creating cool stuff for you all. I made this donate button due to a financial situation me & my family are in right now, so any and all support would mean the world to me. Every little bit helps, seriously!
+            </p>
+
+            <div class="donate-links-container">
+                <a href="https://ko-fi.com/jakedravioli" target="_blank" class="donate-link-box kofi">
+                    <i class="fa-solid fa-mug-saucer"></i>
+                    <span>Buy me a Ko-fi</span>
+                </a>
+                <a href="https://www.paypal.com/donate/?hosted_button_id=6VR4KPCTA9K3S" target="_blank" class="donate-link-box paypal">
+                    <i class="fa-brands fa-paypal"></i>
+                    <span>Send a Tip via PayPal</span>
+                </a>
+                <a href="https://jakedravioli.neocities.org" class="donate-link-box back-link">
+                    <i class="fa-solid fa-arrow-left-long"></i>
+                    <span>Return home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // This script ensures the fade-in animation plays reliably on page load.
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentBox = document.querySelector('.donate-content-box');
+            if (contentBox) {
+                // A tiny delay ensures the browser has processed the initial CSS
+                // before the 'visible' class is added, making the transition work.
+                setTimeout(() => {
+                    contentBox.classList.add('visible');
+                }, 50);
+            }
+        });
+    </script>
+
+</body>
+</html>

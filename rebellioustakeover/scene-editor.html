@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebellious Takeover - Scene Generator</title>
+    <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+    <style>
+        /* FONT IMPORTS */
+        @font-face {
+            font-display: swap;
+            font-family: 'Permanent Marker';
+            font-style: normal;
+            font-weight: 400;
+            src: url('https://jakedravioli.neocities.org/fonts/permanent-marker-v16-latin-regular.woff2') format('woff2');
+        }
+        @font-face {
+            font-display: swap;
+            font-family: 'Sedgwick Ave Display';
+            font-style: normal;
+            font-weight: 400;
+            src: url('https://jakedravioli.neocities.org/fonts/sedgwick-ave-display-v22-latin-regular.woff2') format('woff2');
+        }
+
+        /* CORE STYLES */
+        :root {
+            --color-background-main: #121212;
+            --color-background-secondary: #1a1a1a;
+            --color-background-tertiary: #111;
+            --color-background-darkest: #0a0a0a;
+            --color-text-main: white;
+            --color-text-med: #ccc;
+            --color-text-dark: #a8a8a8;
+            --color-accent-primary: #ff384f;
+            --color-accent-primary-dark: #b91c1c;
+            --color-accent-primary-bg-tint: rgba(255, 56, 79, 0.1);
+            --color-accent-primary-bg-tint-med: rgba(255, 56, 79, 0.2);
+            --color-accent-primary-bg-tint-strong: rgba(255, 56, 79, 0.4);
+            --color-grey-border: #444;
+            --color-input-bg: #2D3748;
+            --color-input-border: #4A5568;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--color-background-darkest);
+            color: var(--color-text-main);
+            margin: 0;
+            padding: 2.5vh 2.5vw;
+            box-sizing: border-box;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            height: 100%;
+            max-width: 1800px;
+            border: 2px solid var(--color-grey-border);
+            background-color: var(--color-background-main);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .app-header {
+            padding: 10px 20px;
+            background-color: var(--color-background-darkest);
+            border-bottom: 2px solid var(--color-grey-border);
+            flex-shrink: 0;
+        }
+
+        .app-header h1 { margin: 0; font-size: 24px; }
+        .app-header h1 i { margin-right: 10px; }
+
+        /* TAB UI STYLES */
+        .tab-navigation {
+            display: flex;
+            background-color: var(--color-background-darkest);
+            border-bottom: 2px solid var(--color-grey-border);
+            padding: 0 20px;
+            flex-shrink: 0;
+        }
+        .tab-link {
+            font-family: 'Permanent Marker', cursive;
+            background: none;
+            border: none;
+            color: var(--color-text-dark);
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-link:hover {
+            color: var(--color-text-main);
+        }
+        .tab-link.active {
+            color: var(--color-accent-primary);
+            border-bottom-color: var(--color-accent-primary);
+        }
+        .tab-content {
+            flex-grow: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .tab-pane {
+            display: none;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: absolute;
+        }
+        #tab-branches.active {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 20px;
+            gap: 20px;
+        }
+        #tab-dialogue.active {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+        }
+         #tab-preview.active {
+            display: flex;
+            flex-direction: column;
+            background-color: #000;
+        }
+
+        .dialogue-timeline-panel, .dialogue-inspector-panel {
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .dialogue-timeline-panel {
+            background-color: var(--color-background-secondary);
+            border-right: 2px solid var(--color-grey-border);
+        }
+        .dialogue-inspector-panel {
+             display: none;
+             position: relative;
+        }
+
+        .section-box {
+            background-color: var(--color-background-tertiary);
+            padding: 15px;
+            border: 1px solid var(--color-grey-border);
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Permanent Marker', cursive;
+            letter-spacing: 2px;
+            color: var(--color-accent-primary);
+            margin-top: 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: 'Permanent Marker', cursive;
+            background-color: var(--color-accent-primary-bg-tint-strong);
+            color: var(--color-text-main);
+            border: 2px solid var(--color-accent-primary);
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: var(--color-accent-primary);
+            color: var(--color-background-darkest);
+        }
+
+        button.small-btn { padding: 5px 8px; font-size: 14px; }
+        
+        button.preset-btn {
+            background-color: var(--color-input-bg);
+            border: 1px solid var(--color-input-border);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+        button.preset-btn:hover {
+             background-color: var(--color-accent-primary);
+             border-color: var(--color-accent-primary);
+             color: var(--color-background-darkest);
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 0;
+            border: 1px solid var(--color-input-border);
+            background-color: var(--color-input-bg);
+            color: var(--color-text-main);
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-family: 'Permanent Marker', cursive;
+            display: block;
+            margin-bottom: 5px;
+            color: var(--color-text-med);
+        }
+
+        .dialogue-list { list-style: none; padding: 0; margin: 0; }
+        .dialogue-item {
+            background-color: var(--color-background-main);
+            padding: 10px 15px;
+            border: 1px solid var(--color-grey-border);
+            margin-bottom: 10px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dialogue-item:hover { border-color: var(--color-accent-primary); }
+        .dialogue-item.active {
+            background-color: var(--color-accent-primary-bg-tint-med);
+            border-left: 5px solid var(--color-accent-primary);
+        }
+        .dialogue-item.dragging { opacity: 0.5; background: var(--color-accent-primary-bg-tint); }
+        .dialogue-item-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-grow: 1; }
+        .drag-handle { margin-right: 10px; color: var(--color-text-dark); }
+        
+        .grid-3-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .checkbox-group input { width: auto; margin-bottom: 0; }
+
+        /* Accordion Styles */
+        .accordion-header {
+            background-color: var(--color-background-darkest);
+            border: 1px solid var(--color-grey-border);
+            padding: 10px 15px;
+            cursor: pointer;
+            font-family: 'Permanent Marker', cursive;
+            font-size: 18px;
+        }
+        .accordion-header::after { content: 'V'; font-family: 'Font Awesome 5 Free'; font-weight: 900; transition: transform 0.3s ease; }
+        .accordion-header.active::after { transform: rotate(180deg); }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: var(--color-background-tertiary);
+            border-left: 1px solid var(--color-grey-border);
+            border-right: 1px solid var(--color-grey-border);
+            border-bottom: 1px solid var(--color-grey-border);
+        }
+        .accordion-content .section-box {
+            border: none;
+        }
+        
+        #choices-editor .choice-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        #choices-editor .choice-item input { margin-bottom: 0; }
+        
+        #formatting-toolbar {
+            position: absolute;
+            background-color: var(--color-background-darkest);
+            border: 1px solid var(--color-grey-border);
+            padding: 5px;
+            display: none;
+            z-index: 10;
+        }
+        #formatting-toolbar button {
+            background: var(--color-background-secondary);
+            border: 1px solid var(--color-input-border);
+            color: var(--color-text-med);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+        #formatting-toolbar button:hover {
+            background: var(--color-accent-primary);
+            border-color: var(--color-accent-primary);
+            color: var(--color-background-darkest);
+        }
+        
+        /* --- PREVIEW STYLES --- */
+        #preview-stage {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--color-background-darkest);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .preview-char-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 200px;
+            height: 280px;
+            transition: transform 0.5s ease-in-out;
+            filter: brightness(0.7);
+            image-rendering: pixelated;
+        }
+        .preview-char-container.is-speaking {
+             filter: brightness(1) drop-shadow(0 0 10px var(--color-accent-primary));
+             z-index: 10;
+        }
+        .preview-char-sprite, .preview-char-blink {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center bottom;
+        }
+        .preview-char-blink {
+            display: none;
+        }
+
+        #preview-footer {
+            position: relative;
+            flex-shrink: 0;
+        }
+        #preview-dialogue-box {
+            background-color: rgba(0,0,0,0.85);
+            border-top: 2px solid var(--color-grey-border);
+            padding: 20px;
+            min-height: 150px;
+            cursor: pointer;
+            box-sizing: border-box;
+            display: none;
+            position: relative;
+        }
+        #preview-char-name, #preview-dialogue-text {
+            user-select: none;
+        }
+        #preview-char-name {
+            font-family: 'Sedgwick Ave Display', cursive;
+            background-color: var(--color-accent-primary); 
+            color: var(--text-color);
+            text-shadow: 1px 1px 3px #000;
+            padding: 10px 35px;
+            position: absolute;
+            top: -35px;
+            left: 40px;
+            font-size: 28px;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+        }
+        #preview-dialogue-text {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.5em;
+            letter-spacing: 1px;
+            line-height: 1.6;
+            padding-top: 20px;
+        }
+        #preview-dialogue-text .cursor { 
+            display: inline-block; 
+            background-color: var(--text-color); 
+            width: 10px; 
+            height: 1.2em; 
+            animation: blink 1s infinite; 
+            margin-left: 2px; 
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        #dialogue-advance-icon {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 1.5em;
+            color: var(--primary-color);
+            animation: bounce-arrow 1s infinite;
+            display: none;
+        }
+        @keyframes bounce-arrow { 50% { transform: translateY(-5px); } }
+
+        #preview-controls {
+            display: flex;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            align-items: center;
+            justify-content: center;
+        }
+        #preview-choices {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(0,0,0,0.5);
+        }
+        #preview-choices button {
+            width: 80%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+         <header class="app-header">
+            <h1><i class="fas fa-project-diagram"></i> RT Scene Generator</h1>
+        </header>
+
+        <nav class="tab-navigation">
+            <button class="tab-link active" data-tab="tab-branches"><i class="fas fa-sitemap"></i> Scene & Branches</button>
+            <button class="tab-link" data-tab="tab-dialogue"><i class="fas fa-comments"></i> Dialogue Editor</button>
+            <button class="tab-link" data-tab="tab-preview"><i class="fas fa-play-circle"></i> Test Scene</button>
+        </nav>
+
+        <div class="tab-content">
+            <div id="tab-branches" class="tab-pane active"></div>
+            <div id="tab-dialogue" class="tab-pane"></div>
+            <div id="tab-preview" class="tab-pane"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- DATA & ASSETS ---
+            const characterAssets = {
+                "Deren":  { portrait: "https://files.catbox.moe/z9nvsw.png", blink: "https://files.catbox.moe/lymz24.png" },
+                "Phenn":  { portrait: "https://files.catbox.moe/iobp6j.png", blink: "https://files.catbox.moe/tsgvua.png" },
+                "Lyra":   { portrait: "https://files.catbox.moe/zwzhok.png", blink: "https://files.catbox.moe/dkki7l.png" },
+                "Jayce":  { portrait: "https://files.catbox.moe/iqcf05.png", blink: "https://files.catbox.moe/lymz24.png" },
+                "Ral":    { portrait: "https://files.catbox.moe/vb86kr.png", blink: "https://files.catbox.moe/a7djzt.png" },
+                "Cel":    { portrait: "https://files.catbox.moe/njwkaz.png", blink: "https://files.catbox.moe/hm10fo.png" },
+                "Mae":    { portrait: "https://files.catbox.moe/j0gnwx.png", blink: "https://files.catbox.moe/tjrvwc.png" },
+                "Luca":   { portrait: "https://files.catbox.moe/l1qp3a.png", blink: "https://files.catbox.moe/g31qkq.png" }
+            };
+
+            // --- EDITOR SCRIPT ---
+            let sceneData = [];
+            let currentBranchName = null;
+            let currentDialogueIndex = -1;
+            let draggedDialogueIndex = null;
+            
+            const characterList = ["Narrator", "Deren", "Jayce", "Lyra", "Phenn", "Celynn", "Raleigh", "Mae", "Luca"];
+            const transformPresets = { 'Center': { transX: 0, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'Left': { transX: -450, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'Right': { transX: 450, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'L-Focus': { transX: -400, transY: 0, scaleX: 1.05, scaleY: 1.05, angle: -5 }, 'R-Focus': { transX: 400, transY: 0, scaleX: 1.05, scaleY: 1.05, angle: 5 }, 'Off-L': { transX: -1200, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'Off-R': { transX: 1200, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'Zoom': { transX: 0, transY: 0, scaleX: 1.2, scaleY: 1.2, angle: 0 }, 'Tilted': { transX: 50, transY: 0, scaleX: 1, scaleY: 1, angle: 10 }, 'Narrator': { transX: 999999, transY: 0, scaleX: 1, scaleY: 1, angle: 0 } };
+            const fieldMappings = { characterName: 'CharacterName', dialogueText: 'Text', emotion: 'Emotion', hideName: 'HideName', leavesAfter: 'LeavesAfterDialogue' };
+            
+            // --- PREVIEW ENGINE ---
+            let previewState = { currentBranchName: null, dialogueIndex: -1, isRunning: false, isTyping: false, typewriterTimeout: null, previousLine: null, awaitingChoice: false };
+            let onStageCharacters = {};
+            let previewAnimationId = null;
+
+            // Global UI Element references (will be bound in initialize)
+            let ui = {};
+
+            function initialize() {
+                document.getElementById('tab-branches').innerHTML = `<div class="section-box file-ops"><h2><i class="fas fa-file-alt"></i> File Operations</h2><div class="button-group"><button id="exportJson"><i class="fas fa-file-export"></i> Export JSON</button><input type="file" id="importJson" accept=".json" style="display: none;"><button onclick="document.getElementById('importJson').click()"><i class="fas fa-file-import"></i> Import JSON</button></div></div><div class="section-box branch-manager"><h2><i class="fas fa-code-branch"></i> Branch Manager</h2><div class="button-group"><button id="addBranch">New Branch</button></div><label for="branchSelector">Current Branch:</label><select id="branchSelector"></select><div class="button-group" style="margin-top: 10px;"><button id="deleteBranch" class="small-btn">Delete Branch</button></div><hr style="border-color: var(--color-grey-border); margin: 20px 0;"><h3>Branch End Behavior</h3><label for="nextBranchSelector">Next Branch (if no choices):</label><select id="nextBranchSelector"></select><div id="choices-editor"><label>Player Choices:</label><div id="choices-list"></div><button id="addChoice" class="small-btn" style="margin-top: 10px;">Add Choice</button></div></div>`;
+                document.getElementById('tab-dialogue').innerHTML = `<div class="dialogue-timeline-panel"><div class="section-box dialogue-manager"><h2><i class="fas fa-align-left"></i> Dialogue Timeline</h2><div class="button-group"><button id="addDialogue">Add Dialogue</button><button id="deleteDialogue" class="small-btn">Delete Selected</button></div><ul id="dialogueList" class="dialogue-list"></ul></div></div><div class="dialogue-inspector-panel" id="inspectorPanel"><h2 style="margin-top:0;"><i class="fas fa-edit"></i> Dialogue Inspector</h2><div class="accordion-header active">Dialogue Details</div><div class="accordion-content"><div class="section-box"><label for="characterName">Character Name</label><div class="button-group" id="characterPresets"></div><input type="text" id="characterName" list="character-datalist"><datalist id="character-datalist"></datalist><div id="formatting-toolbar"><button id="format-bold" title="Bold (Ctrl+B)"><b>B</b></button><button id="format-italic" title="Italic (Ctrl+I)"><i>I</i></button><button id="format-bold-italic" title="Bold Italic"><b><i>BI</i></b></button></div><label for="dialogueText">Text</label><textarea id="dialogueText" rows="4"></textarea><label for="emotion">Emotion</label><select id="emotion"><option>Neutral</option><option>Surprised</option><option>Angry</option><option>Sad</option><option>Happy</option><option>Excited</option><option>Curious</option><option>Thinking</option><option>Tired</option><option>Embarassed</option><option>Playful</option></select><div class="checkbox-group"><input type="checkbox" id="hideName"><label for="hideName">Hide Name?</label></div><div class="checkbox-group"><input type="checkbox" id="leavesAfter"><label for="leavesAfter">Leaves After?</label></div></div></div><div class="accordion-header">Character Transform</div><div class="accordion-content"><div class="section-box"><label>Position Presets</label><div class="button-group" id="transformPresets"></div><h4>Translation</h4><div class="grid-3-col"><div><label for="transX">X</label><input type="number" id="transX" value="0"></div><div><label for="transY">Y</label><input type="number" id="transY" value="0"></div></div><h4>Scale</h4><div class="grid-3-col"><div><label for="scaleX">X</label><input type="number" id="scaleX" value="1" step="0.05"></div><div><label for="scaleY">Y</label><input type="number" id="scaleY" value="1" step="0.05"></div></div><h4>Shear</h4><div class="grid-3-col"><div><label for="shearX">X</label><input type="number" id="shearX" value="0" step="0.1"></div><div><label for="shearY">Y</label><input type="number" id="shearY" value="0" step="0.1"></div></div><label for="angle">Angle</label><input type="number" id="angle" value="0"></div></div><div class="accordion-header">Other Settings</div><div class="accordion-content"><div class="section-box"><label for="startPos">Starts From Position</label><select id="startPos"><option>CENTER</option><option>LEFT</option><option>RIGHT</option></select></div></div></div>`;
+                document.getElementById('tab-preview').innerHTML = `<div id="preview-stage"><div id="preview-controls"><button id="start-preview-btn">Start Preview</button></div></div><div id="preview-footer"><div id="preview-dialogue-box"><h3 id="preview-char-name"></h3><p id="preview-dialogue-text"></p><div id="dialogue-advance-icon">V</div></div><div id="preview-choices"></div></div>`;
+
+                ui = {
+                    branchSelector: document.getElementById('branchSelector'), dialogueList: document.getElementById('dialogueList'), inspectorPanel: document.getElementById('inspectorPanel'),
+                    characterPresetsContainer: document.getElementById('characterPresets'), characterDatalist: document.getElementById('character-datalist'), transformPresetsContainer: document.getElementById('transformPresets'),
+                    nextBranchSelector: document.getElementById('nextBranchSelector'), choicesList: document.getElementById('choices-list'), dialogueText: document.getElementById('dialogueText'),
+                    formattingToolbar: document.getElementById('formatting-toolbar'), previewStage: document.getElementById('preview-stage'), dialogueBox: document.getElementById('preview-dialogue-box'),
+                    charNameDisplay: document.getElementById('preview-char-name'), dialogueTextDisplay: document.getElementById('preview-dialogue-text'), previewControls: document.getElementById('preview-controls'),
+                    startPreviewBtn: document.getElementById('start-preview-btn'), previewChoicesContainer: document.getElementById('preview-choices'),
+                    dialogueAdvanceIcon: document.getElementById('dialogue-advance-icon')
+                };
+
+                populatePresets();
+                setupEventListeners();
+                resetPreview();
+
+                const firstAccordion = ui.inspectorPanel.querySelector('.accordion-header');
+                if (firstAccordion) {
+                    firstAccordion.classList.add('active');
+                    const content = firstAccordion.nextElementSibling;
+                    const contentChild = content.querySelector('.section-box');
+                    if (contentChild) content.style.maxHeight = contentChild.scrollHeight + "px";
+                }
+
+                if (sceneData.length === 0) { createNewBranch("MainBranch"); selectBranch("MainBranch"); addDialogueItem(true); } 
+                else { selectBranch(sceneData[0].Name); }
+                refreshUI();
+            }
+            
+            function populatePresets() {
+                characterList.forEach(char => {
+                    const btn = document.createElement('button');
+                    btn.className = 'preset-btn'; btn.textContent = char;
+                    btn.onclick = () => { ui.characterName.value = char; updateCurrentDialogue(); };
+                    ui.characterPresetsContainer.appendChild(btn);
+                    const option = document.createElement('option');
+                    option.value = char; ui.characterDatalist.appendChild(option);
+                });
+                for (const [name, values] of Object.entries(transformPresets)) {
+                    const btn = document.createElement('button');
+                    btn.className = 'preset-btn'; btn.textContent = name;
+                    btn.onclick = () => {
+                        Object.keys(values).forEach(key => {
+                            const element = document.getElementById(key);
+                            if (element) element.value = values[key];
+                        });
+                        updateCurrentDialogue();
+                    };
+                    ui.transformPresetsContainer.appendChild(btn);
+                }
+            }
+
+            function refreshUI() {
+                refreshBranchSelector();
+                refreshDialogueList();
+                refreshInspector();
+                refreshBranchSettings();
+            }
+
+            function selectBranch(branchName) {
+                currentBranchName = branchName;
+                currentDialogueIndex = -1;
+                if (ui.branchSelector.value !== branchName) ui.branchSelector.value = branchName;
+                refreshDialogueList();
+                refreshInspector();
+                refreshBranchSettings();
+            }
+            
+            function selectDialogue(index, isClick = false) {
+                const branch = getCurrentBranch();
+                if (!branch || index < 0 || index >= branch.Dialogue.length) return;
+                currentDialogueIndex = index;
+                ui.inspectorPanel.style.display = 'flex';
+                refreshDialogueList();
+                refreshInspector();
+                if (isClick) ui.dialogueText.focus();
+                const selectedItem = ui.dialogueList.querySelector(`.dialogue-item[data-index="${index}"]`);
+                if (selectedItem) selectedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            function refreshBranchSelector() {
+                const previousValue = ui.branchSelector.value;
+                ui.branchSelector.innerHTML = '';
+                ui.nextBranchSelector.innerHTML = '<option>None</option><option>End</option>';
+                sceneData.forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch.Name; option.textContent = branch.Name;
+                    ui.branchSelector.appendChild(option.cloneNode(true));
+                    ui.nextBranchSelector.appendChild(option);
+                });
+                if(previousValue && sceneData.some(b => b.Name === previousValue)) ui.branchSelector.value = previousValue;
+                else if (sceneData.length > 0) ui.branchSelector.value = sceneData[0].Name;
+            }
+
+            function refreshDialogueList() {
+                ui.dialogueList.innerHTML = '';
+                const currentBranch = getCurrentBranch();
+                if (!currentBranch) return;
+                currentBranch.Dialogue.forEach((dialogue, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'dialogue-item';
+                    li.dataset.index = index;
+                    li.draggable = true;
+                    if (index === currentDialogueIndex) li.classList.add('active');
+                    const handle = document.createElement('i');
+                    handle.className = 'fas fa-grip-vertical drag-handle';
+                    const textSpan = document.createElement('span');
+                    textSpan.className = 'dialogue-item-text';
+                    textSpan.textContent = `${dialogue.CharacterName}: ${dialogue.Text || '...'}`;
+                    li.appendChild(handle);
+                    li.appendChild(textSpan);
+                    li.onclick = () => selectDialogue(index, true);
+                    ui.dialogueList.appendChild(li);
+                });
+            }
+
+            function refreshInspector() {
+                if (currentDialogueIndex === -1 || !currentBranchName) { ui.inspectorPanel.style.display = 'none'; return; }
+                const dialogue = getCurrentDialogue();
+                if (!dialogue) return;
+                for(const [elementId, dataKey] of Object.entries(fieldMappings)) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        if (element.type === 'checkbox') element.checked = dialogue[dataKey] || false;
+                        else element.value = dialogue[dataKey] || '';
+                    }
+                }
+                const t = dialogue["Character Transform"];
+                document.getElementById('transX').value = t.Translation.X; document.getElementById('transY').value = t.Translation.Y;
+                document.getElementById('scaleX').value = t.Scale.X; document.getElementById('scaleY').value = t.Scale.Y;
+                document.getElementById('shearX').value = t.Shear.X; document.getElementById('shearY').value = t.Shear.Y;
+                document.getElementById('angle').value = t.Angle; document.getElementById('startPos').value = dialogue["Starts From Position"];
+            }
+            
+            function refreshBranchSettings() {
+                const branch = getCurrentBranch();
+                if (!branch) return;
+                ui.nextBranchSelector.value = branch.NextBranch || "None";
+                ui.choicesList.innerHTML = '';
+                (branch.choices || []).forEach((choice, index) => {
+                    const choiceDiv = document.createElement('div');
+                    choiceDiv.className = 'choice-item';
+                    const textInput = document.createElement('input');
+                    textInput.type = 'text'; textInput.value = choice.choiceText;
+                    textInput.placeholder = "Choice Text"; textInput.oninput = () => updateChoice(index, 'choiceText', textInput.value);
+                    const branchSelect = document.createElement('select');
+                    branchSelect.innerHTML = '<option value="">Select Branch</option>';
+                    sceneData.filter(b => b.Name !== currentBranchName).forEach(b => {
+                        const option = document.createElement('option');
+                        option.value = b.Name; option.textContent = b.Name;
+                        branchSelect.appendChild(option);
+                    });
+                    branchSelect.value = choice.choiceBranch; branchSelect.onchange = () => updateChoice(index, 'choiceBranch', branchSelect.value);
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                    deleteBtn.className = 'small-btn';
+                    deleteBtn.onclick = () => removeChoice(index);
+                    choiceDiv.appendChild(textInput); choiceDiv.appendChild(branchSelect); choiceDiv.appendChild(deleteBtn);
+                    ui.choicesList.appendChild(choiceDiv);
+                });
+            }
+
+            function createNewBranch(name) {
+                if (sceneData.some(b => b.Name === name)) { alert("A branch with this name already exists!"); return null; }
+                const newBranch = { "Name": name, "Dialogue": [], "NextBranch": "None", "choices": [] };
+                sceneData.push(newBranch);
+                refreshBranchSelector();
+                return newBranch;
+            }
+
+            function addDialogueItem(focusAfterAdd = true) {
+                const currentBranch = getCurrentBranch(); if (!currentBranch) return;
+                const newDialogue = { "CharacterName": "Narrator", "HideName": false, "Text": "", "LeavesAfterDialogue": false, "Emotion": "Neutral", "Character Transform": { "Translation": { "X": 0, "Y": 0 }, "Scale": { "X": 1, "Y": 1 }, "Shear": { "X": 0, "Y": 0 }, "Angle": 0 }, "Starts From Position": "CENTER" };
+                currentBranch.Dialogue.push(newDialogue);
+                selectDialogue(currentBranch.Dialogue.length - 1, focusAfterAdd);
+            }
+
+            function updateCurrentDialogue() {
+                const dialogue = getCurrentDialogue(); if (!dialogue) return;
+                setTimeout(() => {
+                    for(const [elementId, dataKey] of Object.entries(fieldMappings)) {
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            if (element.type === 'checkbox') dialogue[dataKey] = element.checked;
+                            else dialogue[dataKey] = element.value;
+                        }
+                    }
+                    const t = dialogue["Character Transform"];
+                    t.Translation.X = parseFloat(document.getElementById('transX').value) || 0; t.Translation.Y = parseFloat(document.getElementById('transY').value) || 0;
+                    t.Scale.X = parseFloat(document.getElementById('scaleX').value) || 1; t.Scale.Y = parseFloat(document.getElementById('scaleY').value) || 1;
+                    t.Shear.X = parseFloat(document.getElementById('shearX').value) || 0; t.Shear.Y = parseFloat(document.getElementById('shearY').value) || 0;
+                    t.Angle = parseFloat(document.getElementById('angle').value) || 0;
+                    dialogue["Starts From Position"] = document.getElementById('startPos').value;
+                    refreshDialogueList();
+                }, 0);
+            }
+            
+            function addChoice() {
+                const branch = getCurrentBranch(); if (!branch) return;
+                if (!branch.choices) branch.choices = [];
+                branch.choices.push({ choiceText: "", choiceBranch: "" });
+                refreshBranchSettings();
+            }
+            function removeChoice(index) {
+                const branch = getCurrentBranch(); if (!branch) return;
+                branch.choices.splice(index, 1);
+                refreshBranchSettings();
+            }
+            function updateChoice(index, key, value) {
+                 const branch = getCurrentBranch(); if (!branch) return;
+                 branch.choices[index][key] = value;
+            }
+
+            function applyFormat(tag) {
+                const start = ui.dialogueText.selectionStart, end = ui.dialogueText.selectionEnd;
+                const selectedText = ui.dialogueText.value.substring(start, end);
+                if (!selectedText) return;
+
+                let openTag = `<${tag}>`, closeTag = '</>';
+                if (tag === 'bold-italic') { openTag = '<bold><i>'; closeTag = '</></>'; }
+                
+                const replacement = `${openTag}${selectedText}${closeTag}`;
+                ui.dialogueText.focus();
+                ui.dialogueText.setSelectionRange(start, end);
+                if (!document.execCommand('insertText', false, replacement)) {
+                    ui.dialogueText.value = ui.dialogueText.value.substring(0, start) + replacement + ui.dialogueText.value.substring(end);
+                }
+                ui.dialogueText.setSelectionRange(start + openTag.length, start + openTag.length + selectedText.length);
+                updateCurrentDialogue();
+            }
+
+            function getCurrentBranch() {
+                const branchName = (previewState.isRunning && previewState.currentBranchName) ? previewState.currentBranchName : currentBranchName;
+                return sceneData.find(b => b.Name === branchName);
+            }
+
+            function getCurrentDialogue() { const branch = getCurrentBranch(); return (branch && currentDialogueIndex > -1) ? branch.Dialogue[currentDialogueIndex] : null; }
+
+            function setupEventListeners() {
+                // TAB SWITCHING
+                document.querySelectorAll('.tab-link').forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (button.classList.contains('active') && button.dataset.tab === 'tab-preview') { resetPreview(); return; }
+                        const tabId = button.dataset.tab;
+                        document.querySelectorAll('.tab-link').forEach(btn => btn.classList.remove('active'));
+                        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                        button.classList.add('active');
+                        document.getElementById(tabId).classList.add('active');
+                        if (tabId !== 'tab-preview' && previewState.isRunning) resetPreview();
+                    });
+                });
+
+                // BUTTONS
+                document.getElementById('addBranch').addEventListener('click', () => {
+                    const name = prompt("Enter new branch name:", `Branch${sceneData.length + 1}`);
+                    if (name && createNewBranch(name)) selectBranch(name);
+                });
+                document.getElementById('deleteBranch').addEventListener('click', () => {
+                    if (!currentBranchName || sceneData.length <= 1) { alert("Cannot delete the last branch."); return; }
+                    if (confirm(`Are you sure you want to delete "${currentBranchName}"?`)) {
+                        sceneData = sceneData.filter(b => b.Name !== currentBranchName);
+                        selectBranch(sceneData[0].Name); refreshUI();
+                    }
+                });
+                document.getElementById('branchSelector').addEventListener('change', (e) => selectBranch(e.target.value));
+                document.getElementById('nextBranchSelector').addEventListener('change', (e) => {
+                    const branch = getCurrentBranch(); if(branch) branch.NextBranch = e.target.value;
+                });
+                document.getElementById('addDialogue').addEventListener('click', () => addDialogueItem(true));
+                document.getElementById('addChoice').addEventListener('click', addChoice);
+                document.getElementById('deleteDialogue').addEventListener('click', () => {
+                     const branch = getCurrentBranch(); if (!branch || currentDialogueIndex < 0) return;
+                     if (confirm("Are you sure you want to delete this dialogue line?")) {
+                        branch.Dialogue.splice(currentDialogueIndex, 1);
+                        currentDialogueIndex = Math.min(currentDialogueIndex, branch.Dialogue.length - 1);
+                        refreshUI();
+                        if (currentDialogueIndex > -1) selectDialogue(currentDialogueIndex);
+                        else ui.inspectorPanel.style.display = 'none';
+                     }
+                });
+
+                // FILE OPERATIONS
+                document.getElementById('exportJson').addEventListener('click', () => {
+                    if (sceneData.length === 0) { alert("Nothing to export!"); return; }
+                    const jsonString = JSON.stringify(sceneData, null, "\t");
+                    const blob = new Blob([jsonString], { type: 'application/json' });
+                    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+                    a.download = 'VisualNovelScene.json'; a.click(); URL.revokeObjectURL(a.href);
+                });
+                const importInput = document.getElementById('importJson');
+                importInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0]; if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const importedData = JSON.parse(e.target.result);
+                            if (Array.isArray(importedData) && importedData.length > 0) { 
+                                sceneData = importedData; 
+                                selectBranch(sceneData[0]?.Name || null); 
+                                refreshUI(); 
+                            } 
+                            else { alert("Invalid or empty JSON file."); }
+                        } catch (error) { alert("Error parsing JSON file: " + error.message); }
+                    };
+                    reader.readAsText(file); importInput.value = '';
+                });
+
+                // INSPECTOR LISTENERS
+                ui.inspectorPanel.addEventListener('input', updateCurrentDialogue);
+                ui.inspectorPanel.querySelectorAll('.accordion-header').forEach(header => {
+                    header.addEventListener('click', () => {
+                        header.classList.toggle('active');
+                        const content = header.nextElementSibling;
+                        const contentChild = content.querySelector('.section-box');
+                        if (content.style.maxHeight) content.style.maxHeight = null;
+                        else if (contentChild) content.style.maxHeight = contentChild.scrollHeight + "px";
+                    });
+                });
+
+                // DRAG & DROP
+                ui.dialogueList.addEventListener('dragstart', (e) => {
+                    if (e.target.classList.contains('dialogue-item')) {
+                        draggedDialogueIndex = parseInt(e.target.dataset.index);
+                        setTimeout(() => e.target.classList.add('dragging'), 0);
+                    }
+                });
+                ui.dialogueList.addEventListener('dragend', (e) => {
+                    if (e.target.classList.contains('dialogue-item')) {
+                        e.target.classList.remove('dragging');
+                        draggedDialogueIndex = null;
+                        if (currentDialogueIndex > -1) refreshDialogueList();
+                    }
+                });
+                ui.dialogueList.addEventListener('dragover', (e) => e.preventDefault());
+                ui.dialogueList.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const target = e.target.closest('.dialogue-item');
+                    if (target && draggedDialogueIndex !== null) {
+                        const targetIndex = parseInt(target.dataset.index);
+                        const branch = getCurrentBranch();
+                        const selectedDialogueObject = getCurrentDialogue();
+                        const draggedItem = branch.Dialogue.splice(draggedDialogueIndex, 1)[0];
+                        branch.Dialogue.splice(targetIndex, 0, draggedItem);
+                        if (selectedDialogueObject) currentDialogueIndex = branch.Dialogue.indexOf(selectedDialogueObject);
+                        draggedDialogueIndex = null;
+                        refreshDialogueList();
+                    }
+                });
+
+                // QOL LISTENERS
+                document.addEventListener('keydown', (e) => {
+                    if (document.getElementById('tab-preview').classList.contains('active')) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (previewState.isRunning && !previewState.awaitingChoice) {
+                                handlePreviewClick();
+                            }
+                        }
+                        return;
+                    }
+
+                    if (!document.getElementById('tab-dialogue').classList.contains('active')) return;
+                    const activeEl = document.activeElement;
+                    if (activeEl.tagName !== 'INPUT' && activeEl.tagName !== 'TEXTAREA') {
+                        if (e.key === 'ArrowDown') { e.preventDefault(); selectDialogue(currentDialogueIndex + 1, false); } 
+                        else if (e.key === 'ArrowUp') { e.preventDefault(); selectDialogue(currentDialogueIndex - 1, false); }
+                    } else if (activeEl === ui.dialogueText) {
+                        if (e.ctrlKey && e.key === 'b') { e.preventDefault(); applyFormat('bold'); } 
+                        else if (e.ctrlKey && e.key === 'i') { e.preventDefault(); applyFormat('italic'); }
+                    }
+                });
+
+                // Formatting Toolbar
+                ui.dialogueText.addEventListener('mouseup', (e) => {
+                    setTimeout(() => {
+                        if (document.activeElement === ui.dialogueText && ui.dialogueText.selectionStart !== ui.dialogueText.selectionEnd) {
+                            const inspectorRect = ui.inspectorPanel.getBoundingClientRect();
+                            const relativeX = e.clientX - inspectorRect.left;
+                            const relativeY = e.clientY - inspectorRect.top + ui.inspectorPanel.scrollTop;
+                            ui.formattingToolbar.style.left = Math.max(0, relativeX) + 'px';
+                            ui.formattingToolbar.style.top = Math.max(0, relativeY - ui.formattingToolbar.offsetHeight - 10) + 'px';
+                            ui.formattingToolbar.style.display = 'flex';
+                        } else {
+                            ui.formattingToolbar.style.display = 'none';
+                        }
+                    }, 10);
+                });
+                ui.dialogueText.addEventListener('blur', () => setTimeout(() => ui.formattingToolbar.style.display = 'none', 150));
+                ui.formattingToolbar.addEventListener('mousedown', (e) => e.preventDefault());
+                document.getElementById('format-bold').addEventListener('click', () => applyFormat('bold'));
+                document.getElementById('format-italic').addEventListener('click', () => applyFormat('italic'));
+                document.getElementById('format-bold-italic').addEventListener('click', () => applyFormat('bold-italic'));
+            }
+            
+            // --- PREVIEW ENGINE ---
+            function getAssets(charName) {
+                if (!charName || charName === "Narrator") return null;
+                if (charName === 'Raleigh') return characterAssets['Ral'];
+                if (charName === 'Celynn') return characterAssets['Cel'];
+                return characterAssets[charName];
+            }
+
+            function getTransform(line, type = 'final') {
+                const t = line["Character Transform"];
+                if (type === 'final') {
+                    return `translateX(calc(-50% + ${t.Translation.X}px)) translateY(${t.Translation.Y * -1}px) scale(${t.Scale.X}, ${t.Scale.Y}) rotate(${t.Angle}deg)`;
+                }
+                let offscreenX = t.Translation.X, offscreenY = t.Translation.Y;
+                const pos = line["Starts From Position"];
+                if (pos === "LEFT") offscreenX = -ui.previewStage.offsetWidth / 2 - 200;
+                else if (pos === "RIGHT") offscreenX = ui.previewStage.offsetWidth / 2 + 200;
+                else if (pos === "CENTER") offscreenY = -300;
+                return `translateX(calc(-50% + ${offscreenX}px)) translateY(${offscreenY * -1}px) scale(${t.Scale.X}, ${t.Scale.Y}) rotate(${t.Angle}deg)`;
+            }
+
+            function resetPreview() {
+                cancelAnimationFrame(previewAnimationId);
+                previewAnimationId = null;
+                previewState = { currentBranchName: null, dialogueIndex: -1, isRunning: false, isTyping: false, typewriterTimeout: null, previousLine: null, awaitingChoice: false };
+                onStageCharacters = {};
+                ui.previewStage.innerHTML = `<div id="preview-controls" style="display: flex; justify-content: center; align-items: center;"><button id="start-preview-btn">Start Preview</button></div>`;
+                ui.startPreviewBtn = document.getElementById('start-preview-btn');
+                ui.startPreviewBtn.addEventListener('click', startPreview);
+                ui.dialogueBox.style.display = 'none';
+                ui.charNameDisplay.textContent = '';
+                ui.dialogueTextDisplay.textContent = '';
+                ui.dialogueAdvanceIcon.style.display = 'none';
+            }
+
+            function startPreview() {
+                if (sceneData.length === 0 || (sceneData[0].Dialogue && sceneData[0].Dialogue.length === 0)) {
+                    alert("No scene data to preview! Add some dialogue first."); return;
+                }
+                resetPreview();
+                previewState.isRunning = true;
+                previewState.currentBranchName = sceneData[0].Name;
+                ui.previewStage.querySelector('#preview-controls').style.display = 'none';
+                ui.dialogueBox.style.display = 'block';
+                ui.dialogueBox.addEventListener('click', handlePreviewClick);
+                previewGameLoop();
+                renderNextDialogueLine();
+            }
+
+            function handlePreviewClick() {
+                if (previewState.isRunning && !previewState.awaitingChoice) {
+                    renderNextDialogueLine();
+                }
+            }
+
+            function typeWriter(text, i = 0) {
+                previewState.isTyping = true;
+                ui.dialogueAdvanceIcon.style.display = 'none';
+                if (i === 0) ui.dialogueTextDisplay.innerHTML = '';
+                if (i < text.length) {
+                    ui.dialogueTextDisplay.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
+                    previewState.typewriterTimeout = setTimeout(() => typeWriter(text, i + 1), 30);
+                } else {
+                    ui.dialogueTextDisplay.innerHTML = text;
+                    previewState.isTyping = false;
+                    ui.dialogueAdvanceIcon.style.display = 'block';
+                }
+            }
+
+            function renderNextDialogueLine() {
+                if (!previewState.isRunning || !previewState.currentBranchName) return;
+                if (previewState.isTyping) {
+                    clearTimeout(previewState.typewriterTimeout);
+                    const line = getCurrentBranch().Dialogue[previewState.dialogueIndex];
+                    ui.dialogueTextDisplay.innerHTML = line.Text;
+                    previewState.isTyping = false;
+                    ui.dialogueAdvanceIcon.style.display = 'block';
+                    return;
+                }
+                if (previewState.awaitingChoice) return;
+                
+                if (previewState.previousLine && previewState.previousLine.LeavesAfterDialogue) {
+                    const charName = previewState.previousLine.CharacterName;
+                    const charToRemove = onStageCharacters[charName];
+                    if (charToRemove) {
+                        charToRemove.style.transform = getTransform(previewState.previousLine, 'leaving');
+                        setTimeout(() => { charToRemove.remove(); }, 500);
+                        delete onStageCharacters[charName];
+                    }
+                }
+
+                ui.previewChoicesContainer.style.display = 'none';
+                const branch = getCurrentBranch();
+                if (!branch) { resetPreview(); return; }
+                
+                previewState.dialogueIndex++;
+                if (previewState.dialogueIndex >= branch.Dialogue.length) {
+                    handleEndOfBranch(branch);
+                    return;
+                }
+
+                const line = branch.Dialogue[previewState.dialogueIndex];
+                previewState.previousLine = line;
+                
+                ui.charNameDisplay.style.display = line.HideName ? 'none' : 'block';
+                ui.charNameDisplay.textContent = line.CharacterName;
+                typeWriter(line.Text);
+
+                document.querySelectorAll('.preview-char-container').forEach(el => el.classList.remove('is-speaking'));
+                
+                const assets = getAssets(line.CharacterName);
+
+                if (assets) {
+                    let charContainer = onStageCharacters[line.CharacterName];
+                    if (!charContainer) {
+                        charContainer = document.createElement('div');
+                        charContainer.className = 'preview-char-container';
+                        charContainer.dataset.char = line.CharacterName;
+                        charContainer.dataset.blinkTimer = Math.random() * 5 + 3;
+                        const charSprite = document.createElement('div');
+                        charSprite.className = 'preview-char-sprite';
+                        charSprite.style.backgroundImage = `url('${assets.portrait}')`;
+                        const charBlink = document.createElement('div');
+                        charBlink.className = 'preview-char-blink';
+                        charBlink.style.backgroundImage = `url('${assets.blink}')`;
+                        charContainer.appendChild(charSprite);
+                        charContainer.appendChild(charBlink);
+                        
+                        charContainer.style.transition = 'none';
+                        charContainer.style.transform = getTransform(line, 'initial');
+                        ui.previewStage.appendChild(charContainer);
+                        onStageCharacters[line.CharacterName] = charContainer;
+                        
+                        setTimeout(() => {
+                            charContainer.style.transition = 'transform 0.5s ease-in-out';
+                            charContainer.style.transform = getTransform(line, 'final');
+                        }, 20);
+
+                    } else {
+                        charContainer.style.transform = getTransform(line, 'final');
+                    }
+                    charContainer.classList.add('is-speaking');
+                }
+            }
+            
+            function handleEndOfBranch(branch) {
+                ui.dialogueBox.style.cursor = 'default';
+                ui.dialogueAdvanceIcon.style.display = 'none';
+                previewState.awaitingChoice = true;
+                const validChoices = (branch.choices || []).filter(c => c.choiceText && c.choiceBranch);
+
+                if (validChoices.length > 0) {
+                    ui.previewChoicesContainer.style.display = 'flex';
+                    ui.previewChoicesContainer.innerHTML = '';
+                    validChoices.forEach(choice => {
+                        const btn = document.createElement('button');
+                        btn.textContent = choice.choiceText;
+                        btn.onclick = () => jumpToBranch(choice.choiceBranch);
+                        ui.previewChoicesContainer.appendChild(btn);
+                    });
+                } else if (branch.NextBranch && branch.NextBranch !== "None" && branch.NextBranch !== "End") {
+                    setTimeout(() => jumpToBranch(branch.NextBranch), 500);
+                } else {
+                    ui.charNameDisplay.textContent = '';
+                    ui.dialogueTextDisplay.textContent = "--- SCENE END ---";
+                    previewState.isRunning = false;
+                }
+            }
+
+            function jumpToBranch(branchName) {
+                if (!sceneData.some(b => b.Name === branchName)) {
+                    ui.dialogueTextDisplay.innerHTML = `[PREVIEW ERROR] Branch "<b>${branchName}</b>" not found. Check editor configuration.`;
+                    previewState.isRunning = false;
+                    return;
+                }
+                previewState.currentBranchName = branchName;
+                previewState.dialogueIndex = -1;
+                previewState.previousLine = null;
+                previewState.awaitingChoice = false;
+                ui.dialogueBox.style.cursor = 'pointer';
+                renderNextDialogueLine();
+            }
+
+            function updatePreviewCharacters(deltaTime) {
+                Object.values(onStageCharacters).forEach(container => {
+                    let timer = parseFloat(container.dataset.blinkTimer) - deltaTime;
+                    if (timer <= 0) {
+                        const blinkEl = container.querySelector('.preview-char-blink');
+                        if (blinkEl) {
+                            blinkEl.style.display = 'block';
+                            setTimeout(() => { blinkEl.style.display = 'none'; }, 150);
+                        }
+                        timer = Math.random() * 5 + 3;
+                    }
+                    container.dataset.blinkTimer = timer;
+                });
+            }
+
+            let lastTimestamp = 0;
+            function previewGameLoop(timestamp) {
+                if (!previewState.isRunning) {
+                    cancelAnimationFrame(previewAnimationId);
+                    previewAnimationId = null;
+                    return;
+                }
+                const deltaTime = (timestamp - lastTimestamp) / 1000 || 0;
+                lastTimestamp = timestamp;
+                updatePreviewCharacters(deltaTime);
+                previewAnimationId = requestAnimationFrame(previewGameLoop);
+            }
+            
+            initialize();
+        });
+    </script>
+</body>
+</html>
