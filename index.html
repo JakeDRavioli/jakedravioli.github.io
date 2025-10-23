@@ -132,7 +132,7 @@
                     <h3 id="latest-post-title">Loading latest post...</h3><span id="latest-post-meta" class="post-meta"></span>
                 </div>
                 <p id="latest-post-description" class="post-description"></p>
-                <a id="latest-post-link" href="blog.html" class="read-more-btn">Read More <i class="fa-solid fa-arrow-right"></i></a>
+                <a id="latest-post-link" href="jdrblog.html" class="read-more-btn">Read More <i class="fa-solid fa-arrow-right"></i></a>
             </div>
         </div>
       
@@ -295,7 +295,7 @@
                     const latestPost = visiblePosts[0];
                     document.getElementById('latest-post-title').textContent = latestPost.title;
                     document.getElementById('latest-post-description').innerHTML = latestPost.description;
-                    document.getElementById('latest-post-link').href = `blog.html#/post/${latestPost.file.replace('.md', '')}`;
+                    document.getElementById('latest-post-link').href = `jdrblog.html#/post/${latestPost.file.replace('.md', '')}`;
                     const postDate = new Date(latestPost.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                     if (latestPost.forRebelliousTakeover) {
                         postContainer.classList.add('rebellious-takeover-theme');

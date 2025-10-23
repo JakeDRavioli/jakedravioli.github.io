@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rebellious Takeover - Scene Generator</title>
     <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+    <!-- Updated puter.js SDK URL -->
+    <script src="https://js.puter.com/v2/"></script>
     <style>
         /* FONT IMPORTS */
         @font-face {
@@ -180,6 +182,13 @@
         button:hover {
             background-color: var(--color-accent-primary);
             color: var(--color-background-darkest);
+        }
+
+        button:disabled {
+            background-color: var(--color-input-bg);
+            border-color: var(--color-input-border);
+            color: var(--color-text-dark);
+            cursor: not-allowed;
         }
 
         button.small-btn { padding: 5px 8px; font-size: 14px; }
@@ -433,7 +442,33 @@
             <div id="tab-preview" class="tab-pane"></div>
         </div>
     </div>
+        <!-- AI Query Modal -->
+    <div id="aiQueryModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:var(--color-background-main); border:2px solid var(--color-accent-primary); padding:20px; border-radius:8px; max-width:520px; width:94vw; box-shadow:0 4px 32px #000; display:flex; flex-direction:column; gap:12px;">
+            <h2 style="color:var(--color-accent-primary); font-family:'Permanent Marker',cursive; margin:0 0 6px 0;"><i class='fas fa-robot'></i> Query AI with Puter.js</h2>
+            <label for="aiQueryInput" style="color:var(--color-text-med); font-family:'Permanent Marker',cursive;">Describe what you want the AI to do:</label>
+            <textarea id="aiQueryInput" rows="4" style="width:100%;"></textarea>
 
+            <div style="display:flex; gap:10px; align-items:center;">
+                <label for="aiIterations" style="color:var(--color-text-med);">Iterations (how many times to extend the scene)</label>
+                <input id="aiIterations" type="number" min="1" max="10" value="1" style="width:80px; padding:6px;" />
+            </div>
+
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button id="aiQueryCancel" style="background:var(--color-grey-border); color:var(--color-text-main); border:1px solid var(--color-grey-border);">Cancel</button>
+                <button id="aiQuerySubmit" style="background:var(--color-accent-primary); color:var(--color-background-darkest); border:2px solid var(--color-accent-primary);">Send Query</button>
+            </div>
+            <div id="aiQueryStatus" style="color:var(--color-accent-primary); font-size:14px; margin-top:10px; display:none; background: var(--color-background-darkest); padding: 10px; border: 1px solid var(--color-grey-border); white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto;"></div>
+        </div>
+    </div>
+    <!-- AI Preview / Adjustment Modal -->
+    <div id="aiPreviewAdjustModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:1100; align-items:center; justify-content:center;">
+        <div style="background:var(--color-background-main); border:2px solid var(--color-accent-primary); padding:16px; border-radius:8px; max-width:760px; width:94vw; max-height:80vh; overflow:auto;">
+            <h2 style="color:var(--color-accent-primary); margin:0 0 8px 0;">Review generated lines</h2>
+            <div id="aiPreviewList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;"></div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;"><button id="aiPreviewCancel" style="background:var(--color-grey-border);">Cancel</button><button id="aiPreviewCommit" style="background:var(--color-accent-primary);">Commit to branch</button></div>
+        </div>
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
@@ -468,7 +503,7 @@
             let ui = {};
 
             function initialize() {
-                document.getElementById('tab-branches').innerHTML = `<div class="section-box file-ops"><h2><i class="fas fa-file-alt"></i> File Operations</h2><div class="button-group"><button id="exportJson"><i class="fas fa-file-export"></i> Export JSON</button><input type="file" id="importJson" accept=".json" style="display: none;"><button onclick="document.getElementById('importJson').click()"><i class="fas fa-file-import"></i> Import JSON</button></div></div><div class="section-box branch-manager"><h2><i class="fas fa-code-branch"></i> Branch Manager</h2><div class="button-group"><button id="addBranch">New Branch</button></div><label for="branchSelector">Current Branch:</label><select id="branchSelector"></select><div class="button-group" style="margin-top: 10px;"><button id="deleteBranch" class="small-btn">Delete Branch</button></div><hr style="border-color: var(--color-grey-border); margin: 20px 0;"><h3>Branch End Behavior</h3><label for="nextBranchSelector">Next Branch (if no choices):</label><select id="nextBranchSelector"></select><div id="choices-editor"><label>Player Choices:</label><div id="choices-list"></div><button id="addChoice" class="small-btn" style="margin-top: 10px;">Add Choice</button></div></div>`;
+                document.getElementById('tab-branches').innerHTML = `<div class="section-box file-ops"><h2><i class="fas fa-file-alt"></i> File Operations</h2><div class="button-group"><button id="exportJson"><i class="fas fa-file-export"></i> Export JSON</button><input type="file" id="importJson" accept=".json" style="display: none;"><button onclick="document.getElementById('importJson').click()"><i class="fas fa-file-import"></i> Import JSON</button></div></div><div class="section-box branch-manager"><h2><i class="fas fa-code-branch"></i> Branch Manager</h2><div class="button-group"><button id="addBranch">New Branch</button><button id="queryAI" style="background-color: var(--color-accent-primary-bg-tint-strong); color: var(--color-text-main); border: 2px solid var(--color-accent-primary);"><i class='fas fa-robot'></i> Query AI</button></div><label for="branchSelector">Current Branch:</label><select id="branchSelector"></select><div class="button-group" style="margin-top: 10px;"><button id="deleteBranch" class="small-btn">Delete Branch</button></div><hr style="border-color: var(--color-grey-border); margin: 20px 0;"><h3>Branch End Behavior</h3><label for="nextBranchSelector">Next Branch (if no choices):</label><select id="nextBranchSelector"></select><div id="choices-editor"><label>Player Choices:</label><div id="choices-list"></div><button id="addChoice" class="small-btn" style="margin-top: 10px;">Add Choice</button></div></div>`;
                 document.getElementById('tab-dialogue').innerHTML = `<div class="dialogue-timeline-panel"><div class="section-box dialogue-manager"><h2><i class="fas fa-align-left"></i> Dialogue Timeline</h2><div class="button-group"><button id="addDialogue">Add Dialogue</button><button id="deleteDialogue" class="small-btn">Delete Selected</button></div><ul id="dialogueList" class="dialogue-list"></ul></div></div><div class="dialogue-inspector-panel" id="inspectorPanel"><h2 style="margin-top:0;"><i class="fas fa-edit"></i> Dialogue Inspector</h2><div class="accordion-header active">Dialogue Details</div><div class="accordion-content"><div class="section-box"><label for="characterName">Character Name</label><div class="button-group" id="characterPresets"></div><input type="text" id="characterName" list="character-datalist"><datalist id="character-datalist"></datalist><div id="formatting-toolbar"><button id="format-bold" title="Bold (Ctrl+B)"><b>B</b></button><button id="format-italic" title="Italic (Ctrl+I)"><i>I</i></button><button id="format-bold-italic" title="Bold Italic"><b><i>BI</i></b></button></div><label for="dialogueText">Text</label><textarea id="dialogueText" rows="4"></textarea><label for="emotion">Emotion</label><select id="emotion"><option>Neutral</option><option>Surprised</option><option>Angry</option><option>Sad</option><option>Happy</option><option>Excited</option><option>Curious</option><option>Thinking</option><option>Tired</option><option>Embarassed</option><option>Playful</option></select><div class="checkbox-group"><input type="checkbox" id="hideName"><label for="hideName">Hide Name?</label></div><div class="checkbox-group"><input type="checkbox" id="leavesAfter"><label for="leavesAfter">Leaves After?</label></div></div></div><div class="accordion-header">Character Transform</div><div class="accordion-content"><div class="section-box"><label>Position Presets</label><div class="button-group" id="transformPresets"></div><h4>Translation</h4><div class="grid-3-col"><div><label for="transX">X</label><input type="number" id="transX" value="0"></div><div><label for="transY">Y</label><input type="number" id="transY" value="0"></div></div><h4>Scale</h4><div class="grid-3-col"><div><label for="scaleX">X</label><input type="number" id="scaleX" value="1" step="0.05"></div><div><label for="scaleY">Y</label><input type="number" id="scaleY" value="1" step="0.05"></div></div><h4>Shear</h4><div class="grid-3-col"><div><label for="shearX">X</label><input type="number" id="shearX" value="0" step="0.1"></div><div><label for="shearY">Y</label><input type="number" id="shearY" value="0" step="0.1"></div></div><label for="angle">Angle</label><input type="number" id="angle" value="0"></div></div><div class="accordion-header">Other Settings</div><div class="accordion-content"><div class="section-box"><label for="startPos">Starts From Position</label><select id="startPos"><option>CENTER</option><option>LEFT</option><option>RIGHT</option></select></div></div></div>`;
                 document.getElementById('tab-preview').innerHTML = `<div id="preview-stage"><div id="preview-controls"><button id="start-preview-btn">Start Preview</button></div></div><div id="preview-footer"><div id="preview-dialogue-box"><h3 id="preview-char-name"></h3><p id="preview-dialogue-text"></p><div id="dialogue-advance-icon">V</div></div><div id="preview-choices"></div></div>`;
 
@@ -498,6 +533,27 @@
                 else { selectBranch(sceneData[0].Name); }
                 refreshUI();
             }
+            // --- AI Query Modal Logic ---
+            setTimeout(() => {
+                const modal = document.getElementById('aiQueryModal');
+                const openBtn = document.getElementById('queryAI');
+                const cancelBtn = document.getElementById('aiQueryCancel');
+                const submitBtn = document.getElementById('aiQuerySubmit');
+                const input = document.getElementById('aiQueryInput');
+                const status = document.getElementById('aiQueryStatus');
+
+                if (openBtn) openBtn.onclick = () => { modal.style.display = 'flex'; input.value = ''; status.style.display = 'none'; };
+                if (cancelBtn) cancelBtn.onclick = () => { modal.style.display = 'none'; };
+                if (submitBtn) {
+                    submitBtn.onclick = () => {
+                        handleAIQuery(input.value, status, modal, submitBtn).catch(error => {
+                            console.error('AI Query Error:', error);
+                            status.textContent = 'Error: ' + error.message;
+                            submitBtn.disabled = false;
+                        });
+                    };
+                }
+            }, 500);
             
             function populatePresets() {
                 characterList.forEach(char => {
@@ -1073,6 +1129,293 @@
                 lastTimestamp = timestamp;
                 updatePreviewCharacters(deltaTime);
                 previewAnimationId = requestAnimationFrame(previewGameLoop);
+            }
+            
+            // --- REFACTORED AI INTEGRATION using Puter.js ---
+            async function handleAIQuery(query, statusElement, modalElement, submitButton) {
+                submitButton.disabled = true;
+                statusElement.textContent = 'Initializing AI...';
+                statusElement.style.display = 'block';
+
+                const promptSystem = `
+You are a dialogue and scene generator for the visual novel "Rebellious Takeover".
+
+Your primary goal is to generate a short, coherent scene (10-15 lines) that fits the user's request, reflecting the personalities, relationships, and worldbuilding of the story. The characters are a found family of rebels who live together, banter, swear, and support each other while planning to take down a massive corporation.
+
+--- WORLD & TONE ---
+
+Setting: Nexon, a dystopian cyber-city controlled by the mega-corporation Veritas Industries. The world is oppressive, but the story focuses on the characters' lives within it.
+
+The Team: A small group of rebels operating out of "Subroutine," a tech repair shop owned by their leader, Deren. They are all on the autistic spectrum in some way and prefer a laid-back, spontaneous approach to life over constant action.
+
+Main Goal: To take down Veritas and retrieve the stolen blueprints for the C.O.R.E., a powerful Vithium-based heart replacement invented by Deren.
+
+Tone: The tone should be casual, comedic, and filled with witty banter aimed at an audience of young adults in their 20s. The characters are not always "on mission"; they live their lives, get on each other's nerves, and care for one another deeply. Most of them swear casually and frequently. Nicknames are typically reserved for high-action or tense moments.
+
+--- CHARACTER DOSSIERS (PROTAGONISTS) ---
+
+Deren Kael: The leader. A cocky, sharp-witted tech genius and cat-human hybrid. He's a brilliant strategist but can be socially awkward (ASD, PTSD, mild OCD, insomnia). His main drive is reclaiming his C.O.R.E. technology from Veritas. (Lover: Phenn, Best Friend: Jayce).
+
+Phenn Ashcroft: A quiet, shy, and socially anxious cat-human hybrid (ASD, social anxiety). She is the team's precise ranged support. Deeply intelligent, tactical, and emotionally grounded. She is fiercely protective of Deren. (Lover: Deren).
+
+Raleigh "Ral" Avers: Pure chaotic energy. She's impulsive, fearless, loud, and incredibly loyal (ADHD, RSD). Loves to stir up trouble but is also deeply caring. (Married to: Celynn, Best Friend: Lyra).
+
+Celynn "Cel" Avers: The calm anchor to Ral's storm. He's a level-headed, street-smart marksman (ASD, anxiety, insomnia). Subtly funny and cynical, but loyal to the end. (Married to: Raleigh).
+
+Jayce Davren: The hacker. Incredibly persistent and strategic, but a stubborn loner who uses sarcasm as a defense (ASD, social anxiety, RSD). He's calm and collected, but secretly fears blood and getting hurt. (Lover: Lyra).
+
+Lyra Vayne: A brilliant, cocky, and socially clueless tech-nerd and engineering genius (ASD, ADHD, agoraphobia). She's addicted to online culture and despises corporations with a passion. Loves teasing Jayce. (Lover: Jayce, Best Friend: Raleigh).
+
+Maya "Mae" Everhart: A former Veritas innovator, now the team's reverse-engineering expert. Hyper-intelligent and empathetic, but struggles with severe depression and self-worth issues due to her past work. (Lover: Luca).
+
+Luca Voss: The team's inside man. A high-level data architect still working at Veritas, secretly leaking information. He's a calm, paranoid, and tactical genius motivated by protecting Mae and atoning for his role in the system. (Lover: Mae).
+
+Narrator: Use for scene descriptions or actions outside of character dialogue (e.g., to express a character’s actions). The HideName property for the Narrator MUST always be true, and its Character Transform should be the "Narrator" preset to keep it off-screen. Use this whenever someone enters the scene, leaves the scene, or something that can’t be properly shown happens.
+
+--- ANTAGONISTS ---
+
+Exyler: The primary antagonist. The out-of-touch CEO of Veritas Industries who sees Deren’s C.O.R.E. blueprints purely as a money-making opportunity. He plans to weaponize the technology over several years. He should be portrayed as cluelessly evil and corporate.
+
+Rick Didn't Askley: A running gag character. He's a low-level, perpetually unfortunate subordinate at Veritas Industries who seems to own every failed side-business in the city (soda brands, banks, etc.). Use him for comedic, absurd situations.
+
+--- OUTPUT FORMAT ---
+You MUST respond ONLY with a valid JSON array of dialogue objects. Do NOT include any explanations or surrounding text. Each object must follow this schema:
+
+CharacterName: (string) One of the names listed above. Use the character's first name only (e.g., "Raleigh", not "Ral").
+
+Text: (string) The dialogue for the character.
+
+Emotion: (string) One of: Neutral, Surprised, Angry, Sad, Happy, Excited, Curious, Thinking, Tired, Embarrassed, Playful.
+
+HideName: (boolean)
+
+LeavesAfterDialogue: (boolean)
+
+Starts From Position: (string) A position preset name (e.g., "Left", "Center", "Right"). Keep track of what characters are in what position, and make sure they don’t appear on the same transform.
+
+Character Transform: (Optional string) A position preset name for the final position. Make sure that this doesn’t collide with other characters. Use this to fine-tune the positions.
+
+Example Response:
+[
+{"CharacterName":"Raleigh","Text":"Hey, Cel! Betcha can't hit that drone from here.","Emotion":"Playful","HideName":false,"LeavesAfterDialogue":false,"Starts From Position":"Left"},
+{"CharacterName":"Celynn","Text":"Ral, we're supposed to be keeping a low profile.","Emotion":"Tired","HideName":false,"LeavesAfterDialogue":false,"Starts From Position":"Right"}
+]`;
+
+                try {
+                    const iterInput = document.getElementById('aiIterations');
+                    const iterations = Math.max(1, Math.min(10, parseInt(iterInput ? iterInput.value : '1') || 1));
+
+                    const branch = getCurrentBranch();
+                    let currentScene = branch ? branch.Dialogue.map(d => ({ CharacterName: d.CharacterName, Text: d.Text })) : [];
+                    
+                    const accumulatedNewLines = [];
+
+                    for (let it = 0; it < iterations; it++) {
+                        statusElement.textContent = `Generating iteration ${it + 1} of ${iterations}...`;
+                        
+                        const context = currentScene.length > 0 ? `\n\nCURRENT_SCENE_JSON: ${JSON.stringify(currentScene)}\n\nInstruction: Return ONLY a JSON array of NEW dialogue objects to APPEND to CURRENT_SCENE_JSON. Do NOT return the full scene.` : '';
+                        const userPrompt = `User request: ${query}\n${context}`;
+
+                        const messages = [
+                            { role: 'system', content: promptSystem },
+                            { role: 'user', content: userPrompt }
+                        ];
+
+                        const stream = await puter.ai.chat(messages, { stream: true, model: 'gpt-5-nano' });
+                        let fullResponse = '';
+                        statusElement.textContent = ''; // Clear for streaming
+                        for await (const part of stream) {
+                            if (part?.text) {
+                                fullResponse += part.text;
+                                statusElement.textContent = fullResponse; // Live update
+                            }
+                        }
+
+                        const parsedNew = tryParseJsonFromText(fullResponse, true); // Use lenient parsing
+                        
+                        if (parsedNew && parsedNew.length > 0) {
+                            accumulatedNewLines.push(...parsedNew);
+                            // Add new lines to context for the next iteration
+                            currentScene.push(...parsedNew.map(x => ({ CharacterName: x.CharacterName, Text: x.Text })));
+                        } else {
+                            statusElement.textContent += `\n\n[Warning] Iteration ${it + 1} did not produce valid dialogue. Stopping generation.`;
+                            break; // Stop if we get a bad response
+                        }
+                    }
+
+                    if (accumulatedNewLines.length > 0) {
+                        applyDialogueFromAI(accumulatedNewLines, statusElement, modalElement);
+                    } else {
+                        statusElement.textContent = 'AI did not generate any dialogue. Please try a different prompt.';
+                    }
+
+                } catch (err) {
+                    console.error('Puter.js AI Query Error:', err);
+                    statusElement.textContent = 'An error occurred with the AI query. Check the console for details.';
+                } finally {
+                    submitButton.disabled = false;
+                }
+            }
+
+            // Helper to parse JSON from model text
+            function tryParseJsonFromText(text, lenient = false) {
+                if (!text) return null;
+                // Try extracting first JSON array in text, as it's the most likely format
+                const arrayMatch = text.match(/\[([\s\S]*?)\]/m);
+                if (arrayMatch) {
+                    try { 
+                        const j = JSON.parse(arrayMatch[0]); 
+                        if (Array.isArray(j)) return j; 
+                    } catch (e) {
+                        console.warn("Could not parse extracted JSON array:", e);
+                    }
+                }
+                // Direct parse attempt
+                try { 
+                    const j = JSON.parse(text); 
+                    if (Array.isArray(j) || typeof j === 'object') return (Array.isArray(j) ? j : [j]); 
+                } catch (e) {}
+
+                if (lenient) {
+                    // Try to be more lenient: lines that look like Character: text
+                    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+                    const out = lines.map(l => {
+                        const m = l.match(/^([^:\-\(\[]+)[\):\-\)]?\s*(?:\(.*?\))?\s*"?(.*)"?$/);
+                        if (m) return { CharacterName: m[1].trim(), Text: m[2].trim(), Emotion: 'Neutral', HideName: false, LeavesAfterDialogue: false };
+                        return null;
+                    }).filter(Boolean);
+                    if (out.length) return out;
+                }
+                return null;
+            }
+
+            // Apply parsed dialogue array to branch
+            function applyDialogueFromAI(parsedArray, statusElementInner, modalElementInner) {
+                // helpers to normalize start position names and map presets to transform objects
+                function normalizeStartPosName(v) {
+                    if (!v) return null;
+                    const s = String(v).trim().toLowerCase().replace(/[\s_-]/g, '');
+                    if (s === 'center' || s === 'centre' || s === 'centered') return 'Center';
+                    if (s === 'left') return 'Left';
+                    if (s === 'right') return 'Right';
+                    if (s === 'lfocus') return 'L-Focus';
+                    if (s === 'rfocus') return 'R-Focus';
+                    if (s === 'offl' || s === 'offleft') return 'Off-L';
+                    if (s === 'offr' || s === 'offright') return 'Off-R';
+                    if (s === 'zoom') return 'Zoom';
+                    if (s === 'tilted') return 'Tilted';
+                    if (s === 'narrator') return 'Narrator';
+                    return String(v).trim();
+                }
+
+                function presetToTransform(presetName) {
+                    const p = normalizeStartPosName(presetName) || 'Center';
+                    const preset = transformPresets[p] || transformPresets['Center'];
+                    return {
+                        Translation: { X: preset.transX || 0, Y: preset.transY || 0 },
+                        Scale: { X: preset.scaleX || 1, Y: preset.scaleY || 1 },
+                        Shear: { X: 0, Y: 0 },
+                        Angle: preset.angle || 0
+                    };
+                }
+                
+                const normalized = parsedArray.map((item) => {
+                    let name = item.CharacterName || 'Narrator';
+                    const nameLower = String(name).trim().toLowerCase();
+                    if (nameLower === 'cel') name = 'Celynn';
+                    if (nameLower === 'ral') name = 'Raleigh';
+
+                    let startPos = normalizeStartPosName(item['Starts From Position'] || item['startPos']);
+                    if (!startPos) {
+                        const allCharsInBatch = [...new Set(parsedArray.map(p => p.CharacterName).filter(Boolean))];
+                        startPos = determineStartPosition(name, allCharsInBatch);
+                    }
+
+                    let charTransform = null;
+                    if (item['Character Transform']) {
+                        if (typeof item['Character Transform'] === 'string') {
+                            charTransform = presetToTransform(item['Character Transform']);
+                        } else if (item['Character Transform'].Translation) {
+                            charTransform = item['Character Transform'];
+                        }
+                    }
+                    if (!charTransform) {
+                         charTransform = presetToTransform(startPos);
+                    }
+
+                    return {
+                        CharacterName: name,
+                        Text: item.Text || '',
+                        Emotion: item.Emotion || 'Neutral',
+                        HideName: !!item.HideName,
+                        LeavesAfterDialogue: !!item.LeavesAfterDialogue,
+                        "Character Transform": charTransform,
+                        "Starts From Position": (startPos || 'Center').toUpperCase()
+                    };
+                });
+
+                // Open the preview/adjust modal so user can tweak positions
+                const previewModal = document.getElementById('aiPreviewAdjustModal');
+                const previewList = document.getElementById('aiPreviewList');
+                const previewCancel = document.getElementById('aiPreviewCancel');
+                const previewCommit = document.getElementById('aiPreviewCommit');
+
+                previewList.innerHTML = '';
+                const clampedNormalized = JSON.parse(JSON.stringify(normalized)); // deep copy
+
+                clampedNormalized.forEach((item) => {
+                    const row = document.createElement('div');
+                    row.className = 'ai-preview-row';
+                    row.style.cssText = 'display:flex; gap:8px; align-items:center; padding: 4px; border-bottom: 1px solid var(--color-grey-border)';
+                    const meta = document.createElement('div');
+                    meta.style.flex = '1';
+                    meta.innerHTML = `<b>${item.CharacterName}</b>: <span>${item.Text}</span>`;
+                    const xInput = document.createElement('input');
+                    xInput.type = 'number';
+                    xInput.value = item["Character Transform"]?.Translation?.X ?? 0;
+                    xInput.style.width = '80px';
+                    row.appendChild(meta);
+                    const xLabel = document.createElement('label');
+                    xLabel.textContent = 'X:';
+                    xLabel.style.marginBottom = 0;
+                    row.appendChild(xLabel);
+                    row.appendChild(xInput);
+                    previewList.appendChild(row);
+                });
+
+                previewModal.style.display = 'flex';
+
+                previewCancel.onclick = () => { previewModal.style.display = 'none'; };
+                previewCommit.onclick = () => {
+                    const finalItems = [];
+                    previewList.querySelectorAll('.ai-preview-row').forEach((row, idx) => {
+                        const item = clampedNormalized[idx];
+                        const input = row.querySelector('input[type=number]');
+                        if (input) {
+                           item["Character Transform"].Translation.X = parseFloat(input.value) || 0;
+                        }
+                        finalItems.push(item);
+                    });
+
+                    const branch = getCurrentBranch();
+                    if (branch) {
+                        branch.Dialogue.push(...finalItems);
+                        refreshUI();
+                        selectDialogue(branch.Dialogue.length - 1);
+                    }
+                    previewModal.style.display = 'none';
+                    modalElementInner.style.display = 'none';
+                };
+            }
+
+            function determineStartPosition(character, allCharactersInScene) {
+                if (allCharactersInScene.length <= 1) return "CENTER";
+                const uniqueChars = [...new Set(allCharactersInScene.filter(c => c !== "Narrator"))];
+                const charIndex = uniqueChars.indexOf(character);
+                if (uniqueChars.length === 2) return charIndex === 0 ? "LEFT" : "RIGHT";
+                if (charIndex === 0) return "LEFT";
+                if (charIndex === uniqueChars.length - 1) return "RIGHT";
+                return "CENTER";
             }
             
             initialize();

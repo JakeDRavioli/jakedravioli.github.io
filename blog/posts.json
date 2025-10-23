@@ -108,5 +108,13 @@
         "file": "pc-upgrade.md",
         "readingTime": "Medium read",
         "tags": ["irl","pc","life update","update"]
-    }
+    },
+    {
+    "title": "We're Moving! (No, not houses. The website.)",
+    "date": "2025-10-23",
+    "description": "Announcing the official move from jakedravioli.neocities.org to jakedravioli.github.io, and digging into the workflow-related reasons why.",
+    "file": "the-big-move.md",
+    "forRebelliousTakeover": false,
+    "nsfw": false
+  }
 ]
