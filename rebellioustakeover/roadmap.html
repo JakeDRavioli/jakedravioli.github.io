@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebellious Takeover // Public Roadmap</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts from your main site -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Apply RT fonts */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            /* Force a dark, cyberpunk-ish theme */
+            background-color: #111827; /* bg-gray-900 */
+            color: #F9FAFB; /* text-gray-50 */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        /* Use the RT background from your repo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('Images/rebTakeover/rebBackground-min.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        /* Custom scrollbar matching the RT red */
+        #roadmap-board::-webkit-scrollbar {
+            height: 12px;
+        }
+        #roadmap-board::-webkit-scrollbar-track {
+            background: #1F2937; /* bg-gray-800 */
+            border-radius: 10px;
+        }
+        #roadmap-board::-webkit-scrollbar-thumb {
+            background-color: #ff384f; /* RT Red */
+            border-radius: 10px;
+            border: 3px solid #1F2937; /* bg-gray-800 */
+        }
+        #roadmap-board::-webkit-scrollbar-thumb:hover {
+            background-color: #fca5a5; /* Lighter RT Red */
+        }
+
+        /* Loading Spinner with RT red */
+        .loader {
+            border: 4px solid #374151; /* bg-gray-700 */
+            border-top: 4px solid #ff384f; /* RT Red */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Custom card styling to match your site's aesthetic */
+        .roadmap-column {
+            background-color: rgba(10, 10, 10, 0.7);
+            border: 2px solid #444;
+            backdrop-filter: blur(5px);
+        }
+
+        .roadmap-column h3 {
+            color: #ff384f; /* RT Red */
+            text-shadow: 1px 1px 5px rgba(255, 56, 79, 0.5);
+        }
+
+        .roadmap-card {
+            background-color: #1a1a1a; /* Lighter dark bg */
+            border-left: 4px solid #ff384f; /* RT Red accent */
+        }
+        
+        .roadmap-card h4 {
+            color: #f0f0f0;
+        }
+        
+        .roadmap-card p {
+            color: #a8a8a8; /* Lighter text for description */
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-hidden flex flex-col">
+    
+    <!-- Header -->
+    <header class="p-6 border-b border-gray-700 shadow-lg bg-gray-800/50 backdrop-blur-sm flex flex-col items-center justify-center">
+        <!-- RT Logo from your repo -->
+        <img src="Images/rebTakeoverNew.png" alt="Rebellious Takeover Logo" style="width: 400px; max-width: 70%; filter: drop-shadow(0 0 10px rgba(255,56,79,0.5));">
+        <h2 class="text-xl font-light text-center" style="font-family: 'Permanent Marker', cursive; color: #ff384f; margin-top: -10px;">
+            PUBLIC DEVELOPMENT ROADMAP
+        </h2>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading" class="flex-grow flex flex-col items-center justify-center text-gray-400">
+        <div class="loader mb-4"></div>
+        <p class="text-lg" style="font-family: 'Permanent Marker', cursive;">Connecting to Subroutine...</p>
+    </div>
+
+    <!-- 
+      Roadmap Board Container
+      This will be a horizontal-scrolling flex container 
+    -->
+    <main id="roadmap-board" class="flex-grow flex p-6 overflow-x-auto overflow-y-hidden hidden">
+        <!-- 
+          Columns will be dynamically generated here.
+          Example structure:
+          <div class="roadmap-column w-80 bg-gray-800 rounded-lg p-4 flex-shrink-0 mr-4 shadow-xl">
+              <h3 class="text-xl font-bold text-white mb-4">Backlog</h3>
+              <div class="card-list space-y-3">
+                  <div class="roadmap-card bg-gray-700 rounded-md p-3 shadow-lg">
+                      <h4 class="font-semibold text-gray-100">Make Goober arcade cab playable</h4>
+                      <p class="text-sm text-gray-300 mt-1">Actually hook up the Goober Origins game to the cabinet in the hideout.</p>
+                  </div>
+              </div>
+          </div>
+        -->
+    </main>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Config ---
+        // POPULATED FROM YOUR blogscript.js
+        const firebaseConfig = {
+            apiKey: "AIzaSyDYoHigA9mww7bCDms_biNkCqrXaG3n9nc",
+            authDomain: "jakedravioli-blog.firebaseapp.com",
+            projectId: "jakedravioli-blog",
+            storageBucket: "jakedravioli-blog.appspot.com",
+            messagingSenderId: "254528428131",
+            appId: "1:254528428131:web:9294cdc18e6cb93ab10056",
+            measurementId: "G-9M1D7X041C"
+        };
+        
+        // These global vars are provided by the canvas environment.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'rt-roadmap-dev';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // --- App State ---
+        let db, auth;
+        let columnsData = {}; // Stores column data by ID
+        let cardsData = {};   // Stores card data, grouped by column ID
+
+        // --- DOM Elements ---
+        const board = document.getElementById('roadmap-board');
+        const loadingEl = document.getElementById('loading');
+        
+        // --- Core Functions ---
+
+        /**
+         * Renders the entire board based on the current state
+         * of columnsData and cardsData.
+         */
+        function renderBoard() {
+            if (Object.keys(columnsData).length === 0) {
+                // Don't render if columns haven't loaded
+                return;
+            }
+
+            // Hide loading, show board
+            loadingEl.style.display = 'none';
+            board.classList.remove('hidden');
+
+            // Clear the board
+            board.innerHTML = '';
+
+            // Get columns and sort them by their 'order' field
+            const sortedColumns = Object.values(columnsData).sort((a, b) => a.order - b.order);
+
+            // Loop through sorted columns and create them
+            sortedColumns.forEach(col => {
+                const colEl = document.createElement('div');
+                colEl.className = "roadmap-column w-80 rounded-lg p-4 flex-shrink-0 mr-4 shadow-xl flex flex-col";
+                colEl.dataset.colId = col.id;
+
+                // Create column header (RT Style)
+                const headerEl = document.createElement('h3');
+                headerEl.className = "text-2xl font-bold mb-4";
+                headerEl.textContent = col.title;
+                colEl.appendChild(headerEl);
+
+                // Create card list container
+                const cardListEl = document.createElement('div');
+                cardListEl.className = "card-list space-y-3 overflow-y-auto pr-2"; // Added pr-2 for scrollbar
+                
+                // Get cards for this column and sort them
+                const cards = cardsData[col.id] || [];
+                const sortedCards = cards.sort((a, b) => a.order - b.order);
+
+                // Loop through sorted cards and create them
+                sortedCards.forEach(card => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = "roadmap-card rounded-md p-3 shadow-lg hover:bg-gray-700 transition-colors duration-150";
+                    
+                    let cardHTML = `<h4 class="font-semibold text-lg">${card.title}</h4>`;
+                    if (card.description) {
+                        cardHTML += `<p class="mt-1">${card.description}</p>`;
+                    }
+                    cardEl.innerHTML = cardHTML;
+                    cardListEl.appendChild(cardEl);
+                });
+
+                colEl.appendChild(cardListEl);
+                board.appendChild(colEl);
+            });
+        }
+
+        /**
+         * Sets up the real-time listeners for columns and cards.
+         */
+        function setupListeners() {
+            console.log("Setting up listeners for public data...");
+            const publicDataPath = `/artifacts/${appId}/public/data`;
+            
+            // --- Listener for Columns ---
+            const colsRef = collection(db, `${publicDataPath}/roadmap_columns`);
+            onSnapshot(colsRef, (snapshot) => {
+                const newColsData = {};
+                snapshot.forEach(doc => {
+                    newColsData[doc.id] = { id: doc.id, ...doc.data() };
+                });
+                columnsData = newColsData;
+                console.log("Columns updated:", columnsData);
+                renderBoard(); // Re-render the board
+            }, (error) => {
+                console.error("Error listening to columns:", error);
+                loadingEl.innerHTML = `<p class="text-red-400">Error: Could not load roadmap columns.</p>`;
+            });
+
+            // --- Listener for Cards ---
+            const cardsRef = collection(db, `${publicDataPath}/roadmap_cards`);
+            onSnapshot(cardsRef, (snapshot) => {
+                const newCardsData = {};
+                snapshot.forEach(doc => {
+                    const card = { id: doc.id, ...doc.data() };
+                    const colId = card.column;
+                    if (!colId) return; // Skip cards without a column
+
+                    if (!newCardsData[colId]) {
+                        newCardsData[colId] = [];
+                    }
+                    newCardsData[colId].push(card);
+                });
+                cardsData = newCardsData;
+                console.log("Cards updated:", cardsData);
+                renderBoard(); // Re-render the board
+            }, (error) => {
+                console.error("Error listening to cards:", error);
+                loadingEl.innerHTML = `<p class="text-red-400">Error: Could not load roadmap cards.</p>`;
+            });
+        }
+
+        /**
+         * Initializes the app and authenticates the user.
+         */
+        async function init() {
+            try {
+                // Enable debug logging for Firestore
+                setLogLevel('debug');
+
+                // Check if firebaseConfig is populated
+                if (!firebaseConfig.apiKey) {
+                    console.error("Firebase config is missing!");
+                    loadingEl.innerHTML = `<p style="color: #ff384f; font-family: 'Permanent Marker', cursive;">Error: Firebase config missing. Cannot connect to database.</p>`;
+                    return;
+                }
+
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        // User is signed in.
+                        console.log("User authenticated:", user.uid);
+                        // Now that we're auth'd, set up the data listeners
+                        setupListeners();
+                    } else {
+                        // User is signed out. Try to sign in.
+                        console.log("No user. Attempting sign in...");
+                        try {
+                            if (initialAuthToken) {
+                                console.log("Using initial auth token...");
+                                await signInWithCustomToken(auth, initialAuthToken);
+                            } else {
+                                console.log("No token. Signing in anonymously...");
+                                await signInAnonymously(auth);
+                            }
+                        } catch (authError) {
+                            console.error("Authentication failed:", authError);
+                            loadingEl.innerHTML = `<p style="color: #ff384f; font-family: 'Permanent Marker', cursive;">Error: Authentication failed. Cannot load data.</p>`;
+                        }
+                    }
+                });
+
+            } catch (e) {
+                console.error("Initialization failed:", e);
+                loadingEl.innerHTML = `<p style="color: #ff384f; font-family: 'Permanent Marker', cursive;">Error: Failed to initialize. ${e.message}</p>`;
+            }
+        }
+
+        // --- Entry Point ---
+        init();
+
+        /*
+        
+        --- HOW TO ADD DATA (FOR MYSELF, OR ANYONE ELSE LOOKING) ---
+
+        This page is a READ-ONLY viewer. To add/edit data, you need to
+        go into your Firebase Firestore console for the 'jakedravioli-blog' project.
+
+        You'll need two collections:
+        
+        1. Collection: `artifacts/{YOUR_APP_ID}/public/data/roadmap_columns`
+           - Create a new document for each column (e.g., doc ID: "todo")
+           - Fields:
+             - `title` (string): "To-Do"
+             - `order` (number): 1
+
+           - Example Doc ("inprogress"):
+             - `title` (string): "In Progress"
+             - `order` (number): 2
+        
+        2. Collection: `artifacts/{YOUR_APP_ID}/public/data/roadmap_cards`
+           - Create a new document for each card.
+           - Fields:
+             - `title` (string): "Core: Save/Load System"
+             - `description` (string): "Implement the SaveGame object and logic."
+             - `column` (string): "todo"  (This MUST match the doc ID from the columns collection)
+             - `order` (number): 1
+
+           - To move a card, just edit the `column` field!
+             (e.g., change "todo" to "inprogress")
+             
+        */
+
+    </script>
+</body>
+</html>
+
