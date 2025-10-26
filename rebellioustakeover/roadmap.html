@@ -1599,7 +1599,7 @@
              // --- Buttons ---
              const btnRow = document.createElement('div'); btnRow.className = 'mt-4 flex justify-end gap-2 border-t border-gray-700 pt-3'; panel.appendChild(btnRow);
              const cancelBtn = document.createElement('button'); cancelBtn.className = 'px-4 py-2 rt-btn-auth text-sm'; cancelBtn.textContent='Cancel';
-             cancelBtn.addEventListener('click', () => overlay.remove()); btnRow.appendChild(cancelTBtn);
+             cancelBtn.addEventListener('click', () => overlay.remove()); btnRow.appendChild(cancelBtn);
 
              const saveBtn = document.createElement('button'); saveBtn.className = 'px-4 py-2 rt-btn rt-btn-add text-sm'; saveBtn.textContent='Save Changes';
              saveBtn.addEventListener('click', async () => { 
