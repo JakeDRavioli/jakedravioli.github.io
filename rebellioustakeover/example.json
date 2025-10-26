@@ -1,0 +1,347 @@
+{
+  "columns": [
+    {
+      "id": "todo",
+      "order": 2,
+      "title": "Incomplete"
+    },
+    {
+      "id": "inprogress",
+      "title": "In Progress",
+      "order": 3
+    },
+    {
+      "id": "partlydone",
+      "title": "Partly Done",
+      "order": 4
+    },
+    {
+      "id": "done",
+      "order": 5,
+      "title": "Finished"
+    }
+  ],
+  "cards": [
+    {
+      "id": "task-vn-trigger",
+      "column": "todo",
+      "dueDate": null,
+      "description": "Implement the interaction point on the couch in 'Subroutine' that allows the player to trigger and select Visual Novel-style story scenarios.",
+      "tags": [
+        "vn-system",
+        "interaction",
+        "story"
+      ],
+      "order": 1,
+      "label": "code",
+      "title": "Add 'Hangout' System (Couch)",
+      "imageUrl": ""
+    },
+    {
+      "id": "task-field-dialogue",
+      "imageUrl": "",
+      "title": "Implement 'Field Dialogue' UI",
+      "order": 2,
+      "description": "Add the 'Sonic Forces-style' UI for character banter and dialogue that occurs during missions (outside of full VN scenes).",
+      "dueDate": null,
+      "tags": [
+        "ui",
+        "dialogue"
+      ],
+      "label": "code",
+      "column": "todo"
+    },
+    {
+      "id": "task-playable-phenn",
+      "imageUrl": "",
+      "column": "todo",
+      "order": 3,
+      "title": "Implement Playable Phenn",
+      "tags": [
+        "character",
+        "combat",
+        "phenn"
+      ],
+      "description": "Add Phenn Ashcroft as a playable character. This includes her model, animation set, and Vithium revolver combat logic (ranged support)."
+    },
+    {
+      "id": "task-playable-ral",
+      "description": "Add Ral Avers as a playable character. Focus on her chaotic, high-speed gremlin energy. Needs a melee combat set.",
+      "order": 4,
+      "imageUrl": "",
+      "title": "Implement Playable Ral",
+      "column": "todo",
+      "tags": [
+        "character",
+        "combat",
+        "ral"
+      ]
+    },
+    {
+      "id": "task-takeover-system",
+      "tags": [
+        "core-gameplay",
+        "mechanic",
+        "veritas",
+        "difficulty"
+      ],
+      "title": "Implement 'Veritas Takeover' System",
+      "description": "Add the core 'Takeover Percentage' mechanic. This system will increase game difficulty as the campaign progresses, buffing enemies, increasing surveillance, and potentially disabling saves outside the hideout.",
+      "dueDate": null,
+      "label": "code",
+      "imageUrl": "",
+      "column": "todo",
+      "order": 5
+    },
+    {
+      "id": "task-shop-rumbling-ramen",
+      "imageUrl": "",
+      "tags": [
+        "interaction",
+        "shop",
+        "hub-world",
+        "buffs"
+      ],
+      "label": "lore",
+      "dueDate": null,
+      "column": "todo",
+      "title": "Implement 'Rumbling Ramen' Shop",
+      "description": "Model and script the 'Rumbling Ramen' shop near Subroutine. Player should be able to interact with the owner and buy items for buffs.",
+      "order": 6
+    },
+    {
+      "id": "task-playable-celynn",
+      "order": 7,
+      "tags": [
+        "character",
+        "combat",
+        "celynn"
+      ],
+      "column": "todo",
+      "imageUrl": "",
+      "title": "Implement Playable Celynn",
+      "description": "Add Celynn Avers as a playable character. Needs model, animations, and combat logic based on his calm, tactical, street-smart profile."
+    },
+    {
+      "id": "task-pause-menu-event",
+      "title": "Implement Pause Menu 'Account Banned' Event",
+      "description": "Create the rare random event in the pause menu where the player's 'phone' gets banned for 'Rebellious activity'. The character should then run a script like 'newnexnetaccountgen.py' to generate a new account.",
+      "label": "code",
+      "order": 8,
+      "tags": [
+        "ui",
+        "event",
+        "world-building",
+        "veritas"
+      ],
+      "dueDate": null,
+      "column": "todo",
+      "imageUrl": ""
+    },
+    {
+      "id": "task-nsfw-toggle",
+      "dueDate": null,
+      "tags": [
+        "settings",
+        "ui",
+        "nsfw",
+        "vn-system"
+      ],
+      "description": "Implement the 'After Dark' toggle in the game's settings and remove any adult content from the base game. This toggle will control visibility of 18+ content, ensuring it's optional for players.",
+      "title": "Prepare for 'Definitive Edition' content",
+      "label": "design",
+      "column": "todo",
+      "imageUrl": "",
+      "order": 9
+    },
+    {
+      "id": "task-playable-mae",
+      "title": "Implement Playable Mae (Late-Game)",
+      "description": "Add Maya 'Mae' Everhart as a late-game unlockable character. Her 'combat' should focus on reverse-engineering Veritas tech and support skills, rather than direct fighting.",
+      "column": "todo",
+      "imageUrl": "",
+      "tags": [
+        "character",
+        "mechanic",
+        "mae",
+        "story"
+      ],
+      "order": 11
+    },
+    {
+      "id": "task-combat-tag-system",
+      "order": 13,
+      "title": "Mechanic: 'HiFi Rush-style' Tag-In",
+      "dueDate": null,
+      "imageUrl": "",
+      "tags": [
+        "combat",
+        "core-gameplay",
+        "vn-system"
+      ],
+      "label": "code",
+      "column": "todo",
+      "description": "Implement the team tag-in combat system. This should be tied to the relationship level from the VN scenarios to improve the power of the tag-in attack."
+    },
+    {
+      "id": "VWz3CJnK7jRwgD4f7Xhr",
+      "dueDate": null,
+      "description": "Self-explanatory. We don't have a *settings* menu yet.",
+      "createdAt": "2025-10-26T15:54:56.541Z",
+      "column": "todo",
+      "tags": [
+        "settings",
+        "ux"
+      ],
+      "order": 14,
+      "title": "Add Settings",
+      "imageUrl": "",
+      "label": "code"
+    },
+    {
+      "id": "task-voice-blips",
+      "tags": [
+        "audio",
+        "core-feature",
+        "vn"
+      ],
+      "title": "Implement Character Voice Blips",
+      "column": "inprogress",
+      "imageUrl": "",
+      "order": 1,
+      "description": "Add audio components for dialogue 'blips' for all main characters. They're way too silent right now.\nThink of these blips as the blips you hear in Undertale or Deltarune whenever a character speaks."
+    },
+    {
+      "id": "task-first-mission",
+      "imageUrl": "",
+      "title": "Build First Mission (Tutorial)",
+      "label": "design",
+      "dueDate": null,
+      "column": "inprogress",
+      "tags": [
+        "mission",
+        "tutorial",
+        "core-gameplay"
+      ],
+      "order": 2,
+      "description": "**CRITICAL:** Develop the first mission. This will act as a tutorial in the Subroutine training area, introducing core combat and movement mechanics for Deren."
+    },
+    {
+      "id": "task-subroutine-map",
+      "label": "design",
+      "dueDate": null,
+      "column": "inprogress",
+      "tags": [
+        "level-design",
+        "hub-world"
+      ],
+      "imageUrl": "",
+      "order": 3,
+      "description": "Block out the 'Subroutine' tech store and hideout. This will serve as the main hub map for players to explore and access missions/VN scenes.",
+      "title": "Create 'Subroutine' Hub (Prototype)"
+    },
+    {
+      "id": "story-ch1-draft",
+      "label": "lore",
+      "description": "Write the full script for the introductory VN scenes. Needs to establish the team's dynamic and Deren's motivation (C.O.R.E. blueprints).",
+      "dueDate": null,
+      "tags": [
+        "writing",
+        "story",
+        "vn-system"
+      ],
+      "column": "inprogress",
+      "order": 4,
+      "imageUrl": "",
+      "title": "Draft Chapter 1: 'Rebellion: Start!'"
+    },
+    {
+      "id": "task-veritas-goon",
+      "imageUrl": "",
+      "tags": [
+        "vroid",
+        "modelling",
+        "world-building"
+      ],
+      "description": "Make the models for NPCs in VRoid Studio. Use the outfit system to customize characters randomly, but otherwise, make 4 base characters (2 male, 2 female).",
+      "order": 5,
+      "column": "inprogress",
+      "title": "VRoid Basic Models (NPCs)",
+      "label": "design",
+      "dueDate": null
+    },
+    {
+      "id": "task-deren-core-vfx",
+      "description": "Add the glowing plasma 'D' effect and other visual flair to Deren's C.O.R.E. implant on his character model. Will require implementing VFX blueprints or something along those lines that are connected to the base mesh, into BP_ModularCharacter.",
+      "tags": [
+        "vfx",
+        "character",
+        "deren"
+      ],
+      "dueDate": null,
+      "imageUrl": "",
+      "order": 6,
+      "column": "inprogress",
+      "title": "VFX Pass: Deren's C.O.R.E.",
+      "label": "art"
+    },
+    {
+      "id": "task-baldren-bug",
+      "label": "bug",
+      "imageUrl": "https://jakedravioli.github.io/Images/blog/skinclip/baldren.png",
+      "title": "Fix 'Baldren' Skin Masking Bug",
+      "checklist": [
+        {
+          "text": "do something",
+          "complete": false
+        },
+        {
+          "complete": false,
+          "text": "do another thing"
+        }
+      ],
+      "column": "done",
+      "description": "Investigated and fixed the hilarious bug that was hiding Deren's hair, ears, and tail. The smug, bald cat-boy is no more... mostly.",
+      "dueDate": "2025-10-25",
+      "order": 1,
+      "tags": [
+        "bug",
+        "art",
+        "deren",
+        "baldren"
+      ]
+    },
+    {
+      "id": "task-vn-ui",
+      "imageUrl": "",
+      "column": "done",
+      "title": "Design & Implement Visual Novel UI",
+      "order": 2,
+      "dueDate": null,
+      "label": "design",
+      "description": "Create the main UI for the Visual Novel system. This includes the dialogue box, character sprite display, and the choice menu.",
+      "tags": [
+        "ui",
+        "vn-system",
+        "story"
+      ]
+    },
+    {
+      "id": "task-deren-overload",
+      "label": "code",
+      "imageUrl": "",
+      "order": 1,
+      "column": "partlydone",
+      "tags": [
+        "combat",
+        "mechanic",
+        "deren",
+        "core-gameplay"
+      ],
+      "description": "Implement Deren's 'limit breaker' form. This should be a temporary high-damage state, triggered by the special serum, which also carries risk (internal damage, potential death).",
+      "title": "Mechanic: Deren's 'C0R3 0V3RL0AD'",
+      "dueDate": null
+    }
+  ],
+  "exportedAt": "2025-10-26T17:21:55.885Z"
+}

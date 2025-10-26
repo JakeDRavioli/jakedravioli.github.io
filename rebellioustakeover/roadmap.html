@@ -4,359 +4,2067 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rebellious Takeover // Public Roadmap</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonts from your main site -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        /* Apply RT fonts */
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            /* Force a dark, cyberpunk-ish theme */
-            background-color: #111827; /* bg-gray-900 */
-            color: #F9FAFB; /* text-gray-50 */
+        /* --- Import variables from styles.css --- */
+        :root {
+            /* Core Palette */
+            --color-background-main: #121212;
+            --color-background-secondary: #1a1a1a;
+            --color-background-tertiary: #111;
+            --color-text-main: white;
+            --color-text-light: #e0e0e0;
+            --color-text-med: #ccc;
+            --color-text-dark: #a8a8a8;
+            --color-text-code: #bbf7d0; 
+            /* Primary Accent (Red/Pink) */
+            --color-accent-primary: #ff384f;
+            --color-accent-primary-dark: #b91c1c;
+            --color-accent-primary-glow: rgba(255, 56, 79, 0.4);
+             --color-accent-primary-bg-tint-med: rgba(255, 56, 79, 0.2);
+             --color-accent-primary-lighter: #fee2e2; 
+             --color-accent-primary-darker: #991b1b; 
+            /* Tertiary Accent (Purple/Legacy) */
+            --color-accent-tertiary: #433c5e;
+            --color-accent-tertiary-light: #5a507a;
+            --color-accent-tertiary-link: #a49eff;
+            --color-accent-tertiary-link-hover: #c1beff; 
+            /* Quarternary Accent (Yellow/Gold) */
+            --color-accent-gold: #eab308;
+            --color-accent-gold-light: #facc15; 
+            --color-accent-gold-border: #f59e0b; 
+            /* Misc & Greys */
+            --color-grey-border: #444;
+            --color-component-bg: rgba(20, 20, 20, 0.7); 
+            --color-component-bg-hover: rgba(40, 40, 40, 0.9);
+            /* Blog-Specific Variables */
+            --color-input-bg: #2D3748;
+            --color-input-border: #4A5568;
+            --color-btn-secondary-bg: #4A5568;
+
+            /* --- Label Colors --- */
+            --color-label-general: var(--color-grey-border, #444);
+            --color-label-code: #3b82f6; /* New Blue */
+            --color-label-art: var(--color-accent-tertiary-link, #a49eff); /* Light Purple */
+            --color-label-design: var(--color-accent-gold, #eab308); /* Gold */
+            --color-label-lore: var(--color-text-code, #bbf7d0); /* Light Green */
+            --color-label-bug: var(--color-accent-primary, #ff384f); /* Red */
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Permanent Marker', cursive;
-        }
+        /* Base Styles */
+        body { font-family: Arial, Helvetica, sans-serif; background-color: var(--color-background-main); color: var(--color-text-main); }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Permanent Marker', cursive; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('../Images/rebTakeover/rebBackground-min.png'); background-size: cover; background-position: center; background-attachment: fixed; opacity: 0.1; z-index: -1; }
+        
+        /* Scrollbars */
+        #roadmap-board::-webkit-scrollbar, .card-list::-webkit-scrollbar { height: 12px; width: 12px; }
+        #roadmap-board::-webkit-scrollbar-track, .card-list::-webkit-scrollbar-track { background: #1F2937; }
+        #roadmap-board::-webkit-scrollbar-thumb, .card-list::-webkit-scrollbar-thumb { background-color: var(--color-accent-primary); border: 3px solid #1F2937; }
+        #roadmap-board::-webkit-scrollbar-thumb:hover, .card-list::-webkit-scrollbar-thumb:hover { background-color: var(--color-accent-primary-light); }
 
-        /* Use the RT background from your repo */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* Header */
+        header { 
+            background-color: var(--color-background-tertiary); 
+            border-bottom: 1px solid var(--color-grey-border); 
+            padding-bottom: 20px; 
+            position: relative; 
+            z-index: 10; 
+        }
+        
+        /* --- NEW: Search Bar --- */
+        #rt-search-container {
+            padding: 0 5%; /* Aligns with header clip-path inset */
+            margin-top: -10px; /* Tucks it up nicely */
+            margin-bottom: 10px;
+        }
+        #rt-search-bar {
+            background-color: var(--color-input-bg);
+            border: 1px solid var(--color-input-border);
+            color: var(--color-text-main);
             width: 100%;
-            height: 100%;
-            background-image: url('Images/rebTakeover/rebBackground-min.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            opacity: 0.1;
-            z-index: -1;
-        }
-        
-        /* Custom scrollbar matching the RT red */
-        #roadmap-board::-webkit-scrollbar {
-            height: 12px;
-        }
-        #roadmap-board::-webkit-scrollbar-track {
-            background: #1F2937; /* bg-gray-800 */
-            border-radius: 10px;
-        }
-        #roadmap-board::-webkit-scrollbar-thumb {
-            background-color: #ff384f; /* RT Red */
-            border-radius: 10px;
-            border: 3px solid #1F2937; /* bg-gray-800 */
-        }
-        #roadmap-board::-webkit-scrollbar-thumb:hover {
-            background-color: #fca5a5; /* Lighter RT Red */
-        }
-
-        /* Loading Spinner with RT red */
-        .loader {
-            border: 4px solid #374151; /* bg-gray-700 */
-            border-top: 4px solid #ff384f; /* RT Red */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Custom card styling to match your site's aesthetic */
-        .roadmap-column {
-            background-color: rgba(10, 10, 10, 0.7);
-            border: 2px solid #444;
-            backdrop-filter: blur(5px);
-        }
-
-        .roadmap-column h3 {
-            color: #ff384f; /* RT Red */
-            text-shadow: 1px 1px 5px rgba(255, 56, 79, 0.5);
-        }
-
-        .roadmap-card {
-            background-color: #1a1a1a; /* Lighter dark bg */
-            border-left: 4px solid #ff384f; /* RT Red accent */
-        }
-        
-        .roadmap-card h4 {
-            color: #f0f0f0;
-        }
-        
-        .roadmap-card p {
-            color: #a8a8a8; /* Lighter text for description */
+            padding: 8px 12px;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 0.9rem;
         }
+        #rt-search-bar:focus {
+            border-color: var(--color-accent-tertiary-link);
+            box-shadow: 0 0 10px var(--color-accent-primary-glow);
+            outline: none;
+        }
+
+        /* Loading Spinner */
+        .loader { border: 4px solid var(--color-grey-border); border-top: 4px solid var(--color-accent-primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Roadmap Column */
+        .roadmap-column { background-color: var(--color-component-bg); border: 1px solid var(--color-grey-border); backdrop-filter: blur(5px); clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); transition: border-color 0.3s ease, display 0.3s ease; padding-bottom: 25px; }
+        .roadmap-column:hover { border-color: var(--color-accent-primary); }
+        .column-header-clickable { cursor: pointer; transition: background-color 0.2s ease; padding: 5px 0; display: flex; justify-content: space-between; align-items: center; }
+         .column-header-clickable:hover { background-color: var(--color-accent-primary-bg-tint-med); }
+        .collapse-icon { color: var(--color-accent-primary); transition: transform 0.3s ease-out; font-size: 1.2em; margin-left: 10px; }
+         .collapsed .collapse-icon { transform: rotate(-90deg); }
+        .roadmap-column h3 { color: var(--color-accent-primary); text-shadow: 1px 1px 5px var(--color-accent-primary-glow); margin: 0; }
+
+        /* Roadmap Card */
+        .roadmap-card { 
+            background-color: var(--color-background-secondary); 
+            border-left: 4px solid var(--card-label-color, var(--color-accent-primary)); 
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); 
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out, border-color 0.2s ease-out, opacity 0.3s ease, height 0.3s ease; 
+            animation: cardFadeIn 0.5s ease forwards; 
+            opacity: 1; /* MODIFIED: Start at 1 for filter */
+            padding-bottom: 15px; 
+            display: flex; 
+            align-items: flex-start; 
+            word-break: break-word; 
+        }
+        /* --- NEW: Filter Class --- */
+        .roadmap-card.hidden-by-filter {
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            pointer-events: none;
+            /* We can't use display:none because of the animation delay logic */
+        }
+        
+        @keyframes cardFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .roadmap-card:hover { transform: scale(1.03); box-shadow: 0 5px 15px rgba(0,0,0,0.5); background-color: var(--color-component-bg-hover); }
+        .roadmap-card h4 { color: var(--color-text-main); }
+        .roadmap-card > *:not(.drag-handle) { flex-grow: 1; min-width: 0; } 
+
+        /* Card Content Styling */
+        .roadmap-card-desc { color: var(--color-text-dark); font-size: 0.9rem;} 
+        .roadmap-card-desc a { color: var(--color-accent-tertiary-link) !important; text-decoration: underline !important; }
+        .roadmap-card-desc a:hover { color: var(--color-accent-tertiary-light) !important; }
+        .roadmap-card-desc strong, .roadmap-card-desc b { color: var(--color-text-light); }
+        .roadmap-card-desc em, .roadmap-card-desc i { color: var(--color-text-med); font-style: italic;}
+        .roadmap-card-desc code { background-color: var(--color-accent-tertiary); padding: 2px 4px; font-size: 0.85em; color: var(--color-text-code, #bbf7d0); }
+        .roadmap-card-desc pre { background-color: var(--color-background-main); padding: 8px; overflow-x: auto; margin: 5px 0; border: 1px solid var(--color-grey-border);}
+        .roadmap-card-desc pre code { background-color: transparent; padding: 0; border: none; }
+        .roadmap-card-desc blockquote { border-left: 3px solid var(--color-accent-tertiary); padding-left: 10px; margin-left: 5px; color: var(--color-text-med); font-style: italic; }
+        .roadmap-card-desc ul, .roadmap-card-desc ol { margin-left: 20px; list-style: revert; padding-left: revert;} 
+        .roadmap-card-desc p { margin-bottom: 0.5em;} 
+
+        /* --- NEW: Card Footer Icons (for date/checklist) --- */
+        .roadmap-card-footer {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--color-text-dark);
+        }
+        .roadmap-card-footer-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .roadmap-card-footer-item.overdue {
+            color: var(--color-accent-primary);
+            font-weight: bold;
+        }
+        
+        /* --- NEW: Checklist Progress Bar --- */
+        .checklist-progress-container {
+            width: 50px; /* Fixed width for the bar */
+            height: 6px;
+            background-color: var(--color-grey-border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-left: 2px;
+        }
+        .checklist-progress-fill {
+            height: 100%;
+            background-color: var(--color-accent-tertiary-link);
+            transition: width 0.3s ease;
+        }
+        .checklist-progress-fill.complete {
+            background-color: var(--color-accent-gold);
+        }
+
+        /* Tags */
+        .rt-tag { background-color: var(--color-accent-tertiary); color: var(--color-text-light); font-size: 0.7rem; padding: 2px 6px; }
+        /* --- NEW: Make tags clickable --- */
+        .rt-tag.clickable { cursor: pointer; transition: background-color 0.2s ease; }
+        .rt-tag.clickable:hover { background-color: var(--color-accent-tertiary-light); }
+
+        .rt-label-tag {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            font-weight: bold;
+            color: var(--color-background-main); /* Dark text for light bg */
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+
+        /* Admin Buttons */
+        .rt-btn { font-size: 0.875rem; padding: 0.25rem 0.5rem; color: white; transition: opacity 0.3s ease, transform 0.2s ease; border: 1px solid transparent; line-height: 1.2; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+        .rt-btn:hover { opacity: 0.8; transform: scale(1.05); }
+        .rt-btn i { font-size: 0.9em; }
+        .rt-btn-add { background-color: var(--color-accent-primary); color: var(--color-background-main) !important; border-color: var(--color-accent-primary-dark); }
+        .rt-btn-rename { background-color: var(--color-accent-gold); color: var(--color-background-main) !important; border-color: darkgoldenrod; }
+        .rt-btn-delete { background-color: var(--color-btn-secondary-bg); border-color: var(--color-accent-tertiary-light); }
+        .rt-btn-auth { background-color: var(--color-btn-secondary-bg); border: 1px solid var(--color-grey-border); }
+        .rt-btn-auth:hover { background-color: var(--color-accent-tertiary-light); }
+
+        /* Modal & Input Styles */
+        .rt-modal-panel { background-color: var(--color-background-main); border: 1px solid var(--color-grey-border); }
+        .rt-input { background-color: var(--color-input-bg); border: 1px solid var(--color-input-border); color: var(--color-text-main); padding: 8px 12px; width: 100%; margin-top: 4px;} 
+        .rt-input[type="date"] { color-scheme: dark; }
+        .rt-input:focus { border-color: var(--color-accent-tertiary-link); box-shadow: 0 0 10px var(--color-accent-primary-glow); outline: none; }
+        .rt-modal-panel label { color: var(--color-text-med); display: block; margin-bottom: 2px;} 
+        .rt-modal-panel .prose a { color: var(--color-accent-tertiary-link) !important; text-decoration: underline !important; }
+         .rt-modal-panel .prose a:hover { color: var(--color-accent-tertiary-light) !important; }
+
+        /* --- NEW: Checklist Modal/Editor Styles --- */
+        .rt-checklist-container { margin: 1.5em 0; }
+        .rt-checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 0.95rem;
+        }
+        .rt-checklist-item input[type="checkbox"] {
+            width: 16px; height: 16px;
+            flex-shrink: 0;
+            accent-color: var(--color-accent-primary);
+        }
+        .rt-checklist-item input[type="checkbox"]:not(:disabled) { cursor: pointer; }
+        .rt-checklist-item label {
+            margin: 0; color: var(--color-text-light);
+            transition: color 0.2s ease;
+        }
+        .rt-checklist-item input[type="checkbox"]:checked + label {
+            color: var(--color-text-dark);
+            text-decoration: line-through;
+        }
+        .rt-checklist-editor-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .rt-checklist-editor-item input[type="text"] {
+            flex-grow: 1;
+            margin: 0; /* Override rt-input margin */
+            padding: 6px 10px; /* Smaller padding */
+            font-size: 0.9rem;
+        }
+        .rt-checklist-editor-item .rt-btn-delete {
+            padding: 6px 8px; /* Make delete button match input height */
+        }
+        
+        /* Card List Collapse Transition */
+         .card-list { transition: max-height 0.4s ease-out, padding 0.4s ease-out, opacity 0.3s ease-out, margin 0.4s ease-out, border 0.4s ease-out; overflow-y: auto; overflow-x: hidden; max-height: 70vh; opacity: 1; border-top: 1px solid var(--color-grey-border); margin-top: 0.75rem; padding-top: 0.75rem; }
+         .card-list.collapsed { max-height: 0; padding-top: 0 !important; padding-bottom: 0 !important; margin-top: 0 !important; opacity: 0; overflow: hidden; border-top: none; }
+
+        /* Truncate helpers */
+        .truncate-1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Drag handle */
+        .drag-handle { cursor: grab; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: rgba(255,255,255,0.03); margin-right: 8px; user-select: none; color: var(--color-text-dark); flex-shrink: 0; }
+        .dragging { opacity: 0.5; }
+        .drag-handle:active { cursor: grabbing; } 
+
     </style>
 </head>
-<body class="min-h-screen overflow-hidden flex flex-col">
+<body class="h-screen overflow-hidden flex flex-col">
     
-    <!-- Header -->
-    <header class="p-6 border-b border-gray-700 shadow-lg bg-gray-800/50 backdrop-blur-sm flex flex-col items-center justify-center">
-        <!-- RT Logo from your repo -->
-        <img src="Images/rebTakeoverNew.png" alt="Rebellious Takeover Logo" style="width: 400px; max-width: 70%; filter: drop-shadow(0 0 10px rgba(255,56,79,0.5));">
+    <header class="p-6 border-b shadow-lg backdrop-blur-sm flex flex-col items-center justify-center">
+        <img src="../Images/rebTakeoverNew.png" alt="Rebellious Takeover Logo" style="width: 400px; max-width: 70%; filter: drop-shadow(0 0 10px rgba(255,56,79,0.5));">
         <h2 class="text-xl font-light text-center" style="font-family: 'Permanent Marker', cursive; color: #ff384f; margin-top: -10px;">
             PUBLIC DEVELOPMENT ROADMAP
         </h2>
-    </header>
+        <br>
+        <div id="rt-search-container" class="w-full max-w-4xl">
+            <input type="text" id="rt-search-bar" placeholder="Search cards (e.g., 'Deren's C.O.R.E.' or 'tag:bug')">
+        </div>
+        
+        </header>
 
-    <!-- Loading State -->
     <div id="loading" class="flex-grow flex flex-col items-center justify-center text-gray-400">
         <div class="loader mb-4"></div>
         <p class="text-lg" style="font-family: 'Permanent Marker', cursive;">Connecting to Subroutine...</p>
     </div>
 
-    <!-- 
-      Roadmap Board Container
-      This will be a horizontal-scrolling flex container 
-    -->
     <main id="roadmap-board" class="flex-grow flex p-6 overflow-x-auto overflow-y-hidden hidden">
-        <!-- 
-          Columns will be dynamically generated here.
-          Example structure:
-          <div class="roadmap-column w-80 bg-gray-800 rounded-lg p-4 flex-shrink-0 mr-4 shadow-xl">
-              <h3 class="text-xl font-bold text-white mb-4">Backlog</h3>
-              <div class="card-list space-y-3">
-                  <div class="roadmap-card bg-gray-700 rounded-md p-3 shadow-lg">
-                      <h4 class="font-semibold text-gray-100">Make Goober arcade cab playable</h4>
-                      <p class="text-sm text-gray-300 mt-1">Actually hook up the Goober Origins game to the cabinet in the hideout.</p>
-                  </div>
-              </div>
-          </div>
-        -->
-    </main>
+        </main>
 
-    <!-- Firebase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
+
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"; 
+        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, updateDoc, getDoc, deleteDoc, query, where, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; 
+        import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- Firebase Config ---
-        // POPULATED FROM YOUR blogscript.js
         const firebaseConfig = {
-            apiKey: "AIzaSyDYoHigA9mww7bCDms_biNkCqrXaG3n9nc",
-            authDomain: "jakedravioli-blog.firebaseapp.com",
-            projectId: "jakedravioli-blog",
-            storageBucket: "jakedravioli-blog.appspot.com",
-            messagingSenderId: "254528428131",
-            appId: "1:254528428131:web:9294cdc18e6cb93ab10056",
-            measurementId: "G-9M1D7X041C"
-        };
+             apiKey: "AIzaSyDYoHigA9mww7bCDms_biNkCqrXaG3n9nc", // Make sure this is correct
+             authDomain: "jakedravioli-blog.firebaseapp.com",
+             projectId: "jakedravioli-blog",
+             storageBucket: "jakedravioli-blog.appspot.com",
+             messagingSenderId: "254528428131",
+             appId: "1:254528428131:web:9294cdc18e6cb93ab10056",
+             measurementId: "G-9M1D7X041C"
+         };
         
-        // These global vars are provided by the canvas environment.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'rt-roadmap-dev';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        const appId = 'rt-roadmap-dev'; // Consistent app ID for Firestore paths
 
         // --- App State ---
-        let db, auth;
-        let columnsData = {}; // Stores column data by ID
-        let cardsData = {};   // Stores card data, grouped by column ID
+        let db, auth, storage; 
+        let columnsData = {}; 
+        let cardsData = {};   
+        let allCardsData = {}; // --- NEW: Flat map for fast search
+        let isAdmin = false;
+        let currentUser = null;
+        let columnCollapsedState = {}; 
+        let listenersAttached = false; 
+        let initialAuthResolved = false; 
+
+        // --- Label Definitions ---
+        const labelOptions = {
+            'general': { text: 'General', color: 'var(--color-label-general)' },
+            'code':    { text: 'Code',    color: 'var(--color-label-code)' },
+            'art':     { text: 'Art',     color: 'var(--color-label-art)' },
+            'design':  { text: 'Design',  color: 'var(--color-label-design)' },
+            'lore':    { text: 'Lore',    color: 'var(--color-label-lore)' },
+            'bug':     { text: 'Bug',     color: 'var(--color-label-bug)' }
+        };
 
         // --- DOM Elements ---
         const board = document.getElementById('roadmap-board');
         const loadingEl = document.getElementById('loading');
+        window._rt_card_dragging = false; // Global flag for card drag state
         
         // --- Core Functions ---
 
-        /**
-         * Renders the entire board based on the current state
-         * of columnsData and cardsData.
-         */
+        /** Toggles column collapse state */
+        function toggleColumnCollapse(colId) {
+             columnCollapsedState[colId] = !columnCollapsedState[colId]; 
+             const colEl = board.querySelector(`[data-col-id="${colId}"]`);
+             if (colEl) {
+                 const cardListEl = colEl.querySelector('.card-list');
+                 cardListEl?.classList.toggle('collapsed', columnCollapsedState[colId]);
+                 colEl.classList.toggle('collapsed', columnCollapsedState[colId]); 
+                 const clickableHeader = colEl.querySelector('.column-header-clickable');
+                 if(clickableHeader) clickableHeader.title = columnCollapsedState[colId] ? 'Expand' : 'Collapse';
+             }
+         }
+
+        /** Renders the entire board */
         function renderBoard() {
-            if (Object.keys(columnsData).length === 0) {
-                // Don't render if columns haven't loaded
-                return;
+             // Show loading only if initial auth isn't done and columns aren't loaded
+            if (!initialAuthResolved && Object.keys(columnsData).length === 0 && loadingEl.style.display !== 'none') {
+                console.log("renderBoard: Still waiting for initial auth and column data.");
+                return; 
             }
 
-            // Hide loading, show board
-            loadingEl.style.display = 'none';
+            console.log("renderBoard: Starting render...");
+            loadingEl.style.display = 'none'; // Hide loading 
             board.classList.remove('hidden');
+            const fragment = document.createDocumentFragment(); 
 
-            // Clear the board
-            board.innerHTML = '';
+            const sortedColumns = Object.values(columnsData).sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity)); 
 
-            // Get columns and sort them by their 'order' field
-            const sortedColumns = Object.values(columnsData).sort((a, b) => a.order - b.order);
+            // Handle case with no columns AFTER loading is potentially done
+            if (sortedColumns.length === 0) {
+                 board.innerHTML = `<p class="text-center text-gray-500 italic w-full">No columns defined. ${isAdmin ? 'Use "Init Columns" or "+ Column" to start.' : ''}</p>`;
+                 console.log("renderBoard: No columns found.");
+                 return;
+             }
 
-            // Loop through sorted columns and create them
+            console.log(`renderBoard: Rendering ${sortedColumns.length} columns.`);
             sortedColumns.forEach(col => {
+                // Initialize collapse state
+                if (columnCollapsedState[col.id] === undefined) columnCollapsedState[col.id] = false; 
+
                 const colEl = document.createElement('div');
-                colEl.className = "roadmap-column w-80 rounded-lg p-4 flex-shrink-0 mr-4 shadow-xl flex flex-col";
-                colEl.dataset.colId = col.id;
+                colEl.className = `roadmap-column w-80 p-4 flex-shrink-0 mr-4 shadow-xl flex flex-col ${columnCollapsedState[col.id] ? 'collapsed' : ''}`;
+                colEl.draggable = isAdmin; 
+                colEl.style.cursor = isAdmin ? 'grab' : 'default';
+                colEl.dataset.colId = col.id; 
+                colEl.style.minHeight = '0'; // Important for flex scroll
 
-                // Create column header (RT Style)
-                const headerEl = document.createElement('h3');
-                headerEl.className = "text-2xl font-bold mb-4";
-                headerEl.textContent = col.title;
-                colEl.appendChild(headerEl);
+                // --- Column Drag & Drop ---
+                if (isAdmin) {
+                    colEl.addEventListener('dragstart', (e) => {
+                        if (e.target === colEl) { 
+                            e.dataTransfer.setData('text/plain', JSON.stringify({ colId: col.id, type: 'col' }));
+                            e.dataTransfer.effectAllowed = 'move';
+                            colEl.classList.add('opacity-60');
+                            colEl.style.cursor = 'grabbing';
+                         } else { e.preventDefault(); }
+                    });
+                    colEl.addEventListener('dragend', () => { 
+                        colEl.classList.remove('opacity-60');
+                         colEl.style.cursor = 'grab';
+                     });
+                }
+                colEl.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }); 
+                colEl.addEventListener('drop', async (e) => {
+                    e.preventDefault(); e.stopPropagation(); 
+                    try {
+                        const data = e.dataTransfer.getData('text/plain');
+                        if (!data) return;
+                        const parsed = JSON.parse(data);
 
-                // Create card list container
-                const cardListEl = document.createElement('div');
-                cardListEl.className = "card-list space-y-3 overflow-y-auto pr-2"; // Added pr-2 for scrollbar
-                
-                // Get cards for this column and sort them
-                const cards = cardsData[col.id] || [];
-                const sortedCards = cards.sort((a, b) => a.order - b.order);
+                        if (parsed.type === 'col' && isAdmin) { // --- Column Reorder ---
+                             const draggedId = parsed.colId;
+                             const targetId = col.id;
+                             if (draggedId === targetId) return; 
 
-                // Loop through sorted cards and create them
-                sortedCards.forEach(card => {
-                    const cardEl = document.createElement('div');
-                    cardEl.className = "roadmap-card rounded-md p-3 shadow-lg hover:bg-gray-700 transition-colors duration-150";
-                    
-                    let cardHTML = `<h4 class="font-semibold text-lg">${card.title}</h4>`;
-                    if (card.description) {
-                        cardHTML += `<p class="mt-1">${card.description}</p>`;
-                    }
-                    cardEl.innerHTML = cardHTML;
-                    cardListEl.appendChild(cardEl);
+                             const cols = Object.values(columnsData).sort((a,b)=>(a.order ?? Infinity) - (b.order ?? Infinity));
+                             const draggedIndex = cols.findIndex(c => c.id === draggedId);
+                             const targetIndex = cols.findIndex(c => c.id === targetId);
+                             if (draggedIndex === -1 || targetIndex === -1) return;
+
+                             const [draggedItem] = cols.splice(draggedIndex, 1); 
+                             cols.splice(targetIndex, 0, draggedItem); 
+
+                             const batch = writeBatch(db);
+                             cols.forEach((c, index) => {
+                                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_columns', c.id);
+                                 // Only add update to batch if order actually changed
+                                 if ((columnsData[c.id]?.order ?? Infinity) !== index + 1) {
+                                      batch.update(docRef, { order: index + 1 }); 
+                                 }
+                             });
+                             // Only commit if there are actual changes
+                             if (batch._mutations.length > 0) { // Access internal property (use with caution)
+                                 await batch.commit(); 
+                                 console.log("Column orders updated.");
+                             } else {
+                                  console.log("No column order changes needed.");
+                             }
+                             // Listener updates UI
+
+                        } else if (parsed.type === 'card' && isAdmin) { // --- Card dropped on Column BG ---
+                             if (!columnCollapsedState[col.id]) { 
+                                 await moveCardToColumn(parsed.cardId, col.id, null); // null appends
+                             }
+                        }
+                    } catch (err) { console.error('Column drop failed', err); }
                 });
+
+                // --- Column Header ---
+                const headerWrap = document.createElement('div');
+                headerWrap.className = 'flex items-center justify-between mb-3';
+
+                const headerClickable = document.createElement('div');
+                headerClickable.className = 'column-header-clickable flex-grow mr-2 overflow-hidden';
+                headerClickable.title = columnCollapsedState[col.id] ? 'Expand' : 'Collapse';
+                headerClickable.addEventListener('click', (e) => { e.stopPropagation(); toggleColumnCollapse(col.id); });
+
+                const headerEl = document.createElement('h3');
+                headerEl.className = "text-2xl font-bold truncate"; 
+                headerEl.textContent = col.title || 'Untitled Column'; 
+
+                const iconEl = document.createElement('i');
+                iconEl.className = 'fas fa-chevron-down collapse-icon flex-shrink-0'; 
+
+                headerClickable.appendChild(headerEl); headerClickable.appendChild(iconEl);
+
+                const headerRight = document.createElement('div');
+                headerRight.className = 'flex items-center gap-1 flex-shrink-0'; 
+
+                // --- Admin Buttons (Rendered only if isAdmin) ---
+                if (isAdmin) {
+                    const addBtn = document.createElement('button'); 
+                    addBtn.className = 'rt-btn rt-btn-add'; addBtn.innerHTML = '<i class="fas fa-plus"></i>'; addBtn.title = 'Add Card';
+                    addBtn.addEventListener('click', (e) => { e.stopPropagation(); createCard(col.id); });
+                    
+                    const renameBtn = document.createElement('button'); 
+                    renameBtn.className = 'rt-btn rt-btn-rename'; renameBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>'; renameBtn.title = 'Rename Column';
+                    renameBtn.addEventListener('click', async (e) => { 
+                          e.stopPropagation();
+                          const newTitle = window.prompt('New column title:', col.title); 
+                          if (newTitle === null || newTitle.trim() === '') return; // Check for cancel or empty
+                          try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_columns', col.id), { title: newTitle.trim() }); } 
+                          catch (err) { console.error("Rename failed:", err); alert("Rename failed."); }
+                      });
+                      
+                    const delBtn = document.createElement('button'); 
+                    delBtn.className = 'rt-btn rt-btn-delete'; delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>'; delBtn.title = 'Delete Column';
+                    delBtn.addEventListener('click', async (e) => { 
+                         e.stopPropagation();
+                         const ok = window.confirm(`DELETE column "${col.title}" and ALL its cards?\nThis cannot be undone.`); 
+                         if (!ok) return;
+                         try {
+                              console.log(`Starting deletion for column ${col.id}...`);
+                              const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards'), where('column', '==', col.id));
+                              const cardsSnap = await getDocs(q);
+                              const batch = writeBatch(db); 
+                              cardsSnap.docs.forEach(d => {
+                                  console.log(`  Adding card ${d.id} to delete batch.`);
+                                  batch.delete(d.ref);
+                              });
+                              console.log(`Adding column ${col.id} to delete batch.`);
+                              batch.delete(doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_columns', col.id)); 
+                              await batch.commit(); 
+                              console.log(`Column ${col.id} and its cards deleted successfully.`);
+                              // UI update via listener should remove the column from columnsData and trigger re-render
+                         } catch (err) { console.error('Delete column operation failed:', err); alert('Delete failed: ' + (err.message||err)); }
+                      });
+
+                    headerRight.appendChild(addBtn); headerRight.appendChild(renameBtn); headerRight.appendChild(delBtn);
+                }
+
+                headerWrap.appendChild(headerClickable);
+                // Only append headerRight if it actually contains buttons (i.e., if admin)
+                if (headerRight.childElementCount > 0) {
+                     headerWrap.appendChild(headerRight); 
+                 }
+                colEl.appendChild(headerWrap);
+
+                // --- Card List Container ---
+                const cardListEl = document.createElement('div');
+                cardListEl.className = `card-list space-y-3 pr-2 ${columnCollapsedState[col.id] ? 'collapsed' : ''}`;
+                cardListEl.style.flex = '1 1 0'; cardListEl.style.minHeight = '0'; cardListEl.style.overflowY = 'auto';
+
+                if (isAdmin) { // Drop listener for empty list area
+                    cardListEl.addEventListener('dragover', (e) => e.preventDefault()); 
+                    cardListEl.addEventListener('drop', async (e) => { 
+                         e.preventDefault(); e.stopPropagation(); 
+                         try { 
+                             const data = e.dataTransfer.getData('text/plain');
+                             if (!data) return;
+                             const parsed = JSON.parse(data);
+                             // Ensure dropping a card AND onto the list itself (not padding/scrollbar) AND column is expanded
+                             if (parsed.type === 'card' && e.target === cardListEl && !columnCollapsedState[col.id]) { 
+                                 await moveCardToColumn(parsed.cardId, col.id, null); // Append
+                             }
+                         } catch (err) { console.error('Card List drop failed', err); }
+                     }); 
+                }
+                
+                const cards = cardsData[col.id] || [];
+                const sortedCards = cards.sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
+
+                // --- Render Cards ---
+                if (sortedCards.length === 0 && !columnCollapsedState[col.id]) { 
+                     const emptyMsg = document.createElement('p');
+                     emptyMsg.textContent = 'No cards here yet.';
+                     emptyMsg.className = 'text-sm text-gray-500 italic px-3 py-2';
+                     cardListEl.appendChild(emptyMsg);
+                 } else {
+                    sortedCards.forEach((card, index) => {
+                        const cardEl = document.createElement('div');
+                        cardEl.className = "roadmap-card p-3 shadow-lg transition-colors duration-150";
+                        cardEl.draggable = false; 
+                        cardEl.dataset.cardId = card.id;
+                        cardEl.style.animationDelay = `${index * 0.05}s`;
+
+                        // --- Set Label Color ---
+                        const labelKey = card.label || 'general';
+                        const labelColor = labelOptions[labelKey]?.color || labelOptions['general'].color;
+                        cardEl.style.setProperty('--card-label-color', labelColor);
+
+                        // Drag Handle
+                        if (isAdmin) {
+                            const handle = document.createElement('div'); 
+                            handle.className = 'drag-handle'; handle.title = 'Drag to move'; handle.innerHTML = '&#x2630;'; handle.draggable = true; 
+                            handle.addEventListener('dragstart', (e) => { 
+                                  e.stopPropagation(); 
+                                  e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'card', cardId: card.id, fromColumn: card.column }));
+                                  e.dataTransfer.effectAllowed = 'move';
+                                  cardEl.classList.add('opacity-60', 'dragging');
+                                  window._rt_card_dragging = true;
+                              });
+                             handle.addEventListener('dragend', () => { 
+                                  cardEl.classList.remove('opacity-60', 'dragging');
+                                  // Use timeout to prevent click immediately after drag
+                                  setTimeout(() => { window._rt_card_dragging = false; }, 50); 
+                              });
+                             cardEl.insertBefore(handle, cardEl.firstChild);
+                        }
+
+                        // Content Container
+                        const contentContainer = document.createElement('div'); 
+                        contentContainer.style.flexGrow = '1'; contentContainer.style.minWidth = '0'; 
+
+                        if (card.imageUrl) { 
+                             const img = document.createElement('img'); img.src = card.imageUrl; img.alt = card.title || 'Card image'; img.className = 'w-full mb-2'; 
+                             contentContainer.appendChild(img); 
+                        }
+                        const titleEl = document.createElement('h4'); 
+                        titleEl.className = 'font-semibold text-lg truncate-1'; titleEl.textContent = card.title || 'Untitled Card'; 
+                        contentContainer.appendChild(titleEl);
+                        
+                        // Description
+                        if (card.description) { 
+                             try {
+                                 const conv = window.showdown ? new window.showdown.Converter({noHeaderId: true, simpleLineBreaks: true}) : null; 
+                                 const html = conv ? conv.makeHtml(card.description) : `<p>${card.description.replace(/</g, "&lt;")}</p>`; 
+                                 const descWrap = document.createElement('div');
+                                 descWrap.className = 'mt-1 text-sm truncate-2 roadmap-card-desc';
+                                 descWrap.style.wordBreak = 'break-word'; descWrap.style.overflowWrap = 'anywhere';
+                                 descWrap.innerHTML = html;
+                                 contentContainer.appendChild(descWrap);
+                             } catch (e) { 
+                                 console.warn("Markdown rendering failed for card:", card.id, e); 
+                                 const p = document.createElement('p'); p.className='mt-1 text-sm roadmap-card-desc text-red-400'; p.textContent = "[Error rendering description]"; contentContainer.appendChild(p);
+                             } 
+                        }
+
+                        // --- MODIFIED: Footer for Due Date & Checklist ---
+                        const footerEl = document.createElement('div');
+                        footerEl.className = 'roadmap-card-footer';
+                        let footerHasContent = false;
+
+                        // Due Date Display
+                        if (card.dueDate) {
+                            try {
+                                footerHasContent = true;
+                                const dueDate = new Date(card.dueDate); // Assumes ISO string (YYYY-MM-DD)
+                                const now = new Date();
+                                now.setHours(0, 0, 0, 0); 
+                                const offset = dueDate.getTimezoneOffset();
+                                const localDueDate = new Date(dueDate.getTime() + (offset * 60 * 1000));
+                                const isOverdue = localDueDate < now;
+                                
+                                const dateEl = document.createElement('div');
+                                dateEl.className = `roadmap-card-footer-item ${isOverdue ? 'overdue' : ''}`;
+                                
+                                const icon = document.createElement('i');
+                                icon.className = `fas ${isOverdue ? 'fa-exclamation-circle' : 'fa-calendar-alt'}`;
+                                dateEl.appendChild(icon);
+                                
+                                const text = document.createElement('span');
+                                const dateString = localDueDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                                text.textContent = `${dateString}`;
+                                if (isOverdue) text.title = `Overdue: ${dateString}`;
+                                else text.title = `Due: ${dateString}`;
+                                
+                                dateEl.appendChild(text);
+                                footerEl.appendChild(dateEl);
+                            } catch (e) { /* ignore invalid date */ }
+                        }
+
+                        // --- NEW: Checklist Progress Display ---
+                        if (card.checklist && card.checklist.length > 0) {
+                            footerHasContent = true;
+                            const total = card.checklist.length;
+                            const completed = card.checklist.filter(i => i.complete).length;
+                            const isAllComplete = total > 0 && total === completed;
+
+                            const checklistEl = document.createElement('div');
+                            checklistEl.className = 'roadmap-card-footer-item';
+                            
+                            const icon = document.createElement('i');
+                            icon.className = `fas ${isAllComplete ? 'fa-check-double' : 'fa-tasks'}`;
+                            icon.title = 'Checklist Progress';
+                            checklistEl.appendChild(icon);
+
+                            const text = document.createElement('span');
+                            text.textContent = `${completed}/${total}`;
+                            checklistEl.appendChild(text);
+
+                            // Progress Bar
+                            const barContainer = document.createElement('div');
+                            barContainer.className = 'checklist-progress-container';
+                            const barFill = document.createElement('div');
+                            barFill.className = `checklist-progress-fill ${isAllComplete ? 'complete' : ''}`;
+                            barFill.style.width = `${total > 0 ? (completed / total) * 100 : 0}%`;
+                            barContainer.appendChild(barFill);
+                            checklistEl.appendChild(barContainer);
+                            
+                            footerEl.appendChild(checklistEl);
+                        }
+
+                        if (footerHasContent) {
+                            contentContainer.appendChild(footerEl);
+                        }
+
+
+                        // Tags
+                        if (card.tags && Array.isArray(card.tags) && card.tags.length > 0) { 
+                             const tagsWrap = document.createElement('div');
+                             tagsWrap.className = 'mt-2 flex flex-wrap gap-1';
+                             card.tags.forEach(t => { 
+                                 const tEl = document.createElement('span');
+                                 // --- MODIFIED: Added clickable class and listener ---
+                                 tEl.className = 'text-xs px-2 py-0.5 rt-tag clickable'; 
+                                 tEl.textContent = t;
+                                 tEl.title = `Filter by tag: "${t}"`;
+                                 tEl.addEventListener('click', (e) => {
+                                     e.stopPropagation(); // Don't open card modal
+                                     const searchInput = document.getElementById('rt-search-bar');
+                                     const searchTerm = `tag:${tEl.textContent.trim()}`;
+                                     searchInput.value = searchTerm;
+                                     // Dispatch an 'input' event to trigger the filter
+                                     searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                                 });
+                                 // --- End Modification ---
+                                 tagsWrap.appendChild(tEl);
+                              });
+                             contentContainer.appendChild(tagsWrap);
+                        }
+
+                        cardEl.appendChild(contentContainer); 
+
+                        // Click Listener
+                        cardEl.addEventListener('click', (ev) => { 
+                             // --- MODIFIED: Don't open if clicking a tag ---
+                             if (ev.target.closest('.drag-handle') || ev.target.closest('button') || ev.target.closest('a') || ev.target.closest('.rt-tag')) return; 
+                             if (window._rt_card_dragging) {
+                                  console.log("Card click ignored due to dragging flag.");
+                                  return; 
+                             }
+                             openCardModal(card);
+                         });
+                         
+                        // Drop Listener (only if admin)
+                        if (isAdmin) {
+                             cardEl.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+                             cardEl.addEventListener('drop', async (e) => { 
+                                 e.preventDefault(); e.stopPropagation(); 
+                                 try {
+                                     const data = e.dataTransfer.getData('text/plain');
+                                     if (!data) return;
+                                     const parsed = JSON.parse(data);
+                                     if (parsed.type !== 'card' || parsed.cardId === card.id) return; 
+
+                                     const rect = cardEl.getBoundingClientRect();
+                                     const isDropBefore = (e.clientY < rect.top + rect.height / 2); 
+                                     
+                                     // Find DOM index relative to parent cardList
+                                     const cardListChildren = Array.from(cardEl.parentElement.children);
+                                     const targetDomIndex = cardListChildren.indexOf(cardEl);
+                                      if (targetDomIndex === -1) {
+                                           console.warn("Could not find target card index in DOM for drop.");
+                                           return; 
+                                       }
+                                     
+                                     // Calculate Firestore order index
+                                     const insertOrderIndex = isDropBefore ? targetDomIndex : targetDomIndex + 1;
+                                     
+                                     if (!columnCollapsedState[col.id]) { 
+                                         await moveCardToColumn(parsed.cardId, col.id, insertOrderIndex);
+                                     }
+                                 } catch (err) { console.error('Card drop failed', err); }
+                              });
+                        }
+
+                        cardListEl.appendChild(cardEl);
+                    }); // End card loop
+                } 
 
                 colEl.appendChild(cardListEl);
-                board.appendChild(colEl);
-            });
-        }
-
-        /**
-         * Sets up the real-time listeners for columns and cards.
-         */
-        function setupListeners() {
-            console.log("Setting up listeners for public data...");
-            const publicDataPath = `/artifacts/${appId}/public/data`;
+                fragment.appendChild(colEl); 
+            }); // End column loop
             
-            // --- Listener for Columns ---
-            const colsRef = collection(db, `${publicDataPath}/roadmap_columns`);
-            onSnapshot(colsRef, (snapshot) => {
-                const newColsData = {};
-                snapshot.forEach(doc => {
-                    newColsData[doc.id] = { id: doc.id, ...doc.data() };
-                });
-                columnsData = newColsData;
-                console.log("Columns updated:", columnsData);
-                renderBoard(); // Re-render the board
-            }, (error) => {
-                console.error("Error listening to columns:", error);
-                loadingEl.innerHTML = `<p class="text-red-400">Error: Could not load roadmap columns.</p>`;
-            });
+            board.innerHTML = ''; // Clear previous render
+            board.appendChild(fragment); 
+            
+            // --- NEW: Re-apply filter after a full render ---
+            const currentFilter = document.getElementById('rt-search-bar')?.value;
+            if (currentFilter) {
+                filterCards(currentFilter);
+            }
+            console.log("renderBoard: Render complete.");
+        }
+        
+        // --- NEW: Filter Function ---
+        function filterCards(searchTerm) {
+            searchTerm = searchTerm.toLowerCase().trim();
+            let tagSearch = null;
+            let hasVisibleColumns = false;
 
-            // --- Listener for Cards ---
-            const cardsRef = collection(db, `${publicDataPath}/roadmap_cards`);
-            onSnapshot(cardsRef, (snapshot) => {
-                const newCardsData = {};
-                snapshot.forEach(doc => {
-                    const card = { id: doc.id, ...doc.data() };
-                    const colId = card.column;
-                    if (!colId) return; // Skip cards without a column
+            if (searchTerm.startsWith('tag:')) {
+                tagSearch = searchTerm.substring(4).trim();
+            }
+            
+            const allColumns = document.querySelectorAll('.roadmap-column');
+            
+            allColumns.forEach(colEl => {
+                const allCards = colEl.querySelectorAll('.roadmap-card');
+                let hasVisibleCards = false;
 
-                    if (!newCardsData[colId]) {
-                        newCardsData[colId] = [];
+                allCards.forEach(cardEl => {
+                    const cardId = cardEl.dataset.cardId;
+                    const cardData = allCardsData[cardId]; // Use fast lookup
+                    
+                    if (!cardData) {
+                        cardEl.classList.add('hidden-by-filter');
+                        return;
                     }
-                    newCardsData[colId].push(card);
+
+                    const title = (cardData.title || '').toLowerCase();
+                    const desc = (cardData.description || '').toLowerCase();
+                    const tags = (cardData.tags || []).map(t => t.toLowerCase());
+
+                    let isMatch = false;
+                    if (tagSearch) {
+                        isMatch = tags.includes(tagSearch);
+                    } else if (searchTerm === '') {
+                        isMatch = true;
+                    } else {
+                        isMatch = title.includes(searchTerm) || 
+                                  desc.includes(searchTerm) || 
+                                  tags.some(t => t.includes(searchTerm));
+                    }
+                    
+                    cardEl.classList.toggle('hidden-by-filter', !isMatch);
+                    if (isMatch) {
+                        hasVisibleCards = true;
+                        hasVisibleColumns = true;
+                    }
                 });
-                cardsData = newCardsData;
-                console.log("Cards updated:", cardsData);
-                renderBoard(); // Re-render the board
-            }, (error) => {
-                console.error("Error listening to cards:", error);
-                loadingEl.innerHTML = `<p class="text-red-400">Error: Could not load roadmap cards.</p>`;
+
+                // Hide column if it has no visible cards AND we are searching
+                if (searchTerm !== '') {
+                    colEl.style.display = hasVisibleCards ? 'flex' : 'none';
+                } else {
+                    colEl.style.display = 'flex'; // Show all if search is empty
+                }
             });
         }
 
-        /**
-         * Initializes the app and authenticates the user.
-         */
+
+        // --- Firestore Listeners ---
+        function setupListeners() {
+             if (listenersAttached) {
+                 console.log("Listeners already attached, skipping setup.");
+                 return; 
+             }
+             console.log("Setting up Firestore listeners...");
+            
+            const colsRef = collection(db, 'artifacts', appId, 'public', 'data', 'roadmap_columns');
+            const cardsRef = collection(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards');
+
+            // Column Listener
+            const unsubscribeCols = onSnapshot(colsRef, (snapshot) => { 
+                console.log("Column snapshot received:", snapshot.docChanges().length, "changes");
+                let changed = false;
+                const newColsData = {}; // Build fresh from snapshot
+
+                snapshot.forEach(docSnap => { 
+                    newColsData[docSnap.id] = { id: docSnap.id, ...docSnap.data() }; 
+                });
+
+                // Compare keys and content (simple stringify)
+                if (JSON.stringify(columnsData) !== JSON.stringify(newColsData)) {
+                    columnsData = newColsData; 
+                    changed = true;
+                    console.log("Columns data updated:", Object.keys(columnsData).length);
+                }
+
+                if (changed) {
+                     renderBoard(); // Render if changes detected
+                 } else { console.log("No effective column changes detected."); }
+            }, (error) => { console.error("Error listening to columns:", error); });
+
+            // Card Listener
+            const unsubscribeCards = onSnapshot(cardsRef, (snapshot) => { 
+                console.log("Card snapshot received:", snapshot.docChanges().length, "changes");
+                let changed = false;
+                const newCardsData = {}; 
+                const newAllCardsData = {}; // --- NEW: For search
+
+                // Wait for columns data before processing cards fully
+                 if (Object.keys(columnsData).length === 0 && !snapshot.empty) {
+                     console.log("Card snapshot deferred: columnsData not ready.");
+                     return; 
+                 }
+
+                snapshot.forEach(docSnap => {
+                    const card = { id: docSnap.id, ...docSnap.data() };
+                    newAllCardsData[docSnap.id] = card; // --- NEW: Populate flat map
+                    const colId = card.column;
+                    // Only add card if its column exists
+                    if (colId && columnsData[colId]) { 
+                        if (!newCardsData[colId]) newCardsData[colId] = [];
+                        newCardsData[colId].push(card);
+                    }
+                });
+
+                // --- NEW: Update flat map if changed ---
+                if (JSON.stringify(allCardsData) !== JSON.stringify(newAllCardsData)) {
+                    allCardsData = newAllCardsData;
+                    console.log("Flat card map (allCardsData) updated.");
+                    // No re-render needed for this change alone
+                }
+
+                // Compare stringified versions for changes
+                 if (JSON.stringify(cardsData) !== JSON.stringify(newCardsData)) {
+                     cardsData = newCardsData; 
+                     changed = true;
+                    console.log("Cards data updated:", snapshot.size);
+                 }
+
+                if (changed) {
+                    renderBoard(); // Render if changes detected
+                 } else { console.log("No effective card changes detected."); }
+            }, (error) => { console.error("Error listening to cards:", error); });
+
+            listenersAttached = true; 
+            console.log("Listeners attached successfully.");
+
+            // Store unsubscribe functions for potential cleanup
+            window._unsubscribeFirestore = () => { 
+                console.log("Detaching Firestore listeners.");
+                unsubscribeCols(); 
+                unsubscribeCards(); 
+                listenersAttached = false; 
+                initialAuthResolved = false; 
+            };
+        }
+
+        // --- Admin / Auth Helpers ---
+        async function checkAdmin(uid) {
+             if (!uid) return false;
+             try {
+                 const adminDocRef = doc(db, 'admins', uid); 
+                 const adminDocSnap = await getDoc(adminDocRef);
+                 return adminDocSnap.exists(); // Only check root /admins collection
+             } catch (err) { console.error('Admin check failed:', err); return false; }
+         }
+
+        function injectAuthUI() {
+             // Ensure this runs only once
+            if (document.getElementById('rt-auth-controls')) {
+                 console.log("Auth UI already exists.");
+                 return;
+             }
+            
+            const hdr = document.querySelector('header');
+            if (!hdr) { console.error("Header element not found!"); return; }
+
+            const controls = document.createElement('div');
+            controls.className = 'mt-3 flex items-center gap-2 flex-wrap justify-center'; controls.id = 'rt-auth-controls';
+            
+            const status = document.createElement('div'); 
+             status.id = 'rt-admin-indicator'; status.className = 'text-sm text-gray-400 order-1'; status.textContent = 'Connecting...'; 
+
+            const loginBtn = document.createElement('button'); 
+             loginBtn.id = 'rt-login-btn'; loginBtn.className = 'px-3 py-1 rt-btn-auth order-2'; loginBtn.textContent = 'Sign in (Admin)';
+             loginBtn.addEventListener('click', async () => { 
+                 console.log("Login button clicked");
+                  try { const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); } 
+                  catch (err) { console.error('Google sign-in failed', err); alert('Sign-in failed: ' + (err.message || err)); }
+              });
+
+            const signoutBtn = document.createElement('button'); 
+             signoutBtn.id = 'rt-signout-btn'; signoutBtn.className = 'px-3 py-1 rt-btn-auth order-2 hidden'; signoutBtn.textContent = 'Sign out';
+             signoutBtn.addEventListener('click', async () => { 
+                 console.log("Sign out button clicked");
+                  try { await signOut(auth); } 
+                  catch (err) { console.error('Sign-out failed', err); alert('Sign-out failed: ' + (err.message || err)); }
+              });
+
+            // Admin buttons container
+            const adminBtnsContainer = document.createElement('div');
+            adminBtnsContainer.id = 'rt-admin-buttons';
+            adminBtnsContainer.className = 'flex items-center gap-2 order-3'; 
+            adminBtnsContainer.style.display = 'none'; // Hide initially
+
+            const addColBtn = document.createElement('button'); 
+             addColBtn.id = 'rt-add-col'; addColBtn.className = 'px-3 py-1 rt-btn rt-btn-add'; addColBtn.textContent = '+ Column';
+             addColBtn.addEventListener('click', () => { console.log("Add column clicked"); openAddColumnModal(); });
+
+            const initColsBtn = document.createElement('button'); 
+             initColsBtn.id = 'rt-init-cols'; initColsBtn.className = 'px-3 py-1 rt-btn rt-btn-rename'; initColsBtn.textContent = 'Init Columns';
+             initColsBtn.addEventListener('click', async () => { 
+                  console.log("Init columns clicked");
+                  if (!isAdmin) return;
+                  const ok = confirm('Initialize default columns (To Do, In Progress, Done)?\nThis should only be done once on an empty board.');
+                  if (!ok) return;
+                  try { /* ... init logic ... */ } 
+                  catch (err) { console.error('Failed to init columns', err); alert('Failed to init columns: ' + err.message); }
+              });
+
+            const adminSettingsBtn = document.createElement('button'); 
+             adminSettingsBtn.id = 'rt-admin-settings'; adminSettingsBtn.className = 'px-3 py-1 rt-btn-auth'; adminSettingsBtn.innerHTML = '<i class="fas fa-cog"></i> Settings'; 
+             adminSettingsBtn.addEventListener('click', () => { console.log("Settings clicked"); openAdminSettingsModal(); });
+
+            adminBtnsContainer.appendChild(adminSettingsBtn); adminBtnsContainer.appendChild(addColBtn); adminBtnsContainer.appendChild(initColsBtn); 
+
+            controls.appendChild(status); controls.appendChild(loginBtn); controls.appendChild(signoutBtn); controls.appendChild(adminBtnsContainer); 
+            hdr.appendChild(controls);
+            console.log("Auth UI Injected");
+        }
+
+        async function onUserSignedIn(user) {
+             currentUser = user; 
+             const wasAdmin = isAdmin; 
+             // Determine admin status ONLY if a user object exists
+             isAdmin = user ? await checkAdmin(user.uid) : false; 
+             
+             console.log("onUserSignedIn - User:", user ? user.uid : 'null', "isAdmin:", isAdmin);
+
+             // Update UI elements safely
+             const statusEl = document.getElementById('rt-admin-indicator');
+             const loginBtnEl = document.getElementById('rt-login-btn');
+             const signoutBtnEl = document.getElementById('rt-signout-btn');
+             const adminBtnsContainerEl = document.getElementById('rt-admin-buttons'); 
+
+             if (statusEl) {
+                if (user) { statusEl.textContent = isAdmin ? `Admin: ${user.displayName || 'Signed In'}` : `User: ${user.displayName || 'Signed In'} (View Only)`; } 
+                else { statusEl.textContent = 'Not signed in.'; }
+                 console.log("Status text updated:", statusEl.textContent);
+             } else { console.warn("Status element (#rt-admin-indicator) not found"); }
+
+             loginBtnEl?.classList.toggle('hidden', !!user); 
+             signoutBtnEl?.classList.toggle('hidden', !user); 
+             if (adminBtnsContainerEl) {
+                 adminBtnsContainerEl.style.display = isAdmin ? 'flex' : 'none';
+             } else { console.warn("Admin buttons container (#rt-admin-buttons) not found"); }
+
+             // Re-render board ONLY if admin status changed, to update draggability etc.
+             // Avoid unnecessary re-renders just on login/logout if admin status is same
+             if (isAdmin !== wasAdmin) {
+                 console.log("Admin status changed, triggering board re-render.");
+                 renderBoard(); 
+             }
+         }
+
+        // --- Modals (Ensure COMPLETE functions are present) ---
+        function openCardModal(card) { 
+            console.log("Opening Card Modal for:", card?.id || 'Unknown card');
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4';
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+            
+            const panel = document.createElement('div');
+            panel.className = 'rt-modal-panel p-6 w-11/12 max-w-2xl overflow-y-auto max-h-[90vh]'; // Added max-h for scrolling
+            panel.addEventListener('click', (e) => e.stopPropagation());
+
+            // --- Label and Due Date Row ---
+            const infoRow = document.createElement('div');
+            infoRow.className = 'flex flex-wrap items-center mb-3 gap-2';
+
+            // Label
+            const labelKey = card.label || 'general';
+            const labelInfo = labelOptions[labelKey] || labelOptions['general'];
+            const labelEl = document.createElement('span');
+            labelEl.className = 'rt-label-tag';
+            labelEl.textContent = labelInfo.text;
+            labelEl.style.backgroundColor = labelInfo.color;
+            infoRow.appendChild(labelEl);
+
+            // Due Date
+            if (card.dueDate) {
+                try {
+                    const dueDate = new Date(card.dueDate);
+                    const now = new Date();
+                    now.setHours(0, 0, 0, 0);
+                    
+                    // Fix off-by-one day by treating date as local
+                    const offset = dueDate.getTimezoneOffset();
+                    const localDueDate = new Date(dueDate.getTime() + (offset * 60 * 1000));
+                    
+                    const isOverdue = localDueDate < now;
+                    
+                    const dateEl = document.createElement('div');
+                    dateEl.className = `flex items-center gap-1.5 text-sm ${isOverdue ? 'text-red-400 font-bold' : 'text-gray-400'}`;
+                    
+                    const icon = document.createElement('i');
+                    icon.className = `fas ${isOverdue ? 'fa-exclamation-circle' : 'fa-calendar-alt'}`;
+                    dateEl.appendChild(icon);
+                    
+                    const text = document.createElement('span');
+                    const dateString = localDueDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    text.textContent = `Due: ${dateString}`;
+                    if (isOverdue) text.textContent = `Overdue: ${dateString}`;
+                    
+                    dateEl.appendChild(text);
+                    infoRow.appendChild(dateEl);
+                } catch (e) { /* ignore invalid date */ }
+            }
+            panel.appendChild(infoRow); // Add this row *before* the title
+
+            const titleEl = document.createElement('h3');
+            titleEl.className = 'text-2xl font-bold mb-3'; 
+            titleEl.textContent = card.title || 'Untitled';
+            panel.appendChild(titleEl);
+
+            if (card.imageUrl) { 
+                 const img = document.createElement('img');
+                 img.src = card.imageUrl;
+                 img.alt = card.title || 'Card image';
+                 img.className = 'w-full mb-3 max-h-[50vh] object-contain'; // Limit image height, maintain aspect ratio
+                 panel.appendChild(img);
+             }
+
+            // Description (Markdown Rendering)
+             if (card.description) {
+                 try {
+                     const conv = window.showdown ? new window.showdown.Converter({noHeaderId: true, simpleLineBreaks: true}) : null;
+                     const html = conv ? conv.makeHtml(card.description) : `<p>${card.description.replace(/</g, "&lt;")}</p>`;
+                     const descWrap = document.createElement('div');
+                     descWrap.className = 'prose max-w-full text-gray-300 mb-4 rt-modal-desc'; 
+                     descWrap.style.wordBreak = 'break-word'; descWrap.style.overflowWrap = 'anywhere';
+                     descWrap.innerHTML = html;
+                     // Style links AFTER setting innerHTML
+                     descWrap.querySelectorAll('a').forEach(a => {
+                         a.style.color = 'var(--color-accent-tertiary-link)'; a.style.textDecoration = 'underline';
+                         a.target = '_blank'; a.rel = 'noopener noreferrer';
+                     });
+                     panel.appendChild(descWrap);
+                 } catch (e) {
+                      console.warn("Markdown render failed in modal:", e);
+                      const p = document.createElement('p'); p.textContent = card.description; panel.appendChild(p);
+                 }
+             } else {
+                 const p = document.createElement('p'); p.textContent = '(No description)'; p.className = 'text-gray-500 italic mb-4'; panel.appendChild(p);
+             }
+
+            // --- NEW: Checklist Display ---
+            if (card.checklist && card.checklist.length > 0) {
+                const checklistContainer = document.createElement('div');
+                checklistContainer.className = 'rt-checklist-container';
+
+                const checklistTitle = document.createElement('h5');
+                checklistTitle.className = 'font-bold text-lg mb-2';
+                checklistTitle.textContent = 'Checklist';
+                checklistContainer.appendChild(checklistTitle);
+
+                card.checklist.forEach((item, index) => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'rt-checklist-item';
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.checked = item.complete;
+                    checkbox.id = `chk-${card.id}-${index}`;
+                    checkbox.disabled = !isAdmin;
+                    
+                    const label = document.createElement('label');
+                    label.textContent = item.text;
+                    label.htmlFor = `chk-${card.id}-${index}`;
+                    if (item.complete) {
+                        label.style.textDecoration = 'line-through';
+                    }
+
+                    if (isAdmin) {
+                        checkbox.addEventListener('change', async (e) => {
+                            // Optimistic UI update
+                            label.style.textDecoration = e.target.checked ? 'line-through' : 'none';
+                            
+                            // Prepare new data
+                            const newChecklist = JSON.parse(JSON.stringify(card.checklist)); // Deep copy
+                            newChecklist[index].complete = e.target.checked;
+                            
+                            try {
+                                // Update Firestore
+                                const cardRef = doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards', card.id);
+                                await updateDoc(cardRef, { checklist: newChecklist });
+                                // Update local data cache (for renderBoard)
+                                card.checklist = newChecklist; 
+                                allCardsData[card.id].checklist = newChecklist;
+                                // No full re-render needed, but good to keep data in sync
+                            } catch (err) {
+                                console.error("Checklist update failed:", err);
+                                alert("Failed to update checklist. Please try again.");
+                                // Revert UI on failure
+                                e.target.checked = !e.target.checked;
+                                label.style.textDecoration = e.target.checked ? 'line-through' : 'none';
+                            }
+                        });
+                    }
+
+                    itemEl.appendChild(checkbox);
+                    itemEl.appendChild(label);
+                    checklistContainer.appendChild(itemEl);
+                });
+
+                panel.appendChild(checklistContainer);
+            }
+
+            if (card.tags && Array.isArray(card.tags) && card.tags.length > 0) {
+                 const tagsWrap = document.createElement('div');
+                 tagsWrap.className = 'mt-3 mb-4 flex flex-wrap gap-2'; 
+                 card.tags.forEach(t => { 
+                     const tEl = document.createElement('span'); tEl.className = 'text-xs px-2 py-0.5 rt-tag'; tEl.textContent = t; tagsWrap.appendChild(tEl);
+                  });
+                 panel.appendChild(tagsWrap);
+            }
+
+            // --- Button Row ---
+            const btnRow = document.createElement('div');
+            btnRow.className = 'mt-4 flex justify-end gap-2 border-t border-gray-700 pt-4'; 
+
+             const closeBtn = document.createElement('button');
+              closeBtn.className = 'px-4 py-2 rt-btn-auth'; 
+              closeBtn.textContent = 'Close';
+              closeBtn.addEventListener('click', () => overlay.remove());
+              btnRow.appendChild(closeBtn);
+
+             if (isAdmin) {
+                 const editBtn = document.createElement('button');
+                  editBtn.className = 'px-4 py-2 rt-btn rt-btn-add'; 
+                  editBtn.textContent = 'Edit Card';
+                  editBtn.addEventListener('click', () => { overlay.remove(); openEditModal(card); });
+                  btnRow.appendChild(editBtn);
+
+                 const deleteBtn = document.createElement('button');
+                  deleteBtn.className = 'px-4 py-2 rt-btn rt-btn-delete'; 
+                  deleteBtn.innerHTML = '<i class="fas fa-trash-alt mr-1"></i> Delete'; // Icon + Text
+                  deleteBtn.addEventListener('click', async () => { 
+                      const ok = window.confirm(`DELETE card "${card.title || 'Untitled'}"?\nThis cannot be undone.`);
+                      if (!ok) return;
+                      try {
+                          console.log("Deleting card:", card.id);
+                          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards', card.id));
+                          console.log("Card deleted successfully.");
+                          overlay.remove(); 
+                      } catch (err) { console.error('Failed to delete card', err); alert('Delete failed: '+(err.message||err)); }
+                  });
+                  btnRow.appendChild(deleteBtn);
+             }
+
+            panel.appendChild(btnRow);
+            overlay.appendChild(panel);
+            document.body.appendChild(overlay);
+        }
+
+        function openAdminSettingsModal() { 
+            if (!isAdmin) { console.log("Attempted to open admin settings without privileges."); return; }
+            console.log("Opening Admin Settings Modal");
+            
+            const overlay = document.createElement('div'); 
+            overlay.className = 'fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4';
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+            
+            const panel = document.createElement('div');
+            panel.className = 'rt-modal-panel p-6 w-11/12 max-w-lg'; // Increased padding
+            
+            const title = document.createElement('h3'); 
+            title.textContent = 'Admin Settings'; title.className = 'text-xl font-bold mb-4'; panel.appendChild(title);
+
+            // --- Import Section ---
+            const importLabel = document.createElement('label'); 
+            importLabel.textContent = 'Import JSON'; importLabel.className='block text-sm font-medium mb-1'; panel.appendChild(importLabel);
+            const importInput = document.createElement('input'); 
+            importInput.type = 'file'; importInput.accept = '.json'; importInput.className = 'w-full p-2 rt-input text-white text-sm'; panel.appendChild(importInput);
+            const importBtn = document.createElement('button'); 
+            importBtn.className = 'mt-2 px-3 py-1 rt-btn rt-btn-add text-sm'; importBtn.innerHTML = '<i class="fas fa-upload mr-1"></i> Import';
+            importBtn.addEventListener('click', async () => { 
+                const f = importInput.files?.[0];
+                if (!f) { alert('Select a JSON file'); return; }
+                const ok = confirm("Importing will ADD data from the file. It won't replace existing data unless IDs match. Continue?");
+                if (!ok) return;
+                try { 
+                    const text = await f.text();
+                    const data = JSON.parse(text);
+                    console.log("Importing data:", data);
+                    showProgressModal('Importing JSON...');
+                    await importFromJSON(data, updateProgress); // Pass updateProgress directly
+                    closeProgressModal(); // Close progress on completion
+                    alert('Import complete');
+                    // Data will refresh via listeners, modal stays open
+                } catch (err) { 
+                    console.error('Import failed', err); 
+                    closeProgressModal(); // Close progress on error
+                    alert('Import failed: ' + (err.message || 'Check console for details')); 
+                }
+             });
+            
+            // --- Export Section ---
+            const exportBtn = document.createElement('button'); 
+            exportBtn.className = 'mt-2 ml-2 px-3 py-1 rt-btn rt-btn-auth text-sm'; exportBtn.innerHTML = '<i class="fas fa-download mr-1"></i> Export Current';
+            exportBtn.addEventListener('click', async () => { 
+                 try {
+                     showProgressModal('Exporting...');
+                     await exportCurrentBoard();
+                     closeProgressModal();
+                     // No alert needed, download starts automatically
+                 } catch (err) { console.error('Export failed', err); closeProgressModal(); alert('Export failed: '+(err.message||err)); }
+             });
+            
+            const importExportRow = document.createElement('div'); // Group import/export
+            importExportRow.className = 'flex items-center mb-6'; // Added margin bottom
+            importExportRow.appendChild(importBtn); importExportRow.appendChild(exportBtn);
+            panel.appendChild(importExportRow);
+
+            // --- Nuke Section ---
+            const nukeLabel = document.createElement('p'); 
+            nukeLabel.className = 'text-sm font-medium text-red-400'; nukeLabel.textContent = 'Danger Zone:'; panel.appendChild(nukeLabel);
+            const nukeDesc = document.createElement('p');
+            nukeDesc.className = 'text-xs text-gray-400 mb-1'; nukeDesc.textContent = 'Permanently delete ALL columns, cards, and associated images from Firebase.'; panel.appendChild(nukeDesc);
+            const nukeBtn = document.createElement('button'); 
+            nukeBtn.className = 'px-3 py-1 rt-btn rt-btn-delete text-sm'; nukeBtn.innerHTML = '<i class="fas fa-skull-crossbones mr-1"></i> NUKE All Data';
+            nukeBtn.addEventListener('click', async () => { 
+                 const confirm1 = window.prompt("Type NUKE to confirm permanent deletion of ALL roadmap data:");
+                 if (confirm1 !== 'NUKE') return;
+                 const confirm2 = window.prompt("Are you ABSOLUTELY sure? This cannot be undone. Type NUKE again:");
+                 if (confirm2 !== 'NUKE') return;
+
+                 try {
+                      showProgressModal('Nuking Data...'); 
+                     await nukeRoadmapData();
+                      closeProgressModal();
+                     alert('Nuke completed');
+                     overlay.remove(); // Close settings modal after nuke
+                 } catch (err) { console.error('Nuke failed', err); closeProgressModal(); alert('Nuke failed: ' + (err.message || err)); }
+            });
+            panel.appendChild(nukeBtn);
+
+            // --- Close Button ---
+            const closeRow = document.createElement('div'); 
+            closeRow.className = 'mt-6 flex justify-end border-t border-gray-700 pt-3'; panel.appendChild(closeRow);
+            const closeBtn = document.createElement('button'); 
+            closeBtn.className = 'px-4 py-2 rt-btn-auth text-sm'; closeBtn.textContent = 'Close';
+            closeBtn.addEventListener('click', () => overlay.remove());
+            closeRow.appendChild(closeBtn);
+
+            overlay.appendChild(panel);
+            document.body.appendChild(overlay);
+        }
+
+        function openAddColumnModal() { 
+            if (!isAdmin) return;
+            console.log("Opening Add Column Modal");
+            
+            const overlay = document.createElement('div'); 
+            overlay.className = 'fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4';
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+            
+            const panel = document.createElement('div');
+            panel.className = 'rt-modal-panel p-6 w-11/12 max-w-md'; // Increased padding
+
+            const title = document.createElement('h3'); title.textContent='Add New Column'; title.className='text-xl font-bold mb-4'; panel.appendChild(title);
+
+            const idLabel = document.createElement('label'); idLabel.textContent='Column ID (e.g., "qa-testing", no spaces)'; panel.appendChild(idLabel);
+            const idInput = document.createElement('input'); idInput.className = 'rt-input mb-3'; panel.appendChild(idInput); // Added margin
+
+            const titleLabel = document.createElement('label'); titleLabel.textContent='Display Title'; panel.appendChild(titleLabel);
+            const titleInput = document.createElement('input'); titleInput.className = 'rt-input mb-3'; panel.appendChild(titleInput); // Added margin
+
+            const orderLabel = document.createElement('label'); orderLabel.textContent='Order (optional, higher numbers appear later)'; panel.appendChild(orderLabel);
+            const orderInput = document.createElement('input'); orderInput.type = 'number'; orderInput.className = 'rt-input mb-3'; // Added margin
+             const defaultOrder = (Object.keys(columnsData).length + 1) * 10;
+             orderInput.placeholder = `e.g., ${defaultOrder}`; panel.appendChild(orderInput);
+
+            const btnRow = document.createElement('div'); btnRow.className = 'mt-4 flex justify-end gap-2 border-t border-gray-700 pt-3'; panel.appendChild(btnRow);
+
+            const cancelBtn = document.createElement('button'); cancelBtn.className = 'px-4 py-2 rt-btn-auth text-sm'; cancelBtn.textContent='Cancel'; // Size match save
+            cancelBtn.addEventListener('click', () => overlay.remove()); btnRow.appendChild(cancelBtn);
+
+            const saveBtn = document.createElement('button'); saveBtn.className = 'px-4 py-2 rt-btn rt-btn-add text-sm'; saveBtn.textContent='Create Column'; // Size match cancel
+            saveBtn.addEventListener('click', async () => { 
+                 const idVal = idInput.value.trim().replace(/\s+/g, '-').toLowerCase(); // Sanitize ID: lowercase, dashes for spaces
+                 const titleVal = titleInput.value.trim();
+                 let orderVal = Number(orderInput.value); 
+                 if (isNaN(orderVal) || orderVal <= 0) {
+                     orderVal = defaultOrder; // Use calculated default if input invalid
+                 }
+
+                 if (!idVal || !titleVal) { alert('Column ID and Display Title are required.'); return; }
+                 if (!/^[a-z0-9-]+$/.test(idVal)) { alert('Column ID can only contain lowercase letters, numbers, and hyphens.'); return; }
+                 
+                 // Check if ID already exists
+                 if (columnsData[idVal]){ alert(`Column ID "${idVal}" already exists. Choose a unique ID.`); return; }
+
+                 try {
+                     console.log(`Creating column: ID=${idVal}, Title=${titleVal}, Order=${orderVal}`);
+                     await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_columns', idVal), { title: titleVal, order: orderVal });
+                     console.log("Column created successfully.");
+                     overlay.remove(); // Close on success
+                 } catch (err) { console.error('Failed to create column', err); alert('Failed to create column: '+(err.message||err)); }
+            }); 
+            btnRow.appendChild(saveBtn);
+
+            overlay.appendChild(panel);
+            document.body.appendChild(overlay);
+         }
+        
+        function openEditModal(card) { 
+             if (!isAdmin) return; 
+             console.log("Opening Edit Modal for:", card?.id || 'Unknown card');
+
+             const overlay = document.createElement('div');
+              overlay.className = 'fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4';
+              overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+             
+             const panel = document.createElement('div');
+             panel.className = 'rt-modal-panel p-6 w-11/12 max-w-2xl overflow-y-auto max-h-[90vh]'; 
+             panel.addEventListener('click', (e) => e.stopPropagation());
+
+             const modalTitle = document.createElement('h3'); modalTitle.textContent='Edit Card'; modalTitle.className='text-xl font-bold mb-4'; panel.appendChild(modalTitle);
+
+             // --- Title Input ---
+             const titleLabel = document.createElement('label'); titleLabel.textContent='Title'; panel.appendChild(titleLabel);
+             const titleInput = document.createElement('input'); 
+             titleInput.className = 'rt-input mb-3'; titleInput.value = card.title || ''; panel.appendChild(titleInput);
+
+             // --- Description Input ---
+             const descLabel = document.createElement('label'); descLabel.textContent='Description (Markdown)'; panel.appendChild(descLabel);
+             const descInput = document.createElement('textarea'); 
+             descInput.className = 'rt-input h-40 mb-3'; descInput.value = card.description || ''; panel.appendChild(descInput);
+             
+             // --- Row for Label and Due Date ---
+             const halfRow = document.createElement('div');
+             halfRow.className = 'flex flex-col sm:flex-row gap-4 mb-3';
+             
+             // --- Label (Category) Input ---
+             const labelContainer = document.createElement('div');
+             labelContainer.className = 'flex-1';
+             const labelLabel = document.createElement('label'); 
+             labelLabel.textContent='Category'; 
+             labelContainer.appendChild(labelLabel);
+             
+             const labelInput = document.createElement('select'); 
+             labelInput.className = 'rt-input';
+             Object.keys(labelOptions).forEach(key => {
+                 const opt = document.createElement('option');
+                 opt.value = key;
+                 opt.textContent = labelOptions[key].text;
+                 if (key === (card.label || 'general')) {
+                     opt.selected = true;
+                 }
+                 labelInput.appendChild(opt);
+             });
+             labelContainer.appendChild(labelInput);
+             halfRow.appendChild(labelContainer);
+
+             // --- Due Date Input ---
+             const dueDateContainer = document.createElement('div');
+             dueDateContainer.className = 'flex-1';
+             const dueDateLabel = document.createElement('label'); 
+             dueDateLabel.textContent='Due Date (optional)'; 
+             dueDateContainer.appendChild(dueDateLabel);
+             
+             const dueDateInput = document.createElement('input'); 
+             dueDateInput.type = 'date';
+             dueDateInput.className = 'rt-input';
+             // Format date for input: YYYY-MM-DD
+             if (card.dueDate) {
+                 try {
+                     // Ensure it's treated as local date, not UTC
+                     const d = new Date(card.dueDate);
+                     const offset = d.getTimezoneOffset();
+                     const localDate = new Date(d.getTime() + (offset * 60 * 1000));
+                     dueDateInput.value = localDate.toISOString().split('T')[0];
+                 } catch (e) {
+                     console.warn("Could not parse dueDate for input:", card.dueDate);
+                     dueDateInput.value = card.dueDate; // fallback
+                 }
+             }
+             dueDateContainer.appendChild(dueDateInput);
+             halfRow.appendChild(dueDateContainer);
+
+             panel.appendChild(halfRow); // Add the row to the panel
+
+
+             // --- NEW: Checklist Editor ---
+             const checklistLabel = document.createElement('label'); 
+             checklistLabel.textContent='Checklist'; 
+             checklistLabel.className = 'mt-3';
+             panel.appendChild(checklistLabel);
+             
+             const checklistEditorContainer = document.createElement('div');
+             checklistEditorContainer.id = 'checklist-editor';
+             checklistEditorContainer.className = 'mb-3';
+             panel.appendChild(checklistEditorContainer);
+             
+             const addChecklistItemBtn = document.createElement('button');
+             addChecklistItemBtn.type = 'button'; // Prevent form submission
+             addChecklistItemBtn.className = 'rt-btn rt-btn-auth px-3 py-1 text-sm';
+             addChecklistItemBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add Task';
+             panel.appendChild(addChecklistItemBtn);
+
+             // Local copy of checklist for editing
+             let currentChecklist = JSON.parse(JSON.stringify(card.checklist || []));
+
+             // Function to render the editor items
+             const renderChecklistEditor = () => {
+                 checklistEditorContainer.innerHTML = ''; // Clear
+                 currentChecklist.forEach((item, index) => {
+                     const itemEl = document.createElement('div');
+                     itemEl.className = 'rt-checklist-editor-item';
+
+                     const textInput = document.createElement('input');
+                     textInput.type = 'text';
+                     textInput.className = 'rt-input';
+                     textInput.value = item.text;
+                     textInput.placeholder = 'New task...';
+                     // Update local array on input change
+                     textInput.addEventListener('change', (e) => {
+                         currentChecklist[index].text = e.target.value;
+                     });
+                     
+                     const deleteBtn = document.createElement('button');
+                     deleteBtn.type = 'button';
+                     deleteBtn.className = 'rt-btn rt-btn-delete';
+                     deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                     deleteBtn.addEventListener('click', () => {
+                         currentChecklist.splice(index, 1); // Remove from local array
+                         renderChecklistEditor(); // Re-render
+                     });
+                     
+                     itemEl.appendChild(textInput);
+                     itemEl.appendChild(deleteBtn);
+                     checklistEditorContainer.appendChild(itemEl);
+                 });
+             };
+             
+             // Add button listener
+             addChecklistItemBtn.addEventListener('click', () => {
+                 currentChecklist.push({ text: '', complete: false });
+                 renderChecklistEditor();
+                 // Focus the new input
+                 const inputs = checklistEditorContainer.querySelectorAll('input[type=text]');
+                 if(inputs.length > 0) inputs[inputs.length - 1].focus();
+             });
+             
+             renderChecklistEditor(); // Initial render
+             // --- End Checklist Editor ---
+
+
+             // --- Tags Input ---
+             const tagsLabel = document.createElement('label'); 
+             tagsLabel.textContent='Tags (comma-separated)'; 
+             tagsLabel.className = 'mt-4'; // Add margin top
+             panel.appendChild(tagsLabel);
+             const tagsInput = document.createElement('input'); 
+              tagsInput.className = 'rt-input mb-3'; tagsInput.value = (card.tags || []).join(', '); panel.appendChild(tagsInput);
+
+             // --- Image URL Input ---
+             const imgLabel = document.createElement('label'); imgLabel.textContent='Image URL (optional)'; panel.appendChild(imgLabel);
+             const imgInput = document.createElement('input'); 
+              imgInput.className = 'rt-input mb-3'; imgInput.value = card.imageUrl || ''; panel.appendChild(imgInput);
+
+             // --- Image Upload ---
+             if (window._rt_storage) { 
+                 const fileLabel = document.createElement('label'); fileLabel.textContent='Upload Image (optional, replaces URL)'; fileLabel.className='mt-3'; panel.appendChild(fileLabel);
+                 const fileInput = document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*';
+                 fileInput.className = 'w-full p-2 rt-input text-white text-sm'; panel.appendChild(fileInput);
+                 const uploadBtn = document.createElement('button'); 
+                 uploadBtn.className = 'mt-1 px-3 py-1 rt-btn rt-btn-auth text-sm'; uploadBtn.innerHTML = '<i class="fas fa-upload mr-1"></i> Upload & Set URL';
+                 const progressText = document.createElement('span'); progressText.className = 'ml-2 text-sm text-gray-400';
+                 
+                 uploadBtn.addEventListener('click', async () => { 
+                      const file = fileInput.files?.[0];
+                      if (!file) { alert('Choose a file first'); return; }
+                      if (!storage) { alert('Storage not initialized.'); return; } // Check storage
+                      
+                      const path = `roadmap_images/${Date.now()}_${file.name}`;
+                      const sRef = storageRef(storage, path);
+                      const uploadTask = uploadBytesResumable(sRef, file);
+                      
+                      uploadBtn.disabled = true; // Disable during upload
+                      progressText.textContent = 'Uploading 0%';
+
+                      uploadTask.on('state_changed', 
+                          (snapshot) => { // Progress
+                              const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                              progressText.textContent = `Uploading ${pct}%`;
+                          }, 
+                          (err) => { // Error
+                              console.error('Upload failed', err);
+                              alert('Upload failed: ' + err.message);
+                              progressText.textContent = 'Upload failed';
+                              uploadBtn.disabled = false; // Re-enable button
+                          }, 
+                          async () => { // Complete
+                              try {
+                                   const url = await getDownloadURL(uploadTask.snapshot.ref);
+                                   console.log("Upload complete, URL:", url);
+                                   imgInput.value = url; // Update the URL input field
+                                   progressText.textContent = 'Upload complete!';
+                                   fileInput.value = ''; // Clear file input
+                               } catch (getUrlError) {
+                                   console.error("Failed to get download URL:", getUrlError);
+                                   alert("Upload succeeded but failed to get URL.");
+                                   progressText.textContent = 'Error getting URL';
+                               } finally {
+                                    uploadBtn.disabled = false; // Re-enable button
+                               }
+                          }
+                      );
+                  });
+
+                 const uploadRow = document.createElement('div'); uploadRow.className='flex items-center mb-3';
+                  uploadRow.appendChild(uploadBtn); uploadRow.appendChild(progressText); panel.appendChild(uploadRow);
+             }
+
+             // --- Buttons ---
+             const btnRow = document.createElement('div'); btnRow.className = 'mt-4 flex justify-end gap-2 border-t border-gray-700 pt-3'; panel.appendChild(btnRow);
+             const cancelBtn = document.createElement('button'); cancelBtn.className = 'px-4 py-2 rt-btn-auth text-sm'; cancelBtn.textContent='Cancel';
+             cancelBtn.addEventListener('click', () => overlay.remove()); btnRow.appendChild(cancelTBtn);
+
+             const saveBtn = document.createElement('button'); saveBtn.className = 'px-4 py-2 rt-btn rt-btn-add text-sm'; saveBtn.textContent='Save Changes';
+             saveBtn.addEventListener('click', async () => { 
+                  try {
+                      const cardRef = doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards', card.id);
+                      
+                      const tagStr = tagsInput ? tagsInput.value : ''; 
+                      const tagsArr = tagStr.split(',').map(s => s.trim()).filter(Boolean);
+                      const imageUrlVal = imgInput ? imgInput.value.trim() : ''; 
+
+                      // --- Get values for new fields ---
+                      const labelVal = labelInput.value || 'general';
+                      // Get date as YYYY-MM-DD string, or null if empty
+                      const dueDateVal = dueDateInput.value ? dueDateInput.value : null;
+
+                      // --- MODIFIED: Get final checklist data ---
+                      // Re-read text inputs from the editor DOM
+                      const checklistTextInputs = checklistEditorContainer.querySelectorAll('input[type=text]');
+                      const finalChecklist = Array.from(checklistTextInputs).map((input, index) => ({
+                          text: input.value.trim(),
+                          complete: currentChecklist[index]?.complete || false // Preserve 'complete' status
+                      })).filter(item => item.text); // Filter out empty items
+                      // --- End Modification ---
+
+                      const dataToUpdate = {
+                          title: titleInput.value.trim() || 'Untitled Card', // Ensure title isn't empty
+                          description: descInput.value, 
+                          tags: tagsArr,
+                          imageUrl: imageUrlVal,
+                          label: labelVal,      
+                          dueDate: dueDateVal,
+                          checklist: finalChecklist // --- NEW ---
+                      };
+                      console.log("Saving card:", card.id, "Data:", dataToUpdate);
+                      await updateDoc(cardRef, dataToUpdate);
+                      console.log("Card saved successfully.");
+                      overlay.remove(); // Close on success
+                  } catch (err) { console.error('Failed to save card', err); alert('Save failed: '+(err.message||err)); }
+             }); 
+             btnRow.appendChild(saveBtn);
+
+             overlay.appendChild(panel);
+             document.body.appendChild(overlay);
+         }
+
+
+        // --- Data Handling Helpers ---
+        function cardsCollectionRef() { return collection(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards'); }
+        
+        function showProgressModal(title) {
+            // Remove existing modal first if present
+            closeProgressModal(); 
+
+            const overlay = document.createElement('div');
+            overlay.id = 'rt-progress-overlay';
+            overlay.className = 'fixed inset-0 bg-black/60 flex items-center justify-center z-[1000]'; // High z-index
+            const panel = document.createElement('div');
+            panel.className = 'rt-modal-panel p-4 w-11/12 max-w-md'; 
+            const t = document.createElement('div'); t.className = 'text-lg font-bold mb-2'; t.textContent = title || 'Progress';
+            const bar = document.createElement('div'); bar.className = 'w-full bg-gray-700 h-3 overflow-hidden'; // Darker track
+            const fill = document.createElement('div'); fill.id = 'rt-progress-fill'; fill.className = 'h-3 w-0 transition-width duration-300'; fill.style.backgroundColor = 'var(--color-accent-primary)'; 
+            bar.appendChild(fill);
+            const info = document.createElement('div'); info.id = 'rt-progress-info'; info.className = 'mt-2 text-sm text-gray-300 text-center'; info.textContent = 'Starting...';
+            panel.appendChild(t); panel.appendChild(bar); panel.appendChild(info);
+            overlay.appendChild(panel);
+            document.body.appendChild(overlay);
+        }
+        function updateProgress(done, total, msg) { 
+             const pct = total > 0 ? Math.max(0, Math.min(100, Math.round((done/total)*100))) : 0;
+             const fill = document.getElementById('rt-progress-fill');
+             const info = document.getElementById('rt-progress-info');
+             if (fill) fill.style.width = pct + '%';
+             if (info) info.textContent = `${msg || ''} ${done}/${total} (${pct}%)`;
+         }
+        function closeProgressModal() { 
+             const ov = document.getElementById('rt-progress-overlay');
+             if (ov) ov.remove();
+         }
+        
+        async function exportCurrentBoard() { 
+             console.log("Exporting current board state...");
+             // Use current state variables which are kept up-to-date by listeners
+             const cols = Object.values(columnsData);
+             const cards = Object.values(cardsData).flat(); // Flatten cards from all columns
+             
+             if (cols.length === 0 && cards.length === 0) {
+                 alert("Nothing to export.");
+                 return;
+             }
+
+             const payload = { 
+                 columns: cols.sort((a,b) => (a.order ?? Infinity) - (b.order ?? Infinity)), // Ensure sorted export
+                 cards: cards, 
+                 exportedAt: new Date().toISOString() 
+             };
+             const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+             const url = URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             a.download = `roadmap-export-${new Date().toISOString().split('T')[0]}.json`; // Simpler filename
+             document.body.appendChild(a); a.click(); a.remove(); // Trigger download
+             URL.revokeObjectURL(url); // Clean up blob URL
+             console.log("Export triggered.");
+         }
+
+        async function importFromJSON(data, progressCallback) { 
+             if (!isAdmin) throw new Error('Admins only');
+             if (!data || typeof data !== 'object') throw new Error('Invalid data format');
+             
+             const cols = Array.isArray(data.columns) ? data.columns : [];
+             const cards = Array.isArray(data.cards) ? data.cards : [];
+             const total = cols.length + cards.length;
+             let done = 0;
+             console.log(`Starting import: ${cols.length} columns, ${cards.length} cards.`);
+
+             const batch = writeBatch(db); // Use a single batch for the entire import
+
+             // Import columns
+             for (const c of cols) {
+                 const id = c.id ? String(c.id).replace(/\s+/g, '-').toLowerCase() : null; // Sanitize ID
+                 if (!id || !c.title) { console.warn("Skipping column with missing ID or title:", c); continue; }
+                 
+                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_columns', id);
+                 const payload = { 
+                     title: String(c.title || 'Untitled Column'), 
+                     order: (typeof c.order === 'number' && c.order > 0) ? c.order : Date.now() // Use timestamp if order invalid
+                 };
+                 batch.set(docRef, payload, { merge: true }); // Use set with merge to create or update
+                 done++;
+                 if (progressCallback) progressCallback(done, total, `Importing Columns: ${done}/${cols.length}`);
+                 await new Promise(r => setTimeout(r, 10)); // Small delay to allow UI update
+             }
+             console.log("Column batch operations prepared.");
+
+             // Import cards
+             for (const k of cards) {
+                 const id = k.id ? String(k.id) : null; 
+                 if (!id || !k.column || !k.title) { console.warn("Skipping card with missing ID, column, or title:", k); continue; }
+
+                 const columnId = String(k.column).replace(/\s+/g, '-').toLowerCase(); // Sanitize column ID reference
+
+                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards', id);
+                 const payload = {
+                     title: String(k.title || 'Untitled Card'),
+                     description: String(k.description || ''),
+                     column: columnId, 
+                     order: (typeof k.order === 'number' && k.order > 0) ? k.order : Date.now(),
+                     tags: Array.isArray(k.tags) ? k.tags.map(String).filter(Boolean) : [], // Ensure tags are strings
+                     imageUrl: String(k.imageUrl || ''),
+                     // --- MODIFIED: Add new fields with fallbacks ---
+                     label: String(k.label || 'general'),
+                     dueDate: k.dueDate ? String(k.dueDate) : null,
+                     checklist: Array.isArray(k.checklist) ? k.checklist : [] // <-- NEW
+                 };
+                 batch.set(docRef, payload, { merge: true }); // Use set with merge
+                 done++;
+                 if (progressCallback) progressCallback(done, total, `Importing Cards: ${done-cols.length}/${cards.length}`);
+                 await new Promise(r => setTimeout(r, 10)); // Small delay
+             }
+             console.log("Card batch operations prepared.");
+
+             // Commit the batch
+             await batch.commit();
+             console.log("Import batch committed.");
+             if (progressCallback) progressCallback(total, total, `Import Complete!`); 
+         } 
+         
+        async function nukeRoadmapData() { 
+             if (!isAdmin) throw new Error('Admins only');
+             const updateFn = updateProgress; // Use the global update function
+             let total = 0;
+             let done = 0;
+             
+             try {
+                 console.log("Nuke starting: Fetching documents...");
+                 if(updateFn) updateFn(0, 100, 'Fetching data...'); // Initial progress
+
+                 const colsRef = collection(db, 'artifacts', appId, 'public', 'data', 'roadmap_columns');
+                 const cardsRef = collection(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards');
+                 const colsSnap = await getDocs(colsRef);
+                 const cardsSnap = await getDocs(cardsRef);
+                 
+                 let storageItems = [];
+                 if (storage) {
+                     try {
+                         const listRef = storageRef(storage, 'roadmap_images/'); // Path for images
+                         const res = await listAll(listRef);
+                         storageItems = res.items || [];
+                         console.log(`Found ${storageItems.length} images to delete.`);
+                     } catch (e) { console.warn('Storage listAll failed during nuke, images might remain:', e); }
+                 }
+                 
+                 total = colsSnap.size + cardsSnap.size + storageItems.length;
+                 if (total === 0) { console.log("Nothing to nuke."); return; }
+                 
+                 console.log(`Nuke target: ${colsSnap.size} columns, ${cardsSnap.size} cards, ${storageItems.length} images.`);
+                 if(updateFn) updateFn(0, total, 'Preparing deletions...');
+
+                 // --- Batch Deletion for Firestore ---
+                 const batch = writeBatch(db);
+                 colsSnap.docs.forEach(d => batch.delete(d.ref));
+                 cardsSnap.docs.forEach(d => batch.delete(d.ref));
+                 
+                 console.log("Committing Firestore deletions...");
+                 await batch.commit();
+                 done += colsSnap.size + cardsSnap.size;
+                 if(updateFn) updateFn(done, total, `Deleted ${done} Firestore documents`);
+                 console.log("Firestore documents deleted.");
+
+                 // --- Delete Storage Items ---
+                 if (storageItems.length > 0) {
+                      console.log("Deleting storage items...");
+                      const deletePromises = storageItems.map(item => 
+                          deleteObject(item).then(() => {
+                              done++; 
+                              if(updateFn) updateFn(done, total, `Deleting image ${done - (colsSnap.size + cardsSnap.size)}/${storageItems.length}`);
+                          }).catch(e => console.warn(`Failed to delete ${item.fullPath}`, e))
+                      );
+                      await Promise.all(deletePromises);
+                      console.log("Storage items deleted (or attempted).");
+                  }
+
+                 if(updateFn) updateFn(total, total, 'Nuke complete'); 
+                 console.log("Nuke operation finished.");
+
+             } catch (err) {
+                 console.error("Error during nuke operation:", err);
+                 if(updateFn) updateFn(done, total, `Error: ${err.message}`);
+                 throw err; // Re-throw to be caught by caller
+             }
+         }
+
+        async function createCard(columnId) { 
+             if (!isAdmin) return;
+             console.log("Attempting to create card in column:", columnId);
+             try {
+                 const ref = cardsCollectionRef();
+                 const cardsInCol = cardsData[columnId] || [];
+                 const maxOrder = cardsInCol.reduce((max, card) => Math.max(max, card.order || 0), 0);
+                 const newOrder = cardsInCol.length > 0 ? maxOrder + 1 : Date.now(); 
+
+                 const newCardData = {
+                     title: 'New Card', description: 'Edit this card...', column: columnId,
+                     order: newOrder, tags: [], imageUrl: '', createdAt: new Date().toISOString(),
+                     // --- MODIFIED: Add default values for new fields ---
+                     label: 'general',
+                     dueDate: null,
+                     checklist: [] // <-- NEW
+                 };
+                 const docRef = await addDoc(ref, newCardData);
+                 console.log('Card created with ID:', docRef.id);
+                 // Immediately open edit modal
+                 openEditModal({ id: docRef.id, ...newCardData }); 
+             } catch (err) { console.error('Failed to create card', err); alert("Failed to create card."); }
+         }
+         
+        async function moveCardToColumn(cardId, targetColId, insertOrderIndex = null) {
+            // This function needs the full logic from the working version
+            // including finding source column, preparing arrays, calculating final index,
+            // and using a Firestore batch write to update orders in both source (if different) and target columns.
+            if (!isAdmin) { alert('Only admins can move cards'); return; } 
+            console.log(`Moving card ${cardId} to col ${targetColId} at index ${insertOrderIndex}`);
+
+            let sourceColId = null;
+            let draggedCardData = null;
+
+            // --- MODIFIED: Use fast flat map ---
+            draggedCardData = allCardsData[cardId];
+            if (draggedCardData) {
+                sourceColId = draggedCardData.column;
+            }
+            // --- End Modification ---
+
+            // Fallback: Fetch card data if not found locally
+            if (!draggedCardData) { 
+                try {
+                    const cardSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards', cardId));
+                    if (cardSnap.exists()) {
+                        draggedCardData = { id: cardSnap.id, ...cardSnap.data() };
+                        sourceColId = draggedCardData.column;
+                        console.log("Fetched missing card data from FS.");
+                    }
+                } catch (e) { console.error("Failed to fetch card data on move:", e); }
+             }
+             if (!draggedCardData) { console.error("Could not find card data for", cardId); return; } // Stop if still not found
+
+            // --- Prepare Local Array Representations ---
+            const targetColCards_Current = cardsData[targetColId] ? 
+                [...cardsData[targetColId]].sort((a,b)=>(a.order??Infinity)-(b.order??Infinity)) 
+                : [];
+            let sourceColCards_Current = (sourceColId && cardsData[sourceColId]) ? 
+                [...cardsData[sourceColId]].sort((a,b)=>(a.order??Infinity)-(b.order??Infinity)) 
+                : [];
+
+            // --- Determine Target Array and Final Index ---
+            let finalTargetArray;
+            let finalInsertIndex;
+
+            if (sourceColId === targetColId) { // Moving within the same column
+                const originalIndex = sourceColCards_Current.findIndex(c => c.id === cardId);
+                if (originalIndex === -1) { console.warn("Card not found in source array for intra-column move."); return; }
+                
+                const [movedCard] = sourceColCards_Current.splice(originalIndex, 1);
+                
+                finalTargetArray = sourceColCards_Current; 
+                // If null index, append. Otherwise, use provided index, adjusted for removal.
+                finalInsertIndex = (typeof insertOrderIndex === 'number') ? insertOrderIndex : finalTargetArray.length;
+                if (insertOrderIndex !== null && finalInsertIndex > originalIndex) { finalInsertIndex--; }
+                
+                // Clamp index
+                 if (finalInsertIndex < 0) finalInsertIndex = 0;
+                 if (finalInsertIndex > finalTargetArray.length) finalInsertIndex = finalTargetArray.length;
+
+                finalTargetArray.splice(finalInsertIndex, 0, movedCard);
+
+            } else { // Moving to a different column
+                finalTargetArray = targetColCards_Current;
+                finalInsertIndex = (typeof insertOrderIndex === 'number') ? insertOrderIndex : finalTargetArray.length;
+
+                // Clamp index
+                if (finalInsertIndex < 0) finalInsertIndex = 0;
+                if (finalInsertIndex > finalTargetArray.length) finalInsertIndex = finalTargetArray.length;
+                
+                 // Insert updated card data
+                 finalTargetArray.splice(finalInsertIndex, 0, { ...draggedCardData, column: targetColId }); 
+
+                 // Remove from the source array representation if moving columns
+                 if (sourceColId) {
+                     sourceColCards_Current = sourceColCards_Current.filter(c => c.id !== cardId);
+                 }
+            }
+
+            // --- Firestore Batch Update ---
+            const batch = writeBatch(db);
+            let updatesMade = false;
+
+            // Update orders in the target column
+            finalTargetArray.forEach((card, index) => {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards', card.id);
+                // Check if order or column needs update
+                 const currentOrder = card.id === cardId ? (draggedCardData.order ?? -1) : (card.order ?? -1);
+                 const currentColumn = card.id === cardId ? (draggedCardData.column) : (card.column);
+
+                if (currentOrder !== index + 1 || currentColumn !== targetColId) { 
+                     batch.update(docRef, { order: index + 1, column: targetColId });
+                     updatesMade = true;
+                     console.log(`  Batch: Update target card ${card.id} order=${index+1}, col=${targetColId}`);
+                 }
+            });
+
+            // Update orders in the source column (if different)
+            if (sourceColId && sourceColId !== targetColId) {
+                sourceColCards_Current.forEach((card, index) => {
+                    // Only update if order actually changed
+                    if ((card.order ?? -1) !== index + 1) { 
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'roadmap_cards', card.id);
+                        batch.update(docRef, { order: index + 1 });
+                        updatesMade = true;
+                         console.log(`  Batch: Update source card ${card.id} order=${index+1}`);
+                    }
+                });
+            }
+            
+            // Commit only if changes were made
+            if (updatesMade) {
+                try {
+                     await batch.commit();
+                     console.log(`Card ${cardId} move batch committed successfully.`);
+                     // UI updates via listener
+                } catch (err) {
+                     console.error("Batch update failed during card move:", err);
+                     alert("Failed to move card.");
+                }
+            } else {
+                 console.log(`Card ${cardId} move - no Firestore updates needed.`);
+             }
+        } 
+        
+        // --- Initialization ---
         async function init() {
             try {
-                // Enable debug logging for Firestore
-                setLogLevel('debug');
-
-                // Check if firebaseConfig is populated
-                if (!firebaseConfig.apiKey) {
-                    console.error("Firebase config is missing!");
-                    loadingEl.innerHTML = `<p style="color: #ff384f; font-family: 'Permanent Marker', cursive;">Error: Firebase config missing. Cannot connect to database.</p>`;
-                    return;
-                }
+                console.log("init: Starting Firebase initialization...");
+                if (!firebaseConfig?.apiKey) throw new Error("Firebase config missing!"); 
 
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
+                try { 
+                    storage = getStorage(app); window._rt_storage = storage; 
+                    console.log("init: Firebase Services Initialized (DB, Auth, Storage).");
+                } catch (e) { console.warn('init: Firebase Storage failed:', e); window._rt_storage = null; }
 
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        // User is signed in.
-                        console.log("User authenticated:", user.uid);
-                        // Now that we're auth'd, set up the data listeners
-                        setupListeners();
-                    } else {
-                        // User is signed out. Try to sign in.
-                        console.log("No user. Attempting sign in...");
-                        try {
-                            if (initialAuthToken) {
-                                console.log("Using initial auth token...");
-                                await signInWithCustomToken(auth, initialAuthToken);
-                            } else {
-                                console.log("No token. Signing in anonymously...");
+                // Setup UI elements right away
+                injectAuthUI(); 
+                
+                // --- NEW: Add Search Listener ---
+                const searchInput = document.getElementById('rt-search-bar');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        filterCards(e.target.value);
+                    });
+                } else { console.error("Search bar element not found!"); }
+
+                console.log("init: Setting up Auth State Listener...");
+                initialAuthResolved = false; // Reset flags on each init
+                listenersAttached = false;   
+                window._anonSignInAttempted = false; // Reset anon attempt flag
+
+                // Auth state change handler
+                const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+                    const wasAdmin = isAdmin; 
+                    currentUser = user; 
+                    isAdmin = user ? await checkAdmin(user.uid) : false; 
+                    
+                    console.log("Auth State Changed - User:", user ? user.uid : 'Signed Out', " Is Anon:", user?.isAnonymous, " Admin:", isAdmin);
+                    
+                    // Update header UI (status, buttons)
+                    onUserSignedIn(user); 
+
+                    // Setup Firestore listeners ONCE after the *first* user state is known
+                    if (!initialAuthResolved) {
+                         initialAuthResolved = true; 
+                         console.log("Auth State Changed: Initial state resolved, setting up listeners.");
+                         setupListeners(); // Triggers first data fetch/render
+                     } 
+                    // Re-render board if admin status changed AFTER initial load
+                    else if (isAdmin !== wasAdmin) { 
+                         console.log("Auth State Changed: Admin status changed, forcing re-render.");
+                         renderBoard(); 
+                     }
+
+                    // Attempt anonymous sign-in ONLY if no user is present after auth state settles
+                     // Use a small delay to avoid race conditions on initial load
+                     setTimeout(async () => {
+                         if (!auth.currentUser && !window._anonSignInAttempted) { 
+                            window._anonSignInAttempted = true; 
+                            console.log("Auth State Changed: No user after delay, attempting anonymous sign-in...");
+                            try {
                                 await signInAnonymously(auth);
+                                console.log("Auth State Changed: Anonymous sign-in requested (wait for next state change).");
+                            } catch (authError) {
+                                console.error("Auth State Changed: Anonymous sign-in failed:", authError);
+                                 loadingEl.style.display = 'flex'; board.classList.add('hidden');
+                                 loadingEl.innerHTML = `<p style="color:#ff384f; font-family:'Permanent Marker', cursive;">Error: Could not authenticate.</p>`;
+                                 initialAuthResolved = false; listenersAttached = false; // Reset on failure
+                                 // Allow retry after a longer delay
+                                 setTimeout(() => { window._anonSignInAttempted = false; }, 10000); 
                             }
-                        } catch (authError) {
-                            console.error("Authentication failed:", authError);
-                            loadingEl.innerHTML = `<p style="color: #ff384f; font-family: 'Permanent Marker', cursive;">Error: Authentication failed. Cannot load data.</p>`;
                         }
-                    }
+                    }, 500); // Check after 500ms
+
+                }, (error) => { // Error within the listener itself
+                    console.error("Auth state listener error:", error);
+                    loadingEl.style.display = 'flex'; board.classList.add('hidden');
+                    loadingEl.innerHTML = `<p style="color:#ff384f; font-family:'Permanent Marker', cursive;">Error: Auth listener failed.</p>`;
+                    initialAuthResolved = false; listenersAttached = false;
                 });
 
-            } catch (e) {
-                console.error("Initialization failed:", e);
-                loadingEl.innerHTML = `<p style="color: #ff384f; font-family: 'Permanent Marker', cursive;">Error: Failed to initialize. ${e.message}</p>`;
-            }
+                // Store unsubscribe function if needed
+                window._unsubscribeAuth = unsubscribeAuth;
+
+            } catch (e) { 
+                console.error("Initialization failed:", e); 
+                loadingEl.style.display = 'flex'; board.classList.add('hidden');
+                loadingEl.innerHTML = `<p style="color:#ff384f; font-family:'Permanent Marker', cursive;">Error: Init failed. ${e.message}</p>`;
+             }
         }
 
         // --- Entry Point ---
+        console.log("Script start: Calling init()...");
         init();
-
-        /*
-        
-        --- HOW TO ADD DATA (FOR MYSELF, OR ANYONE ELSE LOOKING) ---
-
-        This page is a READ-ONLY viewer. To add/edit data, you need to
-        go into your Firebase Firestore console for the 'jakedravioli-blog' project.
-
-        You'll need two collections:
-        
-        1. Collection: `artifacts/{YOUR_APP_ID}/public/data/roadmap_columns`
-           - Create a new document for each column (e.g., doc ID: "todo")
-           - Fields:
-             - `title` (string): "To-Do"
-             - `order` (number): 1
-
-           - Example Doc ("inprogress"):
-             - `title` (string): "In Progress"
-             - `order` (number): 2
-        
-        2. Collection: `artifacts/{YOUR_APP_ID}/public/data/roadmap_cards`
-           - Create a new document for each card.
-           - Fields:
-             - `title` (string): "Core: Save/Load System"
-             - `description` (string): "Implement the SaveGame object and logic."
-             - `column` (string): "todo"  (This MUST match the doc ID from the columns collection)
-             - `order` (number): 1
-
-           - To move a card, just edit the `column` field!
-             (e.g., change "todo" to "inprogress")
-             
-        */
 
     </script>
 </body>
 </html>
-
