@@ -7,13 +7,13 @@
     },
     {
       "id": "inprogress",
-      "title": "In Progress",
-      "order": 3
+      "order": 3,
+      "title": "In Progress"
     },
     {
       "id": "partlydone",
-      "title": "Partly Done",
-      "order": 4
+      "order": 4,
+      "title": "Partly Done"
     },
     {
       "id": "done",
@@ -23,53 +23,237 @@
   ],
   "cards": [
     {
-      "id": "task-vn-trigger",
-      "column": "todo",
+      "id": "task-deren-overload",
+      "label": "code",
+      "description": "Implement Deren's 'limit breaker' form. This should be a temporary high-damage state, triggered by the special serum, which also carries risk (internal damage, potential death).",
+      "tags": [
+        "combat",
+        "mechanic",
+        "deren",
+        "core-gameplay"
+      ],
+      "order": 1,
+      "title": "Mechanic: Deren's 'C0R3 0V3RL0AD'",
+      "checklist": [
+        {
+          "complete": true,
+          "text": "Deren's model (Overdrive form VRM)"
+        },
+        {
+          "complete": true,
+          "text": "Idle"
+        },
+        {
+          "text": "Walk/Run Cycle",
+          "complete": true
+        },
+        {
+          "text": "Smaller details (outfit modifications)",
+          "complete": true
+        },
+        {
+          "complete": false,
+          "text": "Transformation"
+        }
+      ],
+      "imageUrl": "",
       "dueDate": null,
+      "column": "partlydone"
+    },
+    {
+      "id": "JwOAOxHV2LV4V7TgafJL",
+      "checklist": [
+        {
+          "text": "Sprinting",
+          "complete": true
+        },
+        {
+          "text": "Animation Logic (ABP_ModularAnimations)",
+          "complete": true
+        },
+        {
+          "text": "Crouching",
+          "complete": false
+        }
+      ],
+      "createdAt": "2025-10-26T17:59:22.247Z",
+      "dueDate": null,
+      "column": "partlydone",
+      "title": "Movement System",
+      "label": "code",
+      "tags": [
+        "movement",
+        "core-feature",
+        "gameplay"
+      ],
+      "description": "**CRITICAL**: The system that controls the character. Includes things like sprinting, crouching(?), animation logic, and general smoothness of play.",
+      "imageUrl": "",
+      "order": 2
+    },
+    {
+      "id": "QoDeZatDDXf4DtRXm7G1",
+      "tags": [
+        "movement",
+        "core-feature",
+        "gameplay"
+      ],
+      "title": "Combat System",
+      "dueDate": null,
+      "checklist": [
+        {
+          "text": "M1s",
+          "complete": true
+        },
+        {
+          "complete": false,
+          "text": "Burst"
+        },
+        {
+          "complete": false,
+          "text": "Specials (1-4)"
+        },
+        {
+          "text": "Ultimate",
+          "complete": false
+        },
+        {
+          "complete": false,
+          "text": "Character-based (Currently all characters have the same moveset)"
+        }
+      ],
+      "createdAt": "2025-10-26T18:00:44.408Z",
+      "column": "partlydone",
+      "label": "design",
+      "order": 3,
+      "description": "**CRITICAL**: The heart of the game. Self-explanatory. Contains M1s, a Burst move, 4 specials and an ultimate mode/move.",
+      "imageUrl": ""
+    },
+    {
+      "id": "tuNO68KmEDc51jMAALMZ",
+      "imageUrl": "",
+      "order": 4,
+      "title": "Parkour System",
+      "tags": [
+        "movement",
+        "core-feature",
+        "gameplay"
+      ],
+      "description": "**CRITICAL**: Needed for smooth movement. Ties in with the movement system and works in tandem.\nWill have stuff like vaulting, holding onto ledges, wall-sliding, sliding in general, and dashing.",
+      "label": "code",
+      "checklist": [
+        {
+          "complete": true,
+          "text": "Dashing"
+        },
+        {
+          "complete": true,
+          "text": "Sliding"
+        },
+        {
+          "text": "Vaulting",
+          "complete": false
+        },
+        {
+          "text": "Ledge Holding",
+          "complete": false
+        },
+        {
+          "text": "Wall-slide",
+          "complete": false
+        },
+        {
+          "text": "Refine slide (Use rotation as basis for acceleration)",
+          "complete": false
+        }
+      ],
+      "dueDate": null,
+      "column": "partlydone",
+      "createdAt": "2025-10-26T18:01:52.092Z"
+    },
+    {
+      "id": "2EGhCVoJwLdJIbRq2Y73",
+      "description": "Self explanatory. Contains Character, Tag-in Character, Stamina, Health, Move list, and Ultimate bar.",
+      "order": 5,
+      "imageUrl": "",
+      "tags": [
+        "ui",
+        "freeroam",
+        "mission"
+      ],
+      "createdAt": "2025-10-26T18:17:20.130Z",
+      "dueDate": null,
+      "label": "general",
+      "checklist": [
+        {
+          "complete": true,
+          "text": "Health"
+        },
+        {
+          "text": "Stamina",
+          "complete": true
+        },
+        {
+          "text": "Character",
+          "complete": true
+        },
+        {
+          "text": "Ultimate",
+          "complete": false
+        },
+        {
+          "complete": false,
+          "text": "Tag-In Character"
+        },
+        {
+          "complete": true,
+          "text": "Move list (Simple)"
+        },
+        {
+          "complete": false,
+          "text": "Move list (Advanced)"
+        },
+        {
+          "text": "Cooldown Queue",
+          "complete": false
+        }
+      ],
+      "title": "Freeroam/Mission UI",
+      "column": "partlydone"
+    },
+    {
+      "id": "task-vn-trigger",
       "description": "Implement the interaction point on the couch in 'Subroutine' that allows the player to trigger and select Visual Novel-style story scenarios.",
+      "dueDate": null,
+      "imageUrl": "",
+      "order": 1,
+      "title": "Add 'Hangout' System (Couch)",
       "tags": [
         "vn-system",
         "interaction",
         "story"
       ],
-      "order": 1,
-      "label": "code",
-      "title": "Add 'Hangout' System (Couch)",
-      "imageUrl": ""
-    },
-    {
-      "id": "task-field-dialogue",
-      "imageUrl": "",
-      "title": "Implement 'Field Dialogue' UI",
-      "order": 2,
-      "description": "Add the 'Sonic Forces-style' UI for character banter and dialogue that occurs during missions (outside of full VN scenes).",
-      "dueDate": null,
-      "tags": [
-        "ui",
-        "dialogue"
-      ],
-      "label": "code",
-      "column": "todo"
+      "column": "todo",
+      "label": "code"
     },
     {
       "id": "task-playable-phenn",
-      "imageUrl": "",
-      "column": "todo",
-      "order": 3,
-      "title": "Implement Playable Phenn",
+      "order": 2,
       "tags": [
         "character",
         "combat",
         "phenn"
       ],
-      "description": "Add Phenn Ashcroft as a playable character. This includes her model, animation set, and Vithium revolver combat logic (ranged support)."
+      "description": "Add Phenn Ashcroft as a playable character. This includes her model, animation set, and Vithium revolver combat logic (ranged support).",
+      "title": "Implement Playable Phenn",
+      "imageUrl": "",
+      "column": "todo"
     },
     {
       "id": "task-playable-ral",
-      "description": "Add Ral Avers as a playable character. Focus on her chaotic, high-speed gremlin energy. Needs a melee combat set.",
-      "order": 4,
-      "imageUrl": "",
+      "order": 3,
       "title": "Implement Playable Ral",
+      "description": "Add Ral Avers as a playable character. Focus on her chaotic, high-speed gremlin energy. Needs a melee combat set.",
+      "imageUrl": "",
       "column": "todo",
       "tags": [
         "character",
@@ -79,124 +263,249 @@
     },
     {
       "id": "task-takeover-system",
+      "title": "Implement 'Veritas Takeover' System",
+      "label": "code",
+      "dueDate": null,
+      "column": "todo",
+      "order": 4,
+      "description": "Add the core 'Takeover Percentage' mechanic. This system will increase game difficulty as the campaign progresses, buffing enemies, increasing surveillance, and potentially disabling saves outside the hideout.",
+      "imageUrl": "",
       "tags": [
         "core-gameplay",
         "mechanic",
         "veritas",
         "difficulty"
-      ],
-      "title": "Implement 'Veritas Takeover' System",
-      "description": "Add the core 'Takeover Percentage' mechanic. This system will increase game difficulty as the campaign progresses, buffing enemies, increasing surveillance, and potentially disabling saves outside the hideout.",
-      "dueDate": null,
-      "label": "code",
-      "imageUrl": "",
-      "column": "todo",
-      "order": 5
+      ]
     },
     {
       "id": "task-shop-rumbling-ramen",
+      "order": 5,
       "imageUrl": "",
+      "description": "Model and script the 'Rumbling Ramen' shop near Subroutine. Player should be able to interact with the owner and buy items for buffs.",
+      "dueDate": null,
+      "column": "todo",
+      "title": "Implement 'Rumbling Ramen' Shop",
       "tags": [
         "interaction",
         "shop",
         "hub-world",
         "buffs"
       ],
-      "label": "lore",
-      "dueDate": null,
-      "column": "todo",
-      "title": "Implement 'Rumbling Ramen' Shop",
-      "description": "Model and script the 'Rumbling Ramen' shop near Subroutine. Player should be able to interact with the owner and buy items for buffs.",
-      "order": 6
+      "label": "lore"
     },
     {
       "id": "task-playable-celynn",
-      "order": 7,
+      "title": "Implement Playable Celynn",
+      "order": 6,
+      "imageUrl": "",
+      "description": "Add Celynn Avers as a playable character. Needs model, animations, and combat logic based on his calm, tactical, street-smart profile.",
+      "column": "todo",
       "tags": [
         "character",
         "combat",
         "celynn"
-      ],
-      "column": "todo",
-      "imageUrl": "",
-      "title": "Implement Playable Celynn",
-      "description": "Add Celynn Avers as a playable character. Needs model, animations, and combat logic based on his calm, tactical, street-smart profile."
+      ]
     },
     {
       "id": "task-pause-menu-event",
-      "title": "Implement Pause Menu 'Account Banned' Event",
+      "dueDate": null,
+      "order": 7,
+      "imageUrl": "",
+      "column": "todo",
       "description": "Create the rare random event in the pause menu where the player's 'phone' gets banned for 'Rebellious activity'. The character should then run a script like 'newnexnetaccountgen.py' to generate a new account.",
+      "title": "Implement Pause Menu 'Account Banned' Event",
       "label": "code",
-      "order": 8,
       "tags": [
         "ui",
         "event",
         "world-building",
         "veritas"
-      ],
-      "dueDate": null,
-      "column": "todo",
-      "imageUrl": ""
+      ]
     },
     {
       "id": "task-nsfw-toggle",
+      "label": "design",
       "dueDate": null,
+      "imageUrl": "",
+      "title": "Prepare for 'Definitive Edition' content",
+      "order": 8,
+      "description": "Implement the 'After Dark' toggle in the game's settings and remove any adult content from the base game. This toggle will control visibility of 18+ content, ensuring it's optional for players.",
       "tags": [
         "settings",
         "ui",
         "nsfw",
         "vn-system"
       ],
-      "description": "Implement the 'After Dark' toggle in the game's settings and remove any adult content from the base game. This toggle will control visibility of 18+ content, ensuring it's optional for players.",
-      "title": "Prepare for 'Definitive Edition' content",
-      "label": "design",
-      "column": "todo",
-      "imageUrl": "",
-      "order": 9
+      "column": "todo"
     },
     {
       "id": "task-playable-mae",
       "title": "Implement Playable Mae (Late-Game)",
-      "description": "Add Maya 'Mae' Everhart as a late-game unlockable character. Her 'combat' should focus on reverse-engineering Veritas tech and support skills, rather than direct fighting.",
-      "column": "todo",
-      "imageUrl": "",
       "tags": [
         "character",
         "mechanic",
         "mae",
         "story"
       ],
-      "order": 11
+      "column": "todo",
+      "imageUrl": "",
+      "order": 9,
+      "description": "Add Maya 'Mae' Everhart as a late-game unlockable character. Her 'combat' should focus on reverse-engineering Veritas tech and support skills, rather than direct fighting."
     },
     {
       "id": "task-combat-tag-system",
-      "order": 13,
+      "description": "Implement the team tag-in combat system. This should be tied to the relationship level from the VN scenarios to improve the power of the tag-in attack.",
       "title": "Mechanic: 'HiFi Rush-style' Tag-In",
-      "dueDate": null,
-      "imageUrl": "",
       "tags": [
         "combat",
         "core-gameplay",
         "vn-system"
       ],
-      "label": "code",
+      "order": 10,
       "column": "todo",
-      "description": "Implement the team tag-in combat system. This should be tied to the relationship level from the VN scenarios to improve the power of the tag-in attack."
+      "dueDate": null,
+      "imageUrl": "",
+      "label": "code"
     },
     {
       "id": "VWz3CJnK7jRwgD4f7Xhr",
-      "dueDate": null,
-      "description": "Self-explanatory. We don't have a *settings* menu yet.",
       "createdAt": "2025-10-26T15:54:56.541Z",
-      "column": "todo",
+      "label": "code",
+      "description": "Self-explanatory. We don't have a *settings* menu yet.",
+      "imageUrl": "",
+      "order": 11,
       "tags": [
         "settings",
         "ux"
       ],
-      "order": 14,
-      "title": "Add Settings",
+      "dueDate": null,
+      "column": "todo",
+      "title": "Add Settings"
+    },
+    {
+      "id": "task-subroutine-map",
+      "title": "Create 'Subroutine' Hub (Prototype)",
+      "column": "todo",
       "imageUrl": "",
-      "label": "code"
+      "dueDate": null,
+      "label": "design",
+      "order": 12,
+      "description": "Block out the 'Subroutine' tech store and hideout. This will serve as the main hub map for players to explore and access missions/VN scenes.",
+      "tags": [
+        "level-design",
+        "hub-world"
+      ]
+    },
+    {
+      "id": "story-ch1-draft",
+      "description": "Write the full script for the introductory VN scenes. Needs to establish the team's dynamic and Deren's motivation (C.O.R.E. blueprints).",
+      "imageUrl": "",
+      "label": "lore",
+      "dueDate": null,
+      "title": "Draft Chapter 1: 'Rebellion: Start!'",
+      "order": 13,
+      "tags": [
+        "writing",
+        "story",
+        "vn-system"
+      ],
+      "column": "todo"
+    },
+    {
+      "id": "task-baldren-bug",
+      "tags": [
+        "bug",
+        "art",
+        "deren",
+        "baldren"
+      ],
+      "dueDate": "2025-10-25",
+      "label": "bug",
+      "checklist": [
+        {
+          "text": "do something",
+          "complete": true
+        },
+        {
+          "complete": true,
+          "text": "do another thing"
+        }
+      ],
+      "column": "done",
+      "description": "Investigated and fixed the hilarious bug that was hiding Deren's hair, ears, and tail. The smug, bald cat-boy is no more... mostly.",
+      "title": "Fix 'Baldren' Skin Masking Bug",
+      "order": 1,
+      "imageUrl": "https://jakedravioli.github.io/Images/blog/skinclip/baldren.png"
+    },
+    {
+      "id": "task-vn-ui",
+      "checklist": [
+        {
+          "text": "Designed actual UI",
+          "complete": true
+        },
+        {
+          "complete": true,
+          "text": "Imported into Unreal"
+        },
+        {
+          "text": "Animated UI",
+          "complete": true
+        },
+        {
+          "text": "Added colour tweening",
+          "complete": true
+        },
+        {
+          "complete": true,
+          "text": "Add choices (\"branches\")"
+        }
+      ],
+      "imageUrl": "",
+      "dueDate": null,
+      "title": "Design & Implement Visual Novel UI",
+      "label": "design",
+      "column": "done",
+      "description": "Create the main UI for the Visual Novel system. This includes the dialogue box, character \"sprite\" display, and the choice menu.",
+      "order": 2,
+      "tags": [
+        "ui",
+        "vn-system",
+        "story"
+      ]
+    },
+    {
+      "id": "VxdsdLnXOGFxFnFXNlYd",
+      "dueDate": null,
+      "tags": [
+        "outfit-system",
+        "outfits"
+      ],
+      "title": "Outfit Systems",
+      "label": "code",
+      "order": 3,
+      "checklist": [
+        {
+          "text": "Create system",
+          "complete": true
+        },
+        {
+          "complete": true,
+          "text": "Optimize System (Use optimized materials, Add Skin Masking)"
+        },
+        {
+          "complete": false,
+          "text": "Fix memory leak (Add outfits to a cache for each character on load instead of loading asynchronously every time)"
+        },
+        {
+          "complete": false,
+          "text": "Optimizations (Merge Skeletal Meshes)"
+        }
+      ],
+      "imageUrl": "",
+      "createdAt": "2025-10-26T18:09:07.829Z",
+      "description": "DT_Characters is a repository inside of Rebellious Takeover that gives the information for all characters. This includes an outfit system that dynamically adds Skeletal Meshes to BP_ModularCharacter and makes them morph alongside the base mesh that is also provided there.\nEach skeletal mesh can have it's own morph targets modified and have it's own skin mask.\n\nEach outfit has special properties and can be listed in an array.",
+      "column": "done"
     },
     {
       "id": "task-voice-blips",
@@ -205,143 +514,171 @@
         "core-feature",
         "vn"
       ],
-      "title": "Implement Character Voice Blips",
-      "column": "inprogress",
-      "imageUrl": "",
       "order": 1,
-      "description": "Add audio components for dialogue 'blips' for all main characters. They're way too silent right now.\nThink of these blips as the blips you hear in Undertale or Deltarune whenever a character speaks."
+      "column": "inprogress",
+      "checklist": [
+        {
+          "text": "Got main characters in current build (Deren, Jayce, Lyra)",
+          "complete": false
+        },
+        {
+          "text": "Implemented in UE?",
+          "complete": false
+        },
+        {
+          "complete": false,
+          "text": "Implemented variants?"
+        }
+      ],
+      "description": "Add audio components for dialogue 'blips' for all main characters. They're way too silent right now.\nThink of these blips as the blips you hear in Undertale or Deltarune whenever a character speaks.",
+      "title": "Implement Character Voice Blips",
+      "label": "general",
+      "imageUrl": "",
+      "dueDate": null
+    },
+    {
+      "id": "task-field-dialogue",
+      "checklist": [
+        {
+          "text": "Implement base UI (no extra features)",
+          "complete": false
+        },
+        {
+          "complete": false,
+          "text": "Make artwork for UI elements"
+        },
+        {
+          "complete": false,
+          "text": "Add typewriting, character blips?"
+        },
+        {
+          "complete": false,
+          "text": "Add animations to fade in/out"
+        },
+        {
+          "text": "Allow interrupts",
+          "complete": false
+        }
+      ],
+      "tags": [
+        "ui",
+        "dialogue"
+      ],
+      "dueDate": null,
+      "description": "Add the 'Sonic Forces-style' UI for character banter and dialogue that occurs during missions (outside of full VN scenes). **Has to be done in tandem with \"Build First Mission\".**",
+      "order": 2,
+      "imageUrl": "",
+      "column": "inprogress",
+      "title": "Implement 'Field Dialogue' UI",
+      "label": "code"
     },
     {
       "id": "task-first-mission",
       "imageUrl": "",
       "title": "Build First Mission (Tutorial)",
-      "label": "design",
-      "dueDate": null,
+      "checklist": [
+        {
+          "text": "Mission gamemode",
+          "complete": false
+        },
+        {
+          "text": "Mission objective logic",
+          "complete": false
+        },
+        {
+          "complete": false,
+          "text": "Objective Completion"
+        },
+        {
+          "complete": false,
+          "text": "Intro animation(s)"
+        },
+        {
+          "text": "AI",
+          "complete": false
+        },
+        {
+          "text": "Wave setups",
+          "complete": false
+        },
+        {
+          "text": "Variants of linear progression",
+          "complete": false
+        }
+      ],
       "column": "inprogress",
+      "dueDate": null,
+      "label": "design",
       "tags": [
         "mission",
         "tutorial",
         "core-gameplay"
       ],
-      "order": 2,
+      "order": 3,
       "description": "**CRITICAL:** Develop the first mission. This will act as a tutorial in the Subroutine training area, introducing core combat and movement mechanics for Deren."
     },
     {
-      "id": "task-subroutine-map",
-      "label": "design",
-      "dueDate": null,
-      "column": "inprogress",
-      "tags": [
-        "level-design",
-        "hub-world"
-      ],
-      "imageUrl": "",
-      "order": 3,
-      "description": "Block out the 'Subroutine' tech store and hideout. This will serve as the main hub map for players to explore and access missions/VN scenes.",
-      "title": "Create 'Subroutine' Hub (Prototype)"
-    },
-    {
-      "id": "story-ch1-draft",
-      "label": "lore",
-      "description": "Write the full script for the introductory VN scenes. Needs to establish the team's dynamic and Deren's motivation (C.O.R.E. blueprints).",
-      "dueDate": null,
-      "tags": [
-        "writing",
-        "story",
-        "vn-system"
-      ],
-      "column": "inprogress",
-      "order": 4,
-      "imageUrl": "",
-      "title": "Draft Chapter 1: 'Rebellion: Start!'"
-    },
-    {
       "id": "task-veritas-goon",
-      "imageUrl": "",
+      "column": "inprogress",
       "tags": [
         "vroid",
         "modelling",
         "world-building"
       ],
+      "imageUrl": "",
       "description": "Make the models for NPCs in VRoid Studio. Use the outfit system to customize characters randomly, but otherwise, make 4 base characters (2 male, 2 female).",
-      "order": 5,
-      "column": "inprogress",
+      "order": 4,
       "title": "VRoid Basic Models (NPCs)",
-      "label": "design",
-      "dueDate": null
+      "dueDate": null,
+      "checklist": [
+        {
+          "text": "Female Base Meshes",
+          "complete": false
+        },
+        {
+          "text": "Male Base Meshes",
+          "complete": false
+        },
+        {
+          "complete": false,
+          "text": "General outfits (streetwear)"
+        },
+        {
+          "text": "More complex outfits (Custom?)",
+          "complete": false
+        }
+      ],
+      "label": "design"
     },
     {
       "id": "task-deren-core-vfx",
-      "description": "Add the glowing plasma 'D' effect and other visual flair to Deren's C.O.R.E. implant on his character model. Will require implementing VFX blueprints or something along those lines that are connected to the base mesh, into BP_ModularCharacter.",
+      "title": "VFX Pass: Deren's C.O.R.E.",
+      "imageUrl": "",
+      "dueDate": null,
+      "column": "inprogress",
+      "label": "art",
+      "order": 5,
       "tags": [
         "vfx",
         "character",
         "deren"
       ],
-      "dueDate": null,
-      "imageUrl": "",
-      "order": 6,
-      "column": "inprogress",
-      "title": "VFX Pass: Deren's C.O.R.E.",
-      "label": "art"
-    },
-    {
-      "id": "task-baldren-bug",
-      "label": "bug",
-      "imageUrl": "https://jakedravioli.github.io/Images/blog/skinclip/baldren.png",
-      "title": "Fix 'Baldren' Skin Masking Bug",
+      "description": "Add the glowing plasma 'D' effect and other visual flair to Deren's C.O.R.E. implant on his character model. Will require implementing VFX blueprints or something along those lines that are connected to the base mesh, into BP_ModularCharacter.",
       "checklist": [
         {
-          "text": "do something",
+          "text": "Implement VFX Blueprints to BP_ModularCharacter",
+          "complete": false
+        },
+        {
+          "text": "Attempt creation of Deren's C.O.R.E effects (Base Form)",
           "complete": false
         },
         {
           "complete": false,
-          "text": "do another thing"
+          "text": "Attempt creation of Deren's OVERCLOCK form effects (DBZ-Inspired?)"
         }
-      ],
-      "column": "done",
-      "description": "Investigated and fixed the hilarious bug that was hiding Deren's hair, ears, and tail. The smug, bald cat-boy is no more... mostly.",
-      "dueDate": "2025-10-25",
-      "order": 1,
-      "tags": [
-        "bug",
-        "art",
-        "deren",
-        "baldren"
       ]
-    },
-    {
-      "id": "task-vn-ui",
-      "imageUrl": "",
-      "column": "done",
-      "title": "Design & Implement Visual Novel UI",
-      "order": 2,
-      "dueDate": null,
-      "label": "design",
-      "description": "Create the main UI for the Visual Novel system. This includes the dialogue box, character sprite display, and the choice menu.",
-      "tags": [
-        "ui",
-        "vn-system",
-        "story"
-      ]
-    },
-    {
-      "id": "task-deren-overload",
-      "label": "code",
-      "imageUrl": "",
-      "order": 1,
-      "column": "partlydone",
-      "tags": [
-        "combat",
-        "mechanic",
-        "deren",
-        "core-gameplay"
-      ],
-      "description": "Implement Deren's 'limit breaker' form. This should be a temporary high-damage state, triggered by the special serum, which also carries risk (internal damage, potential death).",
-      "title": "Mechanic: Deren's 'C0R3 0V3RL0AD'",
-      "dueDate": null
     }
   ],
-  "exportedAt": "2025-10-26T17:21:55.885Z"
+  "exportedAt": "2025-10-26T18:21:40.487Z"
 }
