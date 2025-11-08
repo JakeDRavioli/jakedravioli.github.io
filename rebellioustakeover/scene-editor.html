@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rebellious Takeover - Scene Generator</title>
     <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
-    <!-- Updated puter.js SDK URL -->
     <script src="https://js.puter.com/v2/"></script>
     <style>
         /* FONT IMPORTS */
@@ -41,6 +40,7 @@
             --color-grey-border: #444;
             --color-input-bg: #2D3748;
             --color-input-border: #4A5568;
+            --color-accent-secondary: #1e40af; /* For QoL buttons */
         }
 
         body {
@@ -105,14 +105,13 @@
         }
         .tab-content {
             flex-grow: 1;
-            overflow: hidden;
             position: relative;
         }
         .tab-pane {
             display: none;
             height: 100%;
             width: 100%;
-            overflow: hidden;
+            overflow: auto;
             position: absolute;
         }
         #tab-branches.active {
@@ -121,10 +120,14 @@
             overflow-y: auto;
             padding: 20px;
             gap: 20px;
+            height: 100%;
+            box-sizing: border-box;
         }
         #tab-dialogue.active {
             display: grid;
             grid-template-columns: 400px 1fr;
+            height: 100%;
+            box-sizing: border-box;
         }
          #tab-preview.active {
             display: flex;
@@ -146,6 +149,8 @@
         .dialogue-inspector-panel {
              display: none;
              position: relative;
+             /* === NEW: Remove padding, tabs will handle it === */
+             padding: 0;
         }
 
         .section-box {
@@ -159,6 +164,15 @@
             letter-spacing: 2px;
             color: var(--color-accent-primary);
             margin-top: 0;
+        }
+        h4 {
+            font-family: 'Permanent Marker', cursive;
+            letter-spacing: 1px;
+            color: var(--color-text-med);
+            margin-bottom: 10px;
+            margin-top: 15px;
+            border-bottom: 1px solid var(--color-grey-border);
+            padding-bottom: 5px;
         }
 
         .button-group {
@@ -193,6 +207,16 @@
 
         button.small-btn { padding: 5px 8px; font-size: 14px; }
         
+        /* QOL Button Style */
+        button.qol-btn {
+            background-color: var(--color-accent-secondary);
+            border-color: var(--color-accent-secondary);
+        }
+        button.qol-btn:hover {
+            background-color: #3b82f6; /* Lighter blue */
+            border-color: #3b82f6;
+        }
+
         button.preset-btn {
             background-color: var(--color-input-bg);
             border: 1px solid var(--color-input-border);
@@ -206,7 +230,7 @@
              color: var(--color-background-darkest);
         }
 
-        select, input, textarea {
+        select, input[type="text"], input[type="number"], textarea {
             width: 100%;
             padding: 8px;
             font-size: 16px;
@@ -249,30 +273,50 @@
         .grid-3-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .checkbox-group input { width: auto; margin-bottom: 0; }
+        .checkbox-group label { margin-bottom: 0; }
 
-        /* Accordion Styles */
-        .accordion-header {
+        /* === NEW: Inspector Tab Styles === */
+        .inspector-tab-nav {
+            display: flex;
             background-color: var(--color-background-darkest);
-            border: 1px solid var(--color-grey-border);
+            border-bottom: 2px solid var(--color-grey-border);
+            flex-shrink: 0;
+        }
+        .inspector-tab-nav button {
+            font-family: 'Permanent Marker', cursive;
+            background: none;
+            border: none;
+            color: var(--color-text-dark);
             padding: 10px 15px;
             cursor: pointer;
-            font-family: 'Permanent Marker', cursive;
-            font-size: 18px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+            border-radius: 0;
         }
-        .accordion-header::after { content: 'V'; font-family: 'Font Awesome 5 Free'; font-weight: 900; transition: transform 0.3s ease; }
-        .accordion-header.active::after { transform: rotate(180deg); }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background-color: var(--color-background-tertiary);
-            border-left: 1px solid var(--color-grey-border);
-            border-right: 1px solid var(--color-grey-border);
-            border-bottom: 1px solid var(--color-grey-border);
+        .inspector-tab-nav button:hover {
+            color: var(--color-text-main);
+            background: var(--color-background-secondary);
         }
-        .accordion-content .section-box {
+        .inspector-tab-nav button.active {
+            color: var(--color-accent-primary);
+            border-bottom-color: var(--color-accent-primary);
+            background: none;
+        }
+        
+        .inspector-tab-pane {
+            display: none;
+            padding: 20px;
+        }
+        .inspector-tab-pane.active {
+            display: block;
+        }
+        .inspector-tab-pane .section-box {
             border: none;
+            padding: 0;
+            background: none;
         }
+        /* === END: Inspector Tab Styles === */
         
         #choices-editor .choice-item {
             display: grid;
@@ -442,8 +486,7 @@
             <div id="tab-preview" class="tab-pane"></div>
         </div>
     </div>
-        <!-- AI Query Modal -->
-    <div id="aiQueryModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center;">
+        <div id="aiQueryModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:1000; align-items:center; justify-content:center;">
         <div style="background:var(--color-background-main); border:2px solid var(--color-accent-primary); padding:20px; border-radius:8px; max-width:520px; width:94vw; box-shadow:0 4px 32px #000; display:flex; flex-direction:column; gap:12px;">
             <h2 style="color:var(--color-accent-primary); font-family:'Permanent Marker',cursive; margin:0 0 6px 0;"><i class='fas fa-robot'></i> Query AI with Puter.js</h2>
             <label for="aiQueryInput" style="color:var(--color-text-med); font-family:'Permanent Marker',cursive;">Describe what you want the AI to do:</label>
@@ -461,7 +504,6 @@
             <div id="aiQueryStatus" style="color:var(--color-accent-primary); font-size:14px; margin-top:10px; display:none; background: var(--color-background-darkest); padding: 10px; border: 1px solid var(--color-grey-border); white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto;"></div>
         </div>
     </div>
-    <!-- AI Preview / Adjustment Modal -->
     <div id="aiPreviewAdjustModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:1100; align-items:center; justify-content:center;">
         <div style="background:var(--color-background-main); border:2px solid var(--color-accent-primary); padding:16px; border-radius:8px; max-width:760px; width:94vw; max-height:80vh; overflow:auto;">
             <h2 style="color:var(--color-accent-primary); margin:0 0 8px 0;">Review generated lines</h2>
@@ -492,7 +534,20 @@
             
             const characterList = ["Narrator", "Deren", "Jayce", "Lyra", "Phenn", "Celynn", "Raleigh", "Mae", "Luca"];
             const transformPresets = { 'Center': { transX: 0, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'Left': { transX: -450, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'Right': { transX: 450, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'L-Focus': { transX: -400, transY: 0, scaleX: 1.05, scaleY: 1.05, angle: -5 }, 'R-Focus': { transX: 400, transY: 0, scaleX: 1.05, scaleY: 1.05, angle: 5 }, 'Off-L': { transX: -1200, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'Off-R': { transX: 1200, transY: 0, scaleX: 1, scaleY: 1, angle: 0 }, 'Zoom': { transX: 0, transY: 0, scaleX: 1.2, scaleY: 1.2, angle: 0 }, 'Tilted': { transX: 50, transY: 0, scaleX: 1, scaleY: 1, angle: 10 }, 'Narrator': { transX: 999999, transY: 0, scaleX: 1, scaleY: 1, angle: 0 } };
-            const fieldMappings = { characterName: 'CharacterName', dialogueText: 'Text', emotion: 'Emotion', hideName: 'HideName', leavesAfter: 'LeavesAfterDialogue' };
+            
+            const fieldMappings = { 
+                characterName: 'CharacterName', 
+                dialogueText: 'Text', 
+                emotion: 'Emotion', 
+                outfitName: 'OutfitName', 
+                specialEffect: 'SpecialEffect', 
+                hideName: 'HideName', 
+                leavesAfter: 'LeavesAfterDialogue',
+                backgroundFOV: 'BackgroundFOV',
+                blendTime: 'BlendTime',
+                saveGame: 'Save Game',
+                multiLineText: 'Multi-line Text'
+            };
             
             // --- PREVIEW ENGINE ---
             let previewState = { currentBranchName: null, dialogueIndex: -1, isRunning: false, isTyping: false, typewriterTimeout: null, previousLine: null, awaitingChoice: false };
@@ -503,8 +558,130 @@
             let ui = {};
 
             function initialize() {
-                document.getElementById('tab-branches').innerHTML = `<div class="section-box file-ops"><h2><i class="fas fa-file-alt"></i> File Operations</h2><div class="button-group"><button id="exportJson"><i class="fas fa-file-export"></i> Export JSON</button><input type="file" id="importJson" accept=".json" style="display: none;"><button onclick="document.getElementById('importJson').click()"><i class="fas fa-file-import"></i> Import JSON</button></div></div><div class="section-box branch-manager"><h2><i class="fas fa-code-branch"></i> Branch Manager</h2><div class="button-group"><button id="addBranch">New Branch</button><button id="queryAI" style="background-color: var(--color-accent-primary-bg-tint-strong); color: var(--color-text-main); border: 2px solid var(--color-accent-primary);"><i class='fas fa-robot'></i> Query AI</button></div><label for="branchSelector">Current Branch:</label><select id="branchSelector"></select><div class="button-group" style="margin-top: 10px;"><button id="deleteBranch" class="small-btn">Delete Branch</button></div><hr style="border-color: var(--color-grey-border); margin: 20px 0;"><h3>Branch End Behavior</h3><label for="nextBranchSelector">Next Branch (if no choices):</label><select id="nextBranchSelector"></select><div id="choices-editor"><label>Player Choices:</label><div id="choices-list"></div><button id="addChoice" class="small-btn" style="margin-top: 10px;">Add Choice</button></div></div>`;
-                document.getElementById('tab-dialogue').innerHTML = `<div class="dialogue-timeline-panel"><div class="section-box dialogue-manager"><h2><i class="fas fa-align-left"></i> Dialogue Timeline</h2><div class="button-group"><button id="addDialogue">Add Dialogue</button><button id="deleteDialogue" class="small-btn">Delete Selected</button></div><ul id="dialogueList" class="dialogue-list"></ul></div></div><div class="dialogue-inspector-panel" id="inspectorPanel"><h2 style="margin-top:0;"><i class="fas fa-edit"></i> Dialogue Inspector</h2><div class="accordion-header active">Dialogue Details</div><div class="accordion-content"><div class="section-box"><label for="characterName">Character Name</label><div class="button-group" id="characterPresets"></div><input type="text" id="characterName" list="character-datalist"><datalist id="character-datalist"></datalist><div id="formatting-toolbar"><button id="format-bold" title="Bold (Ctrl+B)"><b>B</b></button><button id="format-italic" title="Italic (Ctrl+I)"><i>I</i></button><button id="format-bold-italic" title="Bold Italic"><b><i>BI</i></b></button></div><label for="dialogueText">Text</label><textarea id="dialogueText" rows="4"></textarea><label for="emotion">Emotion</label><select id="emotion"><option>Neutral</option><option>Surprised</option><option>Angry</option><option>Sad</option><option>Happy</option><option>Excited</option><option>Curious</option><option>Thinking</option><option>Tired</option><option>Embarassed</option><option>Playful</option></select><div class="checkbox-group"><input type="checkbox" id="hideName"><label for="hideName">Hide Name?</label></div><div class="checkbox-group"><input type="checkbox" id="leavesAfter"><label for="leavesAfter">Leaves After?</label></div></div></div><div class="accordion-header">Character Transform</div><div class="accordion-content"><div class="section-box"><label>Position Presets</label><div class="button-group" id="transformPresets"></div><h4>Translation</h4><div class="grid-3-col"><div><label for="transX">X</label><input type="number" id="transX" value="0"></div><div><label for="transY">Y</label><input type="number" id="transY" value="0"></div></div><h4>Scale</h4><div class="grid-3-col"><div><label for="scaleX">X</label><input type="number" id="scaleX" value="1" step="0.05"></div><div><label for="scaleY">Y</label><input type="number" id="scaleY" value="1" step="0.05"></div></div><h4>Shear</h4><div class="grid-3-col"><div><label for="shearX">X</label><input type="number" id="shearX" value="0" step="0.1"></div><div><label for="shearY">Y</label><input type="number" id="shearY" value="0" step="0.1"></div></div><label for="angle">Angle</label><input type="number" id="angle" value="0"></div></div><div class="accordion-header">Other Settings</div><div class="accordion-content"><div class="section-box"><label for="startPos">Starts From Position</label><select id="startPos"><option>CENTER</option><option>LEFT</option><option>RIGHT</option></select></div></div></div>`;
+                // === CHANGED: Added new Branch Property fields ===
+                document.getElementById('tab-branches').innerHTML = `<div class="section-box file-ops"><h2><i class="fas fa-file-alt"></i> File Operations</h2><div class="button-group"><button id="exportJson"><i class="fas fa-file-export"></i> Export JSON</button><input type="file" id="importJson" accept=".json" style="display: none;"><button onclick="document.getElementById('importJson').click()"><i class="fas fa-file-import"></i> Import JSON</button></div></div>
+                <div class="section-box branch-manager">
+                    <h2><i class="fas fa-code-branch"></i> Branch Manager</h2>
+                    <div class="button-group">
+                        <button id="addBranch">New Branch</button>
+                        <button id="queryAI" style="background-color: var(--color-accent-primary-bg-tint-strong); color: var(--color-text-main); border: 2px solid var(--color-accent-primary);"><i class='fas fa-robot'></i> Query AI</button>
+                    </div>
+                    <label for="branchSelector">Current Branch:</label><select id="branchSelector"></select>
+                    <div class="button-group" style="margin-top: 10px;"><button id="deleteBranch" class="small-btn">Delete Branch</button></div>
+                    
+                    <h4 style="margin-top: 20px;">Branch Properties</h4>
+                    <label for="branchLocation">Branch Location</label>
+                    <input type="text" id="branchLocation" placeholder="e.g., Sky, Subroutine, NexonStreets">
+                    
+                    <label for="branchMusic">Branch Music</label>
+                    <input type="text" id="branchMusic" placeholder="e.g., Music_Subroutine_Chill, None">
+                    
+                    <label for="branchNoise">Branch "Noise"</label>
+                    <input type="text" id="branchNoise" placeholder="e.g., Ambience_Rain, None">
+                    
+                    <label for="branchBackground">2D Background</label>
+                    <input type="text" id="branchBackground" placeholder="e.g., BG_Subroutine, None">
+                    
+                    <label for="branchOverlay">Overlay Texture</label>
+                    <input type="text" id="branchOverlay" placeholder="e.g., Overlay_Vignette, None">
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="shouldFade">
+                        <label for="shouldFade">Should Fade?</label>
+                    </div>
+                    <hr style="border-color: var(--color-grey-border); margin: 20px 0;">
+                    <h3>Branch End Behavior</h3>
+                    <label for="nextBranchSelector">Next Branch (if no choices):</label><select id="nextBranchSelector"></select>
+                    <div id="choices-editor"><label>Player Choices:</label><div id="choices-list"></div><button id="addChoice" class="small-btn" style="margin-top: 10px;">Add Choice</button></div>
+                </div>`;
+                
+                // === CHANGED: Added 'duplicateDialogue' and 'previewFromHere' buttons ===
+                document.getElementById('tab-dialogue').innerHTML = `<div class="dialogue-timeline-panel">
+                    <div class="section-box dialogue-manager">
+                        <h2><i class="fas fa-align-left"></i> Dialogue Timeline</h2>
+                        <div class="button-group">
+                            <button id="addDialogue">Add Dialogue</button>
+                            <button id="duplicateDialogue" class="small-btn">Duplicate</button> 
+                            <button id="deleteDialogue" class="small-btn">Delete</button>
+                            <button id="previewFromHere" class="small-btn qol-btn">Preview from Here</button>
+                        </div>
+                        <ul id="dialogueList" class="dialogue-list"></ul>
+                    </div>
+                </div>
+                
+                <div class="dialogue-inspector-panel" id="inspectorPanel">
+                    <nav class="inspector-tab-nav">
+                        <button class="inspector-tab-btn active" data-tab="inspector-tab-details">Details</button>
+                        <button class="inspector-tab-btn" data-tab="inspector-tab-transform">Transform</button>
+                        <button class="inspector-tab-btn" data-tab="inspector-tab-other">Other</button>
+                    </nav>
+
+                    <div id="inspector-tab-details" class="inspector-tab-pane active">
+                        <div class="section-box">
+                            <label for="characterName">Character Name</label>
+                            <div class="button-group" id="characterPresets"></div>
+                            <input type="text" id="characterName" list="character-datalist"><datalist id="character-datalist"></datalist>
+                            <div id="formatting-toolbar"><button id="format-bold" title="Bold (Ctrl+B)"><b>B</b></button><button id="format-italic" title="Italic (Ctrl+I)"><i>I</i></button><button id="format-bold-italic" title="Bold Italic"><b><i>BI</i></b></button></div>
+                            <label for="dialogueText">Text</label><textarea id="dialogueText" rows="4"></textarea>
+                            <label for="emotion">Emotion</label>
+                            <select id="emotion">
+                                <option>Neutral</option><option>Surprised</option><option>Shocked</option><option>Scared</option><option>Angry</option><option>Sad</option><option>Pouting</option><option>Happy</option><option>Excited</option><option>Curious</option><option>Confused</option><option>Thinking</option><option>Tired</option><option>Sleepy</option><option>Embarrassed</option><option>Flustered</option><option>Playful</option><option>Suggestive</option>
+                            </select>
+                            <label for="outfitName">Outfit Name</label>
+                            <input type="text" id="outfitName" placeholder="Default, Alt1, Ultimate, None...">
+                            <div class="checkbox-group"><input type="checkbox" id="hideName"><label for="hideName">Hide Name?</label></div>
+                            <div class="checkbox-group"><input type="checkbox" id="leavesAfter"><label for="leavesAfter">Leaves After?</label></div>
+                        </div>
+                    </div>
+
+                    <div id="inspector-tab-transform" class="inspector-tab-pane">
+                        <div class="section-box">
+                            <label>Position Presets</label>
+                            <div class="button-group" id="transformPresets"></div>
+                            <label for="startPos">Starts From Position</label>
+                            <select id="startPos"><option>CENTER</option><option>LEFT</option><option>RIGHT</option></select>
+                            <h4>Translation</h4>
+                            <div class="grid-3-col">
+                                <div><label for="transX">X</label><input type="number" id="transX" value="0"></div>
+                                <div><label for="transY">Y</label><input type="number" id="transY" value="0"></div>
+                            </div>
+                            <h4>Scale</h4>
+                            <div class="grid-3-col">
+                                <div><label for="scaleX">X</label><input type="number" id="scaleX" value="1" step="0.05"></div>
+                                <div><label for="scaleY">Y</label><input type="number" id="scaleY" value="1" step="0.05"></div>
+                            </div>
+                            <h4>Shear</h4>
+                            <div class="grid-3-col">
+                                <div><label for="shearX">X</label><input type="number" id="shearX" value="0" step="0.1"></div>
+                                <div><label for="shearY">Y</label><input type="number" id="shearY" value="0" step="0.1"></div>
+                            </div>
+                            <label for="angle">Widget Angle</label>
+                            <input type="number" id="angle" value="0">
+                            <h4>Model Rotation (Rotator)</h4>
+                            <div class="grid-3-col">
+                                <div><label for="rotPitch">Pitch</label><input type="number" id="rotPitch" value="0"></div>
+                                <div><label for="rotYaw">Yaw</label><input type="number" id="rotYaw" value="0"></div>
+                                <div><label for="rotRoll">Roll</label><input type="number" id="rotRoll" value="0"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="inspector-tab-other" class="inspector-tab-pane">
+                        <div class="section-box">
+                            <label for="specialEffect">Special Effect</label>
+                            <select id="specialEffect">
+                                <option>None</option><option>Blush</option><option>Hard Blush</option><option>Blue Lines (Sad/Embarrassed)</option><option>Exclamation (!)</option><option>Question (?)</option><option>Angry (Vein)</option><option>Teary</option><option>Crying</option><option>Pointy Closed Eyes ( >_< )</option><option>Sweat Drop</option><option>Ellipsis (...)</option><option>Sleepy (ZZZ)</option><option>Hearts</option><option>Music Note</option><option>Dizzy (Swirls)</option>
+                            </select>
+                            <label for="backgroundFOV">Background FOV</label>
+                            <input type="number" id="backgroundFOV" value="90" step="1">
+                            <label for="blendTime">Blend Time</label>
+                            <input type="number" id="blendTime" value="0.25" step="0.05">
+                            <div class="checkbox-group"><input type="checkbox" id="saveGame"><label for="saveGame">Save Game After?</label></div>
+                            <div class="checkbox-group"><input type="checkbox" id="multiLineText"><label for="multiLineText">Multi-line Text?</label></div>
+                        </div>
+                    </div>
+                </div>`;
+                
                 document.getElementById('tab-preview').innerHTML = `<div id="preview-stage"><div id="preview-controls"><button id="start-preview-btn">Start Preview</button></div></div><div id="preview-footer"><div id="preview-dialogue-box"><h3 id="preview-char-name"></h3><p id="preview-dialogue-text"></p><div id="dialogue-advance-icon">V</div></div><div id="preview-choices"></div></div>`;
 
                 ui = {
@@ -520,14 +697,6 @@
                 populatePresets();
                 setupEventListeners();
                 resetPreview();
-
-                const firstAccordion = ui.inspectorPanel.querySelector('.accordion-header');
-                if (firstAccordion) {
-                    firstAccordion.classList.add('active');
-                    const content = firstAccordion.nextElementSibling;
-                    const contentChild = content.querySelector('.section-box');
-                    if (contentChild) content.style.maxHeight = contentChild.scrollHeight + "px";
-                }
 
                 if (sceneData.length === 0) { createNewBranch("MainBranch"); selectBranch("MainBranch"); addDialogueItem(true); } 
                 else { selectBranch(sceneData[0].Name); }
@@ -559,7 +728,7 @@
                 characterList.forEach(char => {
                     const btn = document.createElement('button');
                     btn.className = 'preset-btn'; btn.textContent = char;
-                    btn.onclick = () => { ui.characterName.value = char; updateCurrentDialogue(); };
+                    btn.onclick = () => { document.getElementById('characterName').value = char; updateCurrentDialogue(); };
                     ui.characterPresetsContainer.appendChild(btn);
                     const option = document.createElement('option');
                     option.value = char; ui.characterDatalist.appendChild(option);
@@ -596,7 +765,7 @@
             
             function selectDialogue(index, isClick = false) {
                 const branch = getCurrentBranch();
-                if (!branch || index < 0 || index >= branch.Dialogue.length) return;
+                if (!branch || !branch.Dialogue || index < 0 || index >= branch.Dialogue.length) return;
                 currentDialogueIndex = index;
                 ui.inspectorPanel.style.display = 'flex';
                 refreshDialogueList();
@@ -623,7 +792,7 @@
             function refreshDialogueList() {
                 ui.dialogueList.innerHTML = '';
                 const currentBranch = getCurrentBranch();
-                if (!currentBranch) return;
+                if (!currentBranch || !currentBranch.Dialogue) return;
                 currentBranch.Dialogue.forEach((dialogue, index) => {
                     const li = document.createElement('li');
                     li.className = 'dialogue-item';
@@ -650,6 +819,9 @@
                     const element = document.getElementById(elementId);
                     if (element) {
                         if (element.type === 'checkbox') element.checked = dialogue[dataKey] || false;
+                        else if (dataKey === 'OutfitName') element.value = dialogue[dataKey] || 'Default';
+                        else if (dataKey === 'BackgroundFOV') element.value = dialogue[dataKey] || 90;
+                        else if (dataKey === 'BlendTime') element.value = dialogue[dataKey] || 0.25;
                         else element.value = dialogue[dataKey] || '';
                     }
                 }
@@ -657,12 +829,27 @@
                 document.getElementById('transX').value = t.Translation.X; document.getElementById('transY').value = t.Translation.Y;
                 document.getElementById('scaleX').value = t.Scale.X; document.getElementById('scaleY').value = t.Scale.Y;
                 document.getElementById('shearX').value = t.Shear.X; document.getElementById('shearY').value = t.Shear.Y;
-                document.getElementById('angle').value = t.Angle; document.getElementById('startPos').value = dialogue["Starts From Position"];
+                document.getElementById('angle').value = t.Angle; 
+                document.getElementById('startPos').value = dialogue["Starts From Position"];
+
+                document.getElementById('rotPitch').value = dialogue.CharacterRotation?.Pitch || 0;
+                document.getElementById('rotYaw').value = dialogue.CharacterRotation?.Yaw || 0;
+                document.getElementById('rotRoll').value = dialogue.CharacterRotation?.Roll || 0;
             }
             
+            // === CHANGED: Added loading for new branch properties ===
             function refreshBranchSettings() {
                 const branch = getCurrentBranch();
                 if (!branch) return;
+
+                // Load new branch properties
+                document.getElementById('branchLocation').value = branch["Branch Location"] || "Sky";
+                document.getElementById('shouldFade').checked = branch["shouldFade"] || false;
+                document.getElementById('branchBackground').value = branch["2D Background"] || "None";
+                document.getElementById('branchOverlay').value = branch["Overlay Texture"] || "None";
+                document.getElementById('branchNoise').value = branch["Branch \"Noise\""] || "None";
+                document.getElementById('branchMusic').value = branch["Branch Music"] || "None";
+
                 ui.nextBranchSelector.value = branch.NextBranch || "None";
                 ui.choicesList.innerHTML = '';
                 (branch.choices || []).forEach((choice, index) => {
@@ -688,17 +875,55 @@
                 });
             }
 
+            // === CHANGED: Added new branch properties to default object ===
             function createNewBranch(name) {
                 if (sceneData.some(b => b.Name === name)) { alert("A branch with this name already exists!"); return null; }
-                const newBranch = { "Name": name, "Dialogue": [], "NextBranch": "None", "choices": [] };
+                const newBranch = { 
+                    "Name": name, 
+                    "Dialogue": [], 
+                    "NextBranch": "None", 
+                    "choices": [],
+                    "Branch Location": "Sky", 
+                    "shouldFade": false,
+                    "2D Background": "None",
+                    "Overlay Texture": "None",
+                    "Branch \"Noise\"": "None",
+                    "Branch Music": "None"
+                };
                 sceneData.push(newBranch);
                 refreshBranchSelector();
                 return newBranch;
             }
 
+			function duplicateDialogue() {
+				const branch = getCurrentBranch();
+				if (!branch || currentDialogueIndex < 0) return;
+				const originalDialogue = getCurrentDialogue();
+				const newDialogue = JSON.parse(JSON.stringify(originalDialogue));
+				branch.Dialogue.splice(currentDialogueIndex + 1, 0, newDialogue);
+				selectDialogue(currentDialogueIndex + 1, true);
+			}
+
             function addDialogueItem(focusAfterAdd = true) {
                 const currentBranch = getCurrentBranch(); if (!currentBranch) return;
-                const newDialogue = { "CharacterName": "Narrator", "HideName": false, "Text": "", "LeavesAfterDialogue": false, "Emotion": "Neutral", "Character Transform": { "Translation": { "X": 0, "Y": 0 }, "Scale": { "X": 1, "Y": 1 }, "Shear": { "X": 0, "Y": 0 }, "Angle": 0 }, "Starts From Position": "CENTER" };
+                
+                const newDialogue = { 
+                    "CharacterName": "Narrator", 
+                    "HideName": false, 
+                    "Text": "", 
+                    "LeavesAfterDialogue": false, 
+                    "Emotion": "Neutral", 
+                    "Character Transform": { "Translation": { "X": 0, "Y": 0 }, "Scale": { "X": 1, "Y": 1 }, "Shear": { "X": 0, "Y": 0 }, "Angle": 0 }, 
+                    "Starts From Position": "CENTER",
+                    "CharacterRotation": { "Pitch": 0, "Yaw": 0, "Roll": 0 },
+                    "OutfitName": "Default",
+                    "SpecialEffect": "None",
+                    "BackgroundFOV": 90,
+                    "BlendTime": 0.25,
+                    "Save Game": false,
+                    "Multi-line Text": false
+                };
+                
                 currentBranch.Dialogue.push(newDialogue);
                 selectDialogue(currentBranch.Dialogue.length - 1, focusAfterAdd);
             }
@@ -710,6 +935,7 @@
                         const element = document.getElementById(elementId);
                         if (element) {
                             if (element.type === 'checkbox') dialogue[dataKey] = element.checked;
+                            else if (element.type === 'number') dialogue[dataKey] = parseFloat(element.value) || 0;
                             else dialogue[dataKey] = element.value;
                         }
                     }
@@ -719,6 +945,12 @@
                     t.Shear.X = parseFloat(document.getElementById('shearX').value) || 0; t.Shear.Y = parseFloat(document.getElementById('shearY').value) || 0;
                     t.Angle = parseFloat(document.getElementById('angle').value) || 0;
                     dialogue["Starts From Position"] = document.getElementById('startPos').value;
+                    
+                    if (!dialogue.CharacterRotation) dialogue.CharacterRotation = {};
+                    dialogue.CharacterRotation.Pitch = parseFloat(document.getElementById('rotPitch').value) || 0;
+                    dialogue.CharacterRotation.Yaw = parseFloat(document.getElementById('rotYaw').value) || 0;
+                    dialogue.CharacterRotation.Roll = parseFloat(document.getElementById('rotRoll').value) || 0;
+                    
                     refreshDialogueList();
                 }, 0);
             }
@@ -762,8 +994,9 @@
                 return sceneData.find(b => b.Name === branchName);
             }
 
-            function getCurrentDialogue() { const branch = getCurrentBranch(); return (branch && currentDialogueIndex > -1) ? branch.Dialogue[currentDialogueIndex] : null; }
+            function getCurrentDialogue() { const branch = getCurrentBranch(); return (branch && branch.Dialogue && currentDialogueIndex > -1) ? branch.Dialogue[currentDialogueIndex] : null; }
 
+            // === CHANGED: Added listeners for new branch properties and QoL features ===
             function setupEventListeners() {
                 // TAB SWITCHING
                 document.querySelectorAll('.tab-link').forEach(button => {
@@ -791,11 +1024,34 @@
                     }
                 });
                 document.getElementById('branchSelector').addEventListener('change', (e) => selectBranch(e.target.value));
+                
+                // NEW: Branch Property Listeners
                 document.getElementById('nextBranchSelector').addEventListener('change', (e) => {
                     const branch = getCurrentBranch(); if(branch) branch.NextBranch = e.target.value;
                 });
+                document.getElementById('branchLocation').addEventListener('input', (e) => {
+                    const branch = getCurrentBranch(); if (branch) branch["Branch Location"] = e.target.value;
+                });
+                document.getElementById('shouldFade').addEventListener('change', (e) => {
+                    const branch = getCurrentBranch(); if (branch) branch["shouldFade"] = e.target.checked;
+                });
+                document.getElementById('branchBackground').addEventListener('input', (e) => {
+                    const branch = getCurrentBranch(); if (branch) branch["2D Background"] = e.target.value;
+                });
+                document.getElementById('branchOverlay').addEventListener('input', (e) => {
+                    const branch = getCurrentBranch(); if (branch) branch["Overlay Texture"] = e.target.value;
+                });
+                document.getElementById('branchNoise').addEventListener('input', (e) => {
+                    const branch = getCurrentBranch(); if (branch) branch["Branch \"Noise\""] = e.target.value;
+                });
+                document.getElementById('branchMusic').addEventListener('input', (e) => {
+                    const branch = getCurrentBranch(); if (branch) branch["Branch Music"] = e.target.value;
+                });
+
+                // Dialogue Buttons
                 document.getElementById('addDialogue').addEventListener('click', () => addDialogueItem(true));
                 document.getElementById('addChoice').addEventListener('click', addChoice);
+				document.getElementById('duplicateDialogue').addEventListener('click', duplicateDialogue);
                 document.getElementById('deleteDialogue').addEventListener('click', () => {
                      const branch = getCurrentBranch(); if (!branch || currentDialogueIndex < 0) return;
                      if (confirm("Are you sure you want to delete this dialogue line?")) {
@@ -806,6 +1062,19 @@
                         else ui.inspectorPanel.style.display = 'none';
                      }
                 });
+                
+                // NEW: QoL "Preview from Here" Button
+                document.getElementById('previewFromHere').addEventListener('click', () => {
+                    if (!currentBranchName || currentDialogueIndex < 0) {
+                        alert("Please select a dialogue line to start previewing from.");
+                        return;
+                    }
+                    document.querySelector('.tab-link[data-tab="tab-preview"]').click();
+                    setTimeout(() => {
+                        startPreview(currentBranchName, currentDialogueIndex);
+                    }, 50);
+                });
+
 
                 // FILE OPERATIONS
                 document.getElementById('exportJson').addEventListener('click', () => {
@@ -835,15 +1104,17 @@
 
                 // INSPECTOR LISTENERS
                 ui.inspectorPanel.addEventListener('input', updateCurrentDialogue);
-                ui.inspectorPanel.querySelectorAll('.accordion-header').forEach(header => {
-                    header.addEventListener('click', () => {
-                        header.classList.toggle('active');
-                        const content = header.nextElementSibling;
-                        const contentChild = content.querySelector('.section-box');
-                        if (content.style.maxHeight) content.style.maxHeight = null;
-                        else if (contentChild) content.style.maxHeight = contentChild.scrollHeight + "px";
+                
+                ui.inspectorPanel.querySelectorAll('.inspector-tab-btn').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tabId = button.dataset.tab;
+                        ui.inspectorPanel.querySelectorAll('.inspector-tab-btn').forEach(btn => btn.classList.remove('active'));
+                        ui.inspectorPanel.querySelectorAll('.inspector-tab-pane').forEach(pane => pane.classList.remove('active'));
+                        button.classList.add('active');
+                        document.getElementById(tabId).classList.add('active');
                     });
                 });
+
 
                 // DRAG & DROP
                 ui.dialogueList.addEventListener('dragstart', (e) => {
@@ -875,7 +1146,7 @@
                     }
                 });
 
-                // QOL LISTENERS
+                // === CHANGED: Added QoL Keyboard Shortcuts ===
                 document.addEventListener('keydown', (e) => {
                     if (document.getElementById('tab-preview').classList.contains('active')) {
                         if (e.key === 'Enter') {
@@ -889,12 +1160,19 @@
 
                     if (!document.getElementById('tab-dialogue').classList.contains('active')) return;
                     const activeEl = document.activeElement;
-                    if (activeEl.tagName !== 'INPUT' && activeEl.tagName !== 'TEXTAREA') {
-                        if (e.key === 'ArrowDown') { e.preventDefault(); selectDialogue(currentDialogueIndex + 1, false); } 
-                        else if (e.key === 'ArrowUp') { e.preventDefault(); selectDialogue(currentDialogueIndex - 1, false); }
-                    } else if (activeEl === ui.dialogueText) {
+                    
+                    if (activeEl === ui.dialogueText) { // Shortcuts when typing
                         if (e.ctrlKey && e.key === 'b') { e.preventDefault(); applyFormat('bold'); } 
                         else if (e.ctrlKey && e.key === 'i') { e.preventDefault(); applyFormat('italic'); }
+                        else if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); addDialogueItem(true); }
+                        else if (e.ctrlKey && e.key === 'd') { e.preventDefault(); duplicateDialogue(); }
+                    
+                    } else if (activeEl.tagName !== 'INPUT' && activeEl.tagName !== 'TEXTAREA') { // Shortcuts when not focused on an input
+                        if (e.key === 'ArrowDown') { e.preventDefault(); selectDialogue(currentDialogueIndex + 1, false); } 
+                        else if (e.key === 'ArrowUp') { e.preventDefault(); selectDialogue(currentDialogueIndex - 1, false); }
+                        else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); document.getElementById('deleteDialogue').click(); }
+                        else if (e.key === 'd') { e.preventDefault(); duplicateDialogue(); }
+                        else if (e.key === 'a') { e.preventDefault(); addDialogueItem(true); }
                     }
                 });
 
@@ -948,20 +1226,26 @@
                 onStageCharacters = {};
                 ui.previewStage.innerHTML = `<div id="preview-controls" style="display: flex; justify-content: center; align-items: center;"><button id="start-preview-btn">Start Preview</button></div>`;
                 ui.startPreviewBtn = document.getElementById('start-preview-btn');
-                ui.startPreviewBtn.addEventListener('click', startPreview);
+                ui.startPreviewBtn.addEventListener('click', () => startPreview()); // Changed to arrow function
                 ui.dialogueBox.style.display = 'none';
                 ui.charNameDisplay.textContent = '';
                 ui.dialogueTextDisplay.textContent = '';
                 ui.dialogueAdvanceIcon.style.display = 'none';
             }
 
-            function startPreview() {
+            // === CHANGED: Modified to accept starting parameters ===
+            function startPreview(startBranchName = null, startDialogueIndex = -1) {
                 if (sceneData.length === 0 || (sceneData[0].Dialogue && sceneData[0].Dialogue.length === 0)) {
                     alert("No scene data to preview! Add some dialogue first."); return;
                 }
                 resetPreview();
                 previewState.isRunning = true;
-                previewState.currentBranchName = sceneData[0].Name;
+                
+                previewState.currentBranchName = startBranchName || sceneData[0].Name;
+                // If starting from a specific line, set the index to one *before* it,
+                // as renderNextDialogueLine() increments *before* showing.
+                previewState.dialogueIndex = startDialogueIndex - 1; 
+
                 ui.previewStage.querySelector('#preview-controls').style.display = 'none';
                 ui.dialogueBox.style.display = 'block';
                 ui.dialogueBox.addEventListener('click', handlePreviewClick);
@@ -994,7 +1278,7 @@
                 if (previewState.isTyping) {
                     clearTimeout(previewState.typewriterTimeout);
                     const line = getCurrentBranch().Dialogue[previewState.dialogueIndex];
-                    ui.dialogueTextDisplay.innerHTML = line.Text;
+                    if (line) ui.dialogueTextDisplay.innerHTML = line.Text; // Check if line exists
                     previewState.isTyping = false;
                     ui.dialogueAdvanceIcon.style.display = 'block';
                     return;
@@ -1006,7 +1290,7 @@
                     const charToRemove = onStageCharacters[charName];
                     if (charToRemove) {
                         charToRemove.style.transform = getTransform(previewState.previousLine, 'leaving');
-                        setTimeout(() => { charToRemove.remove(); }, 500);
+                        setTimeout(() => { if (charToRemove.parentElement) charToRemove.remove(); }, 500);
                         delete onStageCharacters[charName];
                     }
                 }
@@ -1022,6 +1306,11 @@
                 }
 
                 const line = branch.Dialogue[previewState.dialogueIndex];
+                if (!line) { 
+                    console.error("Preview Error: Dialogue line at index", previewState.dialogueIndex, "is undefined.");
+                    handleEndOfBranch(branch); // Fail gracefully
+                    return;
+                }
                 previewState.previousLine = line;
                 
                 ui.charNameDisplay.style.display = line.HideName ? 'none' : 'block';
