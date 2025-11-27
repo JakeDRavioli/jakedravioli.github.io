@@ -83,7 +83,7 @@
   --color-error-text: #fecaca;
   --color-btn-secondary-bg: #4A5568;
   --color-btn-secondary-text: white;
-  --pfp-image: url('../Images/jakedravioli_new.png');
+  --pfp-image: url('../Images/jayce-pfp-squish.png');
 }
 #profile-picture {
   content: var(--pfp-image);
