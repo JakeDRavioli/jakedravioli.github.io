@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebellious Takeover - The Archives</title>
+    
+    <link rel="stylesheet" href="styles.css?v=2.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0bca0ecf78.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
+
+    <style>
+        /* --- LIBRARY SPECIFIC STYLES --- */
+        :root {
+            --library-sidebar-width: 340px; /* Slightly wider for icons */
+            --library-accent: #ff384f;
+            --library-bg: #0a0a0a;
+            --library-panel: #111;
+            --library-text-main: #e0e0e0;
+            --library-text-dim: #aaa;
+        }
+
+        body {
+            background-color: var(--library-bg);
+            overflow-x: hidden;
+            margin: 0;
+            color: var(--library-text-main);
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--library-accent); }
+
+        /* Hero Section */
+        .library-hero {
+            position: relative;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 4px solid var(--library-accent);
+            background: #000;
+            overflow: hidden;
+        }
+        
+        .library-hero-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('Images/rebTakeover/rebBackground-min.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            filter: blur(3px);
+            z-index: 0;
+        }
+
+        .library-title {
+            z-index: 2;
+            text-align: center;
+        }
+
+        .library-title h1 {
+            font-family: 'Sedgwick Ave Display', cursive;
+            font-size: 60px;
+            color: white;
+            text-shadow: 4px 4px 0px var(--library-accent);
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .library-title p {
+            font-family: 'Permanent Marker', cursive;
+            color: #ccc;
+            font-size: 18px;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* Layout */
+        .library-container {
+            display: flex;
+            height: calc(100vh - 200px); /* Fill remaining height */
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .library-sidebar {
+            width: var(--library-sidebar-width);
+            background-color: var(--library-panel);
+            border-right: 1px solid #333;
+            height: 100%;
+            overflow-y: auto;
+            flex-shrink: 0;
+            padding-bottom: 50px;
+        }
+
+        .sidebar-group {
+            padding: 20px 0;
+            border-bottom: 1px solid #222;
+        }
+
+        .sidebar-header {
+            font-family: 'Permanent Marker', cursive;
+            color: var(--library-accent);
+            font-size: 16px;
+            padding: 0 20px 10px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .sidebar-link {
+            display: flex; /* Flex for icon alignment */
+            align-items: center;
+            padding: 10px 20px;
+            color: var(--library-text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            gap: 15px;
+        }
+
+        .sidebar-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.03);
+            border-left-color: #555;
+        }
+
+        .sidebar-link.active {
+            color: white;
+            background: rgba(255, 56, 79, 0.1);
+            border-left-color: var(--library-accent);
+        }
+
+        .sidebar-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #333;
+            background: #000;
+        }
+
+        .sidebar-link.active .sidebar-icon {
+            border-color: var(--library-accent);
+        }
+
+        /* Main Content */
+        .library-content {
+            flex-grow: 1;
+            padding: 40px 60px;
+            background-color: var(--library-bg);
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        /* Article Layout (Split View) */
+        .lore-article {
+            display: none;
+            max-width: 1400px; /* Wider for split view */
+            margin: 0 auto;
+            animation: fadeIn 0.3s ease;
+        }
+        .lore-article.active { display: block; }
+
+        .article-layout {
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .article-text {
+            flex: 1; /* Takes up remaining space */
+            min-width: 300px;
+        }
+
+        .article-visuals {
+            flex: 0 0 400px; /* Fixed width for image column */
+            position: sticky;
+            top: 20px;
+        }
+
+        /* Full Body Image Styling */
+        .full-body-render {
+            width: 100%;
+            height: auto;
+            max-height: 700px;
+            object-fit: contain;
+            filter: drop-shadow(0px 0px 10px rgba(0,0,0,0.8));
+            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+        }
+
+        .article-header-text h2 {
+            font-family: 'Sedgwick Ave Display', cursive;
+            font-size: 55px;
+            color: var(--library-accent);
+            margin: 0;
+            line-height: 0.9;
+        }
+
+        .article-subtitle {
+            font-family: 'Permanent Marker', cursive;
+            color: #888;
+            font-size: 24px;
+            margin-top: 5px;
+            margin-bottom: 30px;
+        }
+
+        /* Content Text Styling */
+        .article-body {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #ccc;
+        }
+
+        .article-body h3 {
+            font-family: 'Permanent Marker', cursive;
+            color: white;
+            font-size: 26px;
+            margin: 40px 0 20px 0;
+            border-left: 4px solid var(--library-accent);
+            padding-left: 15px;
+            background: linear-gradient(90deg, rgba(255,56,79,0.1), transparent);
+        }
+
+        .article-body p { margin-bottom: 20px; }
+
+        .article-body ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .article-body li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 10px;
+            color: #bbb;
+        }
+        .article-body li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--library-accent);
+            font-weight: bold;
+        }
+
+        /* Stat Grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 Columns */
+            gap: 15px;
+            background: #151515;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .stat-item strong {
+            display: block;
+            color: var(--library-accent);
+            font-family: 'Permanent Marker', cursive;
+            font-size: 13px;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+        .stat-item span { color: white; font-size: 15px; }
+
+        /* Dev Note Box */
+        .dev-note {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #aaddff;
+        }
+        .dev-note-title {
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            color: #ffaaaa;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        /* Gallery Placeholders */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .gallery-item {
+            aspect-ratio: 16/9;
+            background: #222;
+            border: 2px dashed #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-family: 'Permanent Marker', cursive;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        .gallery-item:hover {
+            border-color: var(--library-accent);
+            color: var(--library-accent);
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 1100px) {
+            .article-layout { flex-direction: column-reverse; }
+            .article-visuals { width: 100%; position: static; display: flex; justify-content: center; }
+            .full-body-render { max-height: 400px; }
+            .stat-grid { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 900px) {
+            .library-container { flex-direction: column; height: auto; }
+            .library-sidebar { width: 100%; height: auto; max-height: 300px; border-bottom: 1px solid #333; }
+            .library-content { padding: 20px; height: auto; overflow: visible;}
+            .library-hero { height: 150px; }
+            .library-title h1 { font-size: 40px; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 100;">
+        <a href="rebellioustakeover.html" style="font-family: 'Permanent Marker', cursive; color: white; text-decoration: none; background: rgba(0,0,0,0.8); padding: 10px 20px; border: 2px solid var(--library-accent); font-size: 14px;">&larr; EXIT ARCHIVES</a>
+    </div>
+
+    <div class="library-hero">
+        <div class="library-hero-bg"></div>
+        <div class="library-title">
+            <h1>The Archives</h1>
+            <p>PROJECT: REBELLIOUS TAKEOVER // VERITAS LEAKED DB</p>
+        </div>
+    </div>
+
+    <div class="library-container">
+        
+        <div class="library-sidebar">
+            <div class="sidebar-group">
+                <div class="sidebar-header">Project Info</div>
+                <div class="sidebar-link active" onclick="loadTab('gen-info')">
+                    <div class="sidebar-icon" style="background: var(--library-accent);"></div>
+                    General Information
+                </div>
+                <div class="sidebar-link" onclick="loadTab('world-nexon')">
+                    <img src="Images/rebTakeover/rebIcon.png" class="sidebar-icon">
+                    World: Nexon & Vithium
+                </div>
+                <div class="sidebar-link" onclick="loadTab('world-factions')">
+                    <img src="Images/rebIcon.png" class="sidebar-icon">
+                    Factions: Subroutine & Veritas
+                </div>
+                <div class="sidebar-link" onclick="loadTab('world-concepts')">
+                    <div class="sidebar-icon" style="background: #00ffff;"></div>
+                    Concept: Worldbuilding
+                </div>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-header">Protagonists</div>
+                <div class="sidebar-link" onclick="loadTab('char-deren')">
+                    <img src="Images/rebTakeover/chibis/deren.png" class="sidebar-icon">
+                    Deren Kael
+                </div>
+                <div class="sidebar-link" onclick="loadTab('char-phenn')">
+                    <img src="Images/rebTakeover/chibis/phenn.png" class="sidebar-icon">
+                    Phenn Ashcroft
+                </div>
+                <div class="sidebar-link" onclick="loadTab('char-ral')">
+                    <img src="Images/rebTakeover/chibis/ral.png" class="sidebar-icon">
+                    Raleigh Avers
+                </div>
+                <div class="sidebar-link" onclick="loadTab('char-cel')">
+                    <img src="Images/rebTakeover/chibis/cel.png" class="sidebar-icon">
+                    Celynn Avers
+                </div>
+                <div class="sidebar-link" onclick="loadTab('char-jayce')">
+                    <img src="Images/rebTakeover/chibis/jayce.png" class="sidebar-icon">
+                    Jayce Davren
+                </div>
+                <div class="sidebar-link" onclick="loadTab('char-lyra')">
+                    <img src="Images/rebTakeover/chibis/lyra.png" class="sidebar-icon">
+                    Lyra Vayne
+                </div>
+                <div class="sidebar-link" onclick="loadTab('char-mae')">
+                    <img src="Images/rebTakeover/chibis/mae.png" class="sidebar-icon">
+                    Maya "Mae" Everhart
+                </div>
+                <div class="sidebar-link" onclick="loadTab('char-luca')">
+                    <img src="Images/rebTakeover/chibis/luca.png" class="sidebar-icon">
+                    Luca Voss
+                </div>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-header">Antagonists</div>
+                <div class="sidebar-link" onclick="loadTab('char-rick')">
+                    <img src="Images/rebTakeover/temporary/idk.png" class="sidebar-icon">
+                    Rick Didn't Askley
+                </div>
+                <div class="sidebar-link" onclick="loadTab('char-exyler')">
+                    <img src="Images/rebTakeover/temporary/idk.png" class="sidebar-icon">
+                    Exyler
+                </div>
+            </div>
+            
+             <div class="sidebar-group">
+                <div class="sidebar-header">System Archives</div>
+                 <div class="sidebar-link" onclick="loadTab('sys-gameplay')">
+                    <div class="sidebar-icon" style="background: #666;"></div>
+                    Gameplay & Modes
+                </div>
+                <div class="sidebar-link" onclick="loadTab('sys-freeroam')">
+                    <div class="sidebar-icon" style="background: #666;"></div>
+                    Freeroam Mechanics
+                </div>
+            </div>
+        </div>
+
+        <div class="library-content">
+
+            <div id="gen-info" class="lore-article active">
+                <div class="article-header-text">
+                    <h2>General Info</h2>
+                    <div class="article-subtitle">Project Overview</div>
+                </div>
+                <div class="article-body">
+                    <p><strong>PROJECT: REBELLIOUS TAKEOVER</strong></p>
+                    <p>A new project intended to be a vast but dystopian story based on both pre-existing OCs and new OCs to give them a home and a purpose. Decisions have been made to make this a game in <strong>Unreal Engine 5</strong>. Originally, it was a way to create content based on these OCs in a streamlined manner as the creator moved away from Roblox and into professional programs like Blender and Unreal Engine.</p>
+                    <p>The story follows a group of rebels in the corporate-owned city of Nexon. Their main motive is to take down Veritas Industries and attempt to bring back a sense of normalcy to the city.</p>
+                    
+                    <h3>Tactical Notes (Saved Memory)</h3>
+                    <ul>
+                         <li><strong>Nicknames:</strong> Nicknames for characters are strictly used in high-heat moments, like in battle or in moments where it's easier to say. Characters do not use nicknames in casual moments.</li>
+                         <li><strong>Tone:</strong> The story remains simple and not overdrawn. Goober (and by extension, the wholesome vibe) is generally against excessive swearing.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="world-nexon" class="lore-article">
+                <div class="article-header-text">
+                    <h2>World Data</h2>
+                    <div class="article-subtitle">Nexon City & Vithium</div>
+                </div>
+                <div class="article-body">
+                    <h3>Origin City: Nexon</h3>
+                    <p>Nexon is a very big and spacious cyber-city, hosting and being the first city of its kind to implement fully corporatised governments.</p>
+                    <p>It’s known for being one of the first cities to truly embark on a fully Vithium-based electronic grid - Choosing to be one of the first to scrap the more conventional ways of electricity generation.</p>
+                    <div class="dev-note">
+                        <span class="dev-note-title">// DEV NOTE: ISLAND CONCEPT</span>
+                        To keep it more confined and definitely more "takeover-like", I might make Nexon an island city. Kinda like the GTA 5 version of Los Angeles. It's a city that exists on an island when it realistically wouldn't... but it still works. solidifies Veritas owning the island because it's such a small city. And in consequence, the governmental status being lended to Veritas seeing as they're the leading company on the island. I do still want it to be on the ground, seeing as I want a kamurocho-style freeroam gamemode - So not an “astroboy type” floating city. Like a North Korean type of civilization, just... less inhumane. Even Veritas wouldn't stoop as low as Kim.
+                    </div>
+                    
+                    <h3>Gallery: Nexon Concept</h3>
+                    <div class="gallery-grid">
+                        <div class="gallery-item">[City Skyline Concept]</div>
+                        <div class="gallery-item">[Map Layout]</div>
+                        <div class="gallery-item">[Street View Art]</div>
+                    </div>
+                    
+                    <h3>Vithium: The Power Source</h3>
+                    <p>Brief explanation on Vithium: Vithium is a mineral that somehow generates power on its own—though no one fully understands how. It can produce megatons of electricity, making it thousands of times more effective than traditional generators. Though it was only officially discovered 20–30 years before the events of Rebellious Takeover , some - like Deren - knew of its existence far earlier. He even used it to create his heart replacement before it was categorized as a common mineral. At the time, Vithium was an obscure fusion of elements like copper and zinc, combined with a raw, chalky form previously thought to be as worthless as limestone - until the public figured out its true potential.</p>
+                </div>
+            </div>
+
+            <div id="world-factions" class="lore-article">
+                <div class="article-header-text">
+                    <h2>Factions</h2>
+                    <div class="article-subtitle">The Rebels vs. The Company</div>
+                </div>
+                <div class="article-body">
+                    <h3>Protagonist Hideout: Subroutine</h3>
+                    <p>Subroutine is a second-hand tech and repair store (around the size of 4 corner shops, give or take) that Deren owns and does all of their work from. The tech store is a coverup for what is happening on the upper floors - Which is a hideout for rebels to live. Take the anonymous group but… not anonymous, and much tinier in size - But with motivations that are strictly to benefit the public in the process.</p>
+                    
+                    <h3>Antagonist: Veritas Industries (“ the company ”)</h3>
+                    <p>Basically, Google, Meta, Microsoft, Apple, Tesla and so on combined into one. One mega company that owns all of the items you see and buy. Intentions are to intentionally spy on their customers and get as much data and knowledge as possible to maximise profits. Will do things unethically if it means that they get more money out of it.</p>
+                    <p>They regularly commit shady and outright illegal practices, having somehow bought out the government of Nexon, allowing them to place their headquarters there and effectively become the city’s ruling body.</p>
+                    
+                    <h3>Gallery: Faction Assets</h3>
+                    <div class="gallery-grid">
+                        <div class="gallery-item">[Subroutine Storefront]</div>
+                        <div class="gallery-item">[Veritas HQ Tower]</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="world-concepts" class="lore-article">
+                <div class="article-header-text">
+                    <h2>Concepts</h2>
+                    <div class="article-subtitle">Developer Brainstorming</div>
+                </div>
+                <div class="article-body">
+                    <h3>The Digital Rebellion</h3>
+                    <p>I was thinking of maybe a little something extra to add more storybuilding to the world of Nexon. Maybe it's a veritas-made version of like... Twitter. Where Veritas announcements come through over everyone else's posts, but like, there's still a place to rebel and stuff, like small communities that get deleted like all the fucking time.</p>
+                    <p>(cough cough, BreachForums, cough cough, r/piracy, cough cough, that one stupid spotify crack called XManager that just breaks every week)</p>
+                    <p>It's not full cyberpunky, but there's maybe a community called something random like "Retrax Rebel Society" that has thousands of followers but every single time you refresh the home page for it, it fluctuates randomly - And it goes under a *new random name*, like it keeps being deleted and brought back. Maybe even a random but rare event where the character in the pause menu gets frustrated at the phone they're looking at after the screen literally says "Account Banned - Rebellious activity" and just pulls out a terminal app and runs something stupid like "newnexnetaccountgen.py". And it just automatically creates new credentials, logs in automatically and creates a new community.</p>
+
+                    <h3>The Takeover Percentage</h3>
+                    <p>I already have a concept that stuck with me where Veritas has a "takeover" percentage. Funny how the name is Rebellious Takeover. anyway. They have a takeover percentage that increases based on the campaign completion, and is based on how much control (so, how much has been taken over) Veritas has over the population.</p>
+                    <p>It slowly goes from like 5% at the start of the game to something like 99% by the endgame when you're retrieving the C.O.R.E blueprints as like, the last mission. This increases the difficulty dramatically - Your phone is basically bricked, meaning pausing, and in consequence, leaving the game AND saving can be outright DISABLED unless in the hideout where you can access a PC, surveillance increases tenfold, the enemies get higher damage *and* defence buffs in free-roam, and worst of all, even small errand runs turn into high-action fights for your life.</p>
+                </div>
+            </div>
+
+
+            <div id="char-deren" class="lore-article">
+                <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #0047AB;">Deren Kael</h2>
+                            <div class="article-subtitle">"Derpz" | Main Protagonist</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>26</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>176.7cm (~5'9)</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Phenn (Lover), Jayce (Best Friend)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>Cocky, Electrically bound</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore/Backstory</h3>
+                            <p>Deren was born sometime around the time when Veritas was starting to grow as a company, but was not as all-powerful as they are now. Their father and mother figure are unknown - as they were killed in a rampage to kill off his species of cat-human hybrid due to a malicious governmental leader with intent to destroy all mix species.</p>
+                            <p>Deren was left to live on their own in several towns and cities. During their early years, Deren was fascinated by technology - and it became a small hobby of his to invest his time into it. He often found himself interacting with technology stolen off of others like mobile phones, IPAs, media players and many other general electronic devices.</p>
+                            <p>Eventually, after growing up enough to discover the rest of the world, Deren scavenged and searched around for a place to keep company in. They eventually found a village situated around the rainforests of the world, and set up there - As there were no governments or leaders to overthrow or destroy civilization of his species.</p>
+                            <p>Being the last of his kind (or… so he thought), he delved deep into the world to try and find materials to create anything and everything he imagined. He started a very small company in the outskirts of the town he kept low in. He started making small devices to track pets, then small mobile devices better than the other big companies selling them - Until he decided to do his biggest project to date - Something that he called the C.O.R.E. allowing anyone the ability to achieve superhuman abilities through the power of Vithium, a niche mineral at the time.</p>
+                            <p>Nobody knew how to use Vithium properly - except Deren through sheer luck and experimentation with the mineral. Deren was one of the first beings to be able to teleport with this technology, and was the first ever intelligent being to have their heart completely replaced and superseded by technology. Going forward, Deren was truly the first person to replace and truly supersede human organs and partially mechanise themselves. And from that point, Deren had one purpose for this. To use this powerful tool for good.</p>
+
+                            <h3>Key Changes</h3>
+                            <p>Similar in aspects to his previous iterations, still owns the C.O.R.E, Still uses Vithium in their resources, but a branch was hit early after their backstory where they purposefully do not have the actions of Derpz Fightin’ Grounds OR Revolture’s Trigger occur. Instead, a new thing happens - He relaxes for a couple years after the forced animal-human hybrid species extinction law was lifted.</p>
+                            <p>Instead of Vithium being an activator for “Limitless Possibilities” on its own, It requires its own push through a serum that has only been found out by Deren that allows, under specific conditions, for god-like abilities. He doesn’t dare publicise this in fear of people using it for total destruction or enslavement of humanity.</p>
+
+                            <h3>Storyline & Motivation</h3>
+                            <p>Starting after his backstory, he lays back for a couple years. Eventually finds out he isn’t the last of his kind. Meets a girl called Phenn who has the same cat-human hybrid attributes as him. Eventually they become close.</p>
+                            <p>Cue to probably close to 10 years after the events of his backstory. He’s in his 20s now. He owns a small tech shop in a cyberpunk-style city, Nexon. He does simple repairs and off-the-book jailbreaks and hacks for phones which have data-mining spyware on them from the ever-growing company, Veritas.</p>
+                            <p>Soon enough, he finds out an old hideout that he used to have back when the extinction event for his species took place has been raided - by the same company he’s selling jailbreaks for. They found the blueprints to his old projects, but also ones which he refused to let the public know of due to its adverse instability. The C.O.R.E. The blueprints to the C.O.R.E were in the hands of a company so slimy that they were willing to actually mass-produce his creation. He finds this out from a television ad he sees that strictly shows a (very badly hurt) subject with a seemingly misguided and weird-looking version of his heart replacement technology.</p>
+                            <p>After that, it’s not just about cracking the invasion of privacy on phones anymore. No. His motive changed. Get those damn blueprints back. It’s his. And he ain’t gonna let some slimy, greedy company get their hands on it just because they found it while he wasn’t there.</p>
+                            <p>They could KILL PEOPLE if they mass-produced that and released it to the public. Control every aspect of their lives - There may even be zero-day software bugs that could render them useless, cause immense harm to the wielder, or worse - it could kill the host with a single payload in dramatic fashion. Only he knows how to create the C.O.R.E successfully. No greedy company ever will. So he bands up all he knows - Grabs friends of his, friends of Phenn’s, and slowly builds a small gang and sets up the upper floors of his shop as a hideout for them to plan and strategize revenge before they mass-produce it.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                        <img src="Images/rebTakeover/fullbody/deren.PNG" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-phenn" class="lore-article">
+                <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #FF4F6C;">Phenn Ashcroft</h2>
+                            <div class="article-subtitle">The Strategist</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>24</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>187.8cm (~6'2)</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Deren (Lover)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>Overthinks, Socially Anxious</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore</h3>
+                            <p>Similar to Deren in the sense that they witnessed the animal-human hybrid species extinction event and was directly in it due to also being the same species. They were unsure when younger what was happening. They weren’t sure why they were being slaughtered and honestly, neither did their parents.</p>
+                            <p>They first saw Deren in the middle of the event where he actually ended up helping their family reach safety. He didn’t work directly to assist, but helped make sure that their family was okay. Phenn saw Deren for the first time and essentially engraved their face into her mind. And for the next 10 or so years after the event was stopped, she kept thinking whether or not she’d see someone of the same species as her ever again. Is he still alive? She ended up trying to live a normal life after this - simply working as a cashier in a store in the same city as Deren resides later on in the story.</p>
+                            <h3>Storyline & Motivation</h3>
+                            <p>Soon enough, Phenn is simply working her casual 9-to-5, as the door rings once more for the store. But this time is different. They see a familiar face. But she’s not sure why it’s familiar. Soon enough, he goes up to the checkout and… Stares. It’s almost as if they’re the exact same species… But… They are. They 100% are. They found the one who originally saved them all that time ago.</p>
+                            <p>Soon enough, they talk - Phenn totally skips work and just asks if they can talk in a cafe nearby. They oblige. Soon enough they get to know each other. They become good friends. And eventually, lovers - Realising how incredibly rare it is that the only two people who probably ever came out of the extinction event alive… get to meet each other again in this massive world.</p>
+                            <p>So, her motivation was straight. Make sure that Deren doesn’t fight alone. Not anymore.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/fullbody/phenn.PNG" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-ral" class="lore-article">
+                 <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #FFA500;">Raleigh Avers</h2>
+                            <div class="article-subtitle">"Ral" | The Chaos</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>22</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>162cm (~5'4)</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Celynn (Husband), Lyra (Best Friend)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>Impulsive, Reckless, Terrible with money</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore</h3>
+                            <p>Their lore is surprisingly simple. They were childhood friends. Grew up together directly in the city that this is all taking place in. Eventually, went from just friends to being in love - and as soon as it comes around to them being adults years later - DEEPLY so. They depend on one another like it’s anything.</p>
+                            <p>Soon enough, they end up becoming big friends of Phenn - being regular visitors of the shop they work at. Eventually, they realise that Phenn seemed a little more stressed about something. After finding out, it’s related to Deren. They barely knew who they were at this point - but they knew that Phenn and them were together. So they were curious on how they could help, and Phenn asked them if they were willing to join the team. Ral, being the chaotic one - Immediately agreed and Cel begrudgingly agreed alongside after just… Knowing he’s in for a ride.</p>
+                            <p>So, they end up taking place in the hideout. Soon after, they moved completely over and now they live in the hideout alongside Deren & Phenn.</p>
+                            <h3>Storyline & Motivation</h3>
+                            <p>They want to learn more about actually being able to fight for good causes, so their motivation is learning to actually fight for eachother. Their motivation is simple - The same motivation and reason as Deren & Phenn - Get back Deren’s blueprints - but also, to be the backbone for the chaos that happens in the hideout as they live their daily lives. They are the ones who keep the team together. Somehow.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/fullbody/ral.PNG" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-cel" class="lore-article">
+                <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #FFFFFF;">Celynn Avers</h2>
+                            <div class="article-subtitle">"Cel" | The Enforcer</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>24</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>184cm (~6'1)</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Raleigh (Wife), Deren/Jayce (Best Friends)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>Bottles feelings, Stubborn</span></div>
+                        </div>
+                        <div class="article-body">
+                           <h3>Lore</h3>
+                            <p>Their lore is surprisingly simple. They were childhood friends. Grew up together directly in the city that this is all taking place in. Eventually, went from just friends to being in love - and as soon as it comes around to them being adults years later - DEEPLY so. They depend on one another like it’s anything.</p>
+                            <p>Soon enough, they end up becoming big friends of Phenn - being regular visitors of the shop they work at. Eventually, they realise that Phenn seemed a little more stressed about something. After finding out, it’s related to Deren. They barely knew who they were at this point - but they knew that Phenn and them were together. So they were curious on how they could help, and Phenn asked them if they were willing to join the team. Ral, being the chaotic one - Immediately agreed and Cel begrudgingly agreed alongside after just… Knowing he’s in for a ride.</p>
+                            <p>So, they end up taking place in the hideout. Soon after, they moved completely over and now they live in the hideout alongside Deren & Phenn.</p>
+                            <h3>Storyline & Motivation</h3>
+                            <p>They want to learn more about actually being able to fight for good causes, so their motivation is learning to actually fight for eachother. Their motivation is simple - The same motivation and reason as Deren & Phenn - Get back Deren’s blueprints - but also, to be the backbone for the chaos that happens in the hideout as they live their daily lives. They are the ones who keep the team together. Somehow.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/fullbody/cel.PNG" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-jayce" class="lore-article">
+                 <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #6A5ACD;">Jayce Davren</h2>
+                            <div class="article-subtitle">"J" | The Hacker</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>20</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>180.1cm (~5'11)</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Lyra (Lover?), Deren (Best Friend)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>Sarcastic defense mechanism, Reckless, Fear of blood</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore & Background</h3>
+                            <p>They grew up learning and loving the concept of technology. They got into coding at a very young age and have quite a significant amount of things under their name in terms of achievements.</p>
+                            <p>They were a bog-standard hacker - One which intentionally flawed and messed with people (or corporate entities) that didn’t fit his needs, or just generally peeved him off for one reason or another. He knew Deren through being an active customer at his tech store - and after that, became good friends with them as they often put their intelligence together to do something great.</p>
+                            <p>After a while, Deren notifies them about the heist of his blueprints, and Jayce is immediately on-board. He’s been wanting to properly work with Deren for a long time - and he finally has his chance to shine. He didn’t expect there to be a severe challenge with this though - Not the fact that the plan might inevitably be very difficult - but social interaction. With other people. He has to have roommates. That’s what he’s worried about the most. But even so… He still goes ahead and moves in.</p>
+                            
+                            <h3>Saved Memory Data: Combat & Appearance</h3>
+                            <p>Jayce is the self-insert and calm, content character of the group. He wields a <strong>short blade</strong> and a <strong>Vithium-embedded bracelet</strong> that boosts his power, allowing him to keep fighting even when critically wounded. He has dark brown/black, messy, 'shaggy'-style hair, purply-blue eyes, blue glasses, and a mask that acts as a voice modulator.</p>
+                            <p><strong>Style:</strong> He wears a long scarf, a turquoise jacket with greyish-black stripes on the bottom near the pockets, jogger pants with a white stripe, and high-top black & white sneakers.</p>
+                            <p><strong>Weaknesses:</strong> Jayce is calm but can throw out mean remarks without meaning to. He has a <strong>deathly fear of blood</strong>—especially his own—and panics internally in silence when he sees it.</p>
+                            <p><strong>Dynamic with Lyra:</strong> Their relationship is playful, chaotic, and teasing, but with a deeper emotional connection. They are openly affectionate in private, though Lyra still enjoys flustering Jayce for fun.</p>
+                            
+                            <h3>Storyline & Motivation</h3>
+                            <p>Same as Deren - Retrieve his blueprints. Also attempt to find new friends along the way, maybe. And maybe, just maybe… he doesn’t fumble the bag with anyone. Hell… he might even find someone he fancies. Time will tell.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/fullbody/jayce.PNG" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-lyra" class="lore-article">
+                <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #39FF14;">Lyra Vayne</h2>
+                            <div class="article-subtitle">"Ly" | The Sniper</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>21</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>170.1cm (5'7)</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Jayce (Lover?), Raleigh (Best Friend)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>Internet addict, Socially clueless</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore</h3>
+                            <p>Lyra always despised corporations. Always. From the moment she was born to today. She was, like Jayce - absolutely fascinated with technology. More the engineering side more than anything else. She grew up making small projects that, inevitably didn’t exactly work, but she kept her determination high.</p>
+                            <p>Soon enough, she’s in her 20s - Messy, unemployed, and barely hanging on to the whole “living” aspect of… life. She absolutely hated the fact that the cost of living was only increasing - but her grudge against their lack of money and the corporations plastered around them turned personal when she was peacefully living in her incredibly messy apartment (or what she’d call “the den”) full of old projects, outdated monitors and a full server rack, when all of a sudden, she gets a letter.</p>
+                            <p>Her landlord sold out. Sold out to the biggest company in the city… and the first plan of action was increasing the rent by ten-fold, forcing her out of the only home she had by the end of the month. With nowhere to go, she drifted through the city, living off of scraps and stolen Wi-Fi - until she met Phenn in a local ramen place near where Deren’s tech store was.</p>
+                            <p>What started as casual conversation quickly turned into a shared hatred for the corporate world that is today, and Phenn offered a place for her to stay. For Lyra, it was more than just a home - It was a chance to fight back. Let her expertise be of use for once, and show those slimy CEO’s what they messed with. She immediately moved into the hideout, and became practically the life of the store - being the most out there and (assumedly) annoying person anyone has ever met. But who can blame her? She hasn’t really interacted with anyone outside of online interaction in years… She needed a reason to socialise. She just… didn’t know how to properly. For now.</p>
+                            <h3>Storyline & Motivation</h3>
+                            <p>Become a generally better person, get outside a little more, socialise with their new roommates and show the corporation a piece of what she has to say while retrieving Deren’s blueprints. Get revenge and make things change for the better. Take back what she lost.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/fullbody/lyra.PNG" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-mae" class="lore-article">
+                <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #00FFFF;">Maya Everhart</h2>
+                            <div class="article-subtitle">"Mae" | The Defector</div>
+                        </div>
+                        <div class="warning-box">
+                            TRIGGER WARNING: Sensitive topics like Self-Harm and Suicide are mentioned with this character’s appearance and backstory.
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>27</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>172.3cm (~5'8)</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Luca (Lover)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>Severe Self-Worth issues</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore</h3>
+                            <p>Mae always had a thing for creation and innovation. Even as a kid, she absolutely loved the concept of helping the public through technological advancements. Through sheer blood, sweat and tears, she was able to get a job at the biggest company in the world - Veritas - and finally get to make her genius ideas come to life. Or… so she thought.</p>
+                            <p>Mae was once one of the elite minds behind Veritas Industries’ conceptual division, responsible for generating cutting-edge innovations, new technology pitches, and prototype ideation. Her job was intense but creatively fulfilling - until she saw what happened after her ideas left the boardroom.</p>
+                            <p>Some of her seemingly harmless proposals - energy-based neural interfaces, wearable subconscious translators, emotion-mapping implants - were repurposed by Veritas into deeply unethical surveillance and control tools used to enslave the people of Nexon. Projects that began as medical or accessibility ideas were twisted into advertising and social manipulation tools solely for the company’s gain, not to actually help people in need. Through this, she realised there was no real way out of the corporate line. The stress consumed her.</p>
+                            <p>She began to vanish for hours at a time, chasing numbness. Physical pain became her only anchor - Her only way to stop her from giving up entirely - proof she was still human in a machine that no longer needed her. She held onto one fading hope: that someday, somehow, she'd be free - free to build for people, not for profit. She knew they didn’t care. No one did. She and everyone else were just cogs - disposable the moment they cracked - And truthfully, she was getting to a point where she was actively deciding whether or not just to end it all just to get out of this corporate sludge that’s eating her whole or suffer just a little more in hopes that it gets better.</p>
+                            <p>At one point on her daily shift, when she was mid-test of an incredibly dangerous contraption - A prototype of Deren’s C.O.R.E, which she soon realised wasn’t even Veritas’ creation at all - just stolen tech from a rogue genius working to help people, being used to turn people into living batteries - Wired-up, soulless husks - cyborg slaves fueling Veritas’ ever growing empire, she snapped witnessing a test subject beg for mercy, deciding she can’t take this anymore, and attempted to quit on the spot after realising how much blood is now on her hands.</p>
+                            <p>Unfortunately, that was the worst mistake she ever made. People who quit at Veritas aren’t walked out - they're wiped out. Brutally. Quietly. Permanently. Security was closing in. Her ID chip was already flagged. She could hear the mechanical whir of a drone booting up behind her - counting down the seconds left in her existence... until Deren & his team - Originally on a mission to neutralise and shut down this first prototype of his creation - just so happened to witness as Mae, seconds before she was about to be decommissioned - Permanently.</p>
+                            <p>She was seconds away from death - until the team swiftly recovered her and made sure she lived. She knew who they were (from one of her higher ups complaining about their team days prior) and realising that more importantly - Deren is alike to her in that they both create inventions for helping the public, not for corporal gain. After this, She now lives at Subroutine, owing her life to Deren - not just for pulling her out of the corporate hellhole, but for being there when the system had already decided she was obsolete.</p>
+                            <h3>Storyline & Motivation</h3>
+                            <p>Mae’s arc for her storyline and motivation is all about redemption. She knows the monsters Veritas unleashed came from minds like hers - if not herself specifically. That eats away at her self-worth daily, but instead of lashing out, she becomes the team’s sharpest mind for reverse-engineering Veritas tech, turning it back on the enemy with an almost surgical precision.</p>
+                            <p>Her motivation is twofold. Make sure her ideas and the team’s ideas (Deren mainly) are never used to hurt people again, and Protect Luca, the one person who believed her even before the fall - And who’s now walking a razor’s edge to protect the team from inside Veritas.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/fullbody/mae.PNG" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-luca" class="lore-article">
+                <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #808080;">Luca Voss</h2>
+                            <div class="article-subtitle">"Lu" | The Inside Man</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>28</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>185.4cm (~6'1)</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Mae (Lover)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>Deeply paranoid, Bottles everything</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore</h3>
+                            <p>Luca never entirely wanted to be a corporate pawn, but grew up in the system - A scholarship child who climbed the ladder and now holds a high-level data architecture job at Veritas. He met Mae through the job and has ever since grown quite close, eventually becoming lovers after soon realising they both have basically been through the gutter and then some with the company alongside the hellfire they had to go through with obtaining the qualifications for their jobs. When Mae left (forcefully), he was devastated - Both by the separation and the realization that she was right about how corrupt the company had become.</p>
+                            <h3>Storyline & Motivation</h3>
+                            <p>He kept his position at Veritas under the guise of being “loyal” and “company-dependent”, but in reality, he’s now the team’s greatest inside asset. Luca routes data to the team’s hackers through secure relays, spoofs employee identities, and accesses Veritas servers to leak internal documents and test products to the rebels. He knows it’s only a matter of time before Veritas gets their grimy hands on what he’s doing, but he’s prepared to go down swinging for the team. Mae being his anchor - her survival means more to him than his own.</p>
+                            <p>In terms of his motivation and goal, Luca’s goal is to feed the team just enough without tipping Veritas off - A personal mission of atonement and rebellion from the inside. He’s not a fighter by any means, but his value lies in precision and planning. He works as a second-hand man for Deren when he is out of ideas for planning, and seeks to slowly detach Veritas’ dependencies on him to create a final firework show of glory from within.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/fullbody/luca.PNG" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-rick" class="lore-article">
+                <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2 style="color: #ffd700;">Rick Didn't Askley</h2>
+                            <div class="article-subtitle">Veritas Executive</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>30</span></div>
+                            <div class="stat-item"><strong>RELATIONSHIPS</strong><span>Exyler (Platonic Coworker)</span></div>
+                            <div class="stat-item"><strong>LIMITATIONS</strong><span>SERIOUS temper issues</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore/Backstory</h3>
+                            <p>Okay. I’m going to put this straight. This is literally Rick Astley but he decided to go corporate instead of continuing his music career. That’s it. He found his way into the corporate ladder and found himself quite high in Veritas’ pyramid after Never Gonna Give You Up actually became his biggest financial failure instead of the success it was in the real world. Rick Didn’t Askley is the most literal joke character I’ve ever made.</p>
+                            <h3>Storyline & Motivation</h3>
+                            <p>Kill. No, really. Kill the Rebellious Takeover cast and anyone who doesn’t like his Veritas-funded products. They all hate his brand and as such his temper gets the best of him. He wants them dead.</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/temporary/idk.png" onerror="this.src='Images/rebIcon.png'" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="char-exyler" class="lore-article">
+                 <div class="article-layout">
+                    <div class="article-text">
+                        <div class="article-header-text">
+                            <h2>Exyler</h2>
+                            <div class="article-subtitle">Veritas CEO</div>
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-item"><strong>AGE</strong><span>57</span></div>
+                            <div class="stat-item"><strong>HEIGHT</strong><span>193.1cm (~6'4)</span></div>
+                        </div>
+                        <div class="article-body">
+                            <h3>Lore/Backstory</h3>
+                            <p>???</p>
+                            <h3>Storyline & Motivation</h3>
+                            <p>???</p>
+                        </div>
+                    </div>
+                    <div class="article-visuals">
+                         <img src="Images/rebTakeover/temporary/idk.png" onerror="this.src='Images/rebIcon.png'" class="full-body-render">
+                    </div>
+                </div>
+            </div>
+
+            <div id="sys-gameplay" class="lore-article">
+                <div class="article-header-text">
+                    <h2>Game Systems</h2>
+                    <div class="article-subtitle">Modes & Features</div>
+                </div>
+                <div class="article-body">
+                    <h3>3 Distinct Gamemodes</h3>
+                    <ul>
+                        <li><strong>1. Combat:</strong> Regular beat-em-up style. You play through the serious campaign of the game. Defeat Veritas. Kinda like Zenless Zone Zero in a way when it comes to combat. Still heavy-action and definitely fun to play.</li>
+                        <li><strong>2. Slice-of-Life (Visual Novel):</strong>
+                            <p>To unlock the missions, upgrades, character bios, and improve relationships within the team (for extra power when tagging them in mid-fight HiFi Rush style, like Lyra magically appearing and beaming a bunch of enemies around you with her sniper), you have conversations and stuff with protagonists while you're playing as them.</p>
+                        </li>
+                        <li><strong>3. Freeroam:</strong> Yakuza-style exploration of Nexon.</li>
+                    </ul>
+                    
+                    <h3>Character Select</h3>
+                    <p>Option 1: Open world somewhat. You can explore the tech store from a top-down view and explore outside to experience some side-stories with NPCs. But, there's a full visual novel section inside the store when you interact with the couch in the hangout.</p>
+                    <p>(Update: This is what I’m going with. Option 1 seems much more open.)</p>
+                    
+                    <h3>Gallery: UI Concepts</h3>
+                    <div class="gallery-grid">
+                        <div class="gallery-item">[Main Menu Concept]</div>
+                        <div class="gallery-item">[Dialogue Box Mockup]</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sys-freeroam" class="lore-article">
+                <div class="article-header-text">
+                    <h2>Freeroam</h2>
+                    <div class="article-subtitle">Exploration Mechanics</div>
+                </div>
+                <div class="article-body">
+                    <h3>Yakuza Style</h3>
+                    <p>Then, there's the one we may add in the future - The freeroam yakuza style gamemode. Where you explore Nexon for rewards outside of campaigns and relationship novels.</p>
+                    <p>The premise of this is from because of the fact that Nexon is surveillanced by Veritas so much, the outside turns into a Yakuza-style system Where you can interact with NPCs and stuff, but turn a wrong turn and you may enter combat with someone - Like Veritas goons, General bad guys (thiefs, thugs, gang members). Coming out of that alive will gain you extra points towards upgrades in the future.</p>
+                    <p>Basically, when it comes around to free-roam, I wanted it to be primarily for you to fight people (as in, randomly spawning Veritas goons, Yakuza style), interact with NPCs around the map, interact with small shops and stuff around the map to get buffs (like Rumbling Ramen, the ramen shop nearby Subroutine that has the owner give the team a massive discount) or random sidequest encounters (Like a Veritas-created sweep bot in the parks of Nexon realizing they're apart of a horrible company and wanting to be "set free", and that's just codeword for "KILL ME".)</p>
+                    
+                    <h3>Hardcore Mechanics</h3>
+                    <p>And it might be the case that I might also add a hardcore mechanic where it acts like a roguelite, slowly increasing in difficulty the more you stay outside. Higher rewards, but higher risk. It might end up being that at the game's final few missions your game is also basically set onto a proper hardcore - One death and you're back to your last save.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function loadTab(id) {
+            document.querySelectorAll('.lore-article').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            
+            const target = document.getElementById(id);
+            if(target) target.classList.add('active');
+            
+            // Add active class to clicking link
+            const links = document.querySelectorAll('.sidebar-link');
+            links.forEach(link => {
+                if(link.getAttribute('onclick').includes(id)) {
+                    link.classList.add('active');
+                }
+            });
+
+            if(window.innerWidth <= 900) {
+                document.querySelector('.library-content').scrollTop = 0;
+            }
+        }
+    </script>
+</body>
+</html>
