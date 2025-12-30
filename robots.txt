@@ -122,3 +122,5 @@ Disallow: /
 
 User-agent: YouBot
 Disallow: /
+
+Sitemap: https://jakedravioli.vecshift.co.uk/sitemap.xml
